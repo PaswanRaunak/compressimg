@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+const title = 'Privacy Policy - CompressImg';
+const description = 'CompressImg privacy policy: how images, quota data, analytics, and TinyPNG temporary retention are handled.';
+---
+<Layout title={title} description={description} canonical="/privacy-policy">
+      <section class="border-b border-white/10 py-16 md:py-20">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <p class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-accent-400">Legal</p>
+      <h1 class="mt-4 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-50 md:text-5xl">Privacy <span class="text-accent-300">Policy</span></h1>
+      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">A clear account of where your image goes and what data is retained.</p>
+    </div>
+  </section>
+  <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
+    <p class="mb-6 leading-relaxed text-stone-400">At CompressImg, we take your privacy seriously. This Privacy Policy explains how we handle your data when you use our free online image compression tool. By using CompressImg, you agree to the practices described in this policy.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Image Processing</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">When you compress an image, your browser sends it over HTTPS to a Cloudflare Worker, which forwards it to TinyPNG for optimization and returns the result. The Worker processes image bytes in memory and does not write an image copy to persistent storage. TinyPNG's terms allow submitted content to be stored temporarily for up to 48 hours. If the result is above your selected limit, an additional JPEG re-encode runs locally in your browser.</p>
+    <ul class="mb-6 list-disc space-y-2 pl-5 text-stone-400 leading-relaxed">
+      <li>Images are transmitted over HTTPS through our Worker and forwarded to TinyPNG.</li>
+      <li>Our Worker does not persist image files.</li>
+      <li>TinyPNG may temporarily store submitted content for up to 48 hours under its terms.</li>
+      <li>Canvas refinement, when required, runs in your browser and outputs JPEG.</li>
+    </ul>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Information We Do Not Request</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">CompressImg does not require a user account or payment. We do not request:</p>
+    <ul class="mb-6 list-disc space-y-2 pl-5 text-stone-400 leading-relaxed">
+      <li>Email addresses or contact details</li>
+      <li>Account credentials (we don't have user accounts)</li>
+      <li>Payment information (our service is completely free)</li>
+    </ul>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Quota and Analytics Data</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">To enforce a daily TinyPNG fair-use quota, the Worker derives a pseudonymous identifier from your IP address and stores only quota counters in Cloudflare KV. Daily counters expire after 24 hours, and the monthly marker expires after 32 days. The site also uses Google Analytics, which may process device, browser, approximate location, IP-derived, and interaction data according to Google's policies. Your browser stores a local quota estimate in localStorage.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Third-Party Services</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">Cloudflare hosts the site, runs the Worker, and stores quota counters. TinyPNG receives image content for compression and may retain submitted content for up to 48 hours. Google Analytics processes site-usage data. We do not sell image files or use them for advertising analysis.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Data Security</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">We use HTTPS for transmission between your browser, the Worker, and TinyPNG. No internet service is risk-free, so do not upload highly sensitive images unless you accept the processing and temporary-retention terms described above.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Changes to This Policy</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date. Your continued use of CompressImg after any changes indicates your acceptance of the updated policy.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Contact Us</h2>
+    <p class="mb-6 leading-relaxed text-stone-400">If you have any questions about this Privacy Policy, please contact us through our <a href="/contact" class="font-medium text-accent-300 hover:underline">contact page</a>.</p>
+    <p class="mt-10 font-mono text-xs text-stone-500">Last updated: July 2026</p>
+  </section>
+</Layout>

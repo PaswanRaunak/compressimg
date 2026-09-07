@@ -1,0 +1,10 @@
+name = "imgcompressortool-proxy"
+main = "worker/tinypng-proxy.js"
+
+# Add this if you create a KV namespace to persist usage counts
+# [[kv_namespaces]]
+# binding = "TINYPNG_USAGE_KV"
+# id = "your-kv-id"
+
+# For secrets, run:
+# npx wrangler secret put TINYPNG_API_KEY

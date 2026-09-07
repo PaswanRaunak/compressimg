@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+const title = 'About CompressImg - Free Online Image Compression Tool';
+const description = 'Learn about CompressImg, a free online image compression tool that uses TinyPNG optimization plus local Canvas refinement for selected file-size limits.';
+
+const values = [
+  {
+    title: 'Privacy first',
+    body: 'Our Worker keeps no image copy, and we disclose TinyPNG\u2019s temporary retention period instead of claiming processing is fully local.',
+    icon: 'M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z',
+  },
+  {
+    title: 'Fast and simple',
+    body: 'No registration, no waiting. Compress images in seconds with an intuitive interface.',
+    icon: 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z',
+  },
+  {
+    title: 'Completely free',
+    body: 'No hidden costs or subscriptions. The TinyPNG stage has a fair-use quota, with local compression available as a fallback.',
+    icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33',
+  },
+  {
+    title: 'Quality results',
+    body: 'Smart compression algorithm finds the best quality for your target file size.',
+    icon: 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+  },
+];
+---
+<Layout title={title} description={description} canonical="/about">
+  <section class="border-b border-white/10 py-16 md:py-20">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <p class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-accent-400">About</p>
+      <h1 class="mt-4 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-50 md:text-5xl">A free compressor with <span class="text-accent-300">clear disclosures</span></h1>
+      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">CompressImg tells you exactly where your image goes and what is retained, then gets out of the way.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
+    <div class="max-w-[65ch] space-y-4 leading-relaxed text-stone-400">
+      <p>CompressImg is a free online tool designed to help you compress images quickly and easily. Images are sent over HTTPS through our Cloudflare Worker to TinyPNG for perceptual optimization; if further reduction is needed, a local Canvas re-encode is performed in your browser.</p>
+      <p>Our mission is simple: provide fast, reliable compression with honest explanations of where image processing occurs.</p>
+    </div>
+
+    <h2 class="mb-4 mt-14 text-2xl font-semibold tracking-tight text-stone-100">Our story</h2>
+    <p class="max-w-[65ch] leading-relaxed text-stone-400">CompressImg was created out of frustration with existing image compression tools. Many online compressors require you to upload your images to their servers, raising privacy concerns. Others are cluttered with ads, require registration, or limit the number of images you can compress. We set out to build something better - a tool that respects your privacy, works instantly, and never asks for personal information.</p>
+
+    <h2 class="mb-4 mt-14 text-2xl font-semibold tracking-tight text-stone-100">How it works</h2>
+    <p class="max-w-[65ch] leading-relaxed text-stone-400">CompressImg uses a two-stage approach: images are first sent to TinyPNG through our HTTPS Worker. The Worker keeps no image copy, while TinyPNG may temporarily retain submitted content for up to 48 hours under its terms. If the result is above your selected limit, the browser adjusts JPEG quality and dimensions locally.</p>
+
+    <h2 class="mb-6 mt-14 text-2xl font-semibold tracking-tight text-stone-100">Our values</h2>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {values.map((value) => (
+        <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors duration-300 hover:border-white/20">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d={value.icon}></path>
+            </svg>
+          </div>
+          <h3 class="mt-5 text-base font-semibold tracking-tight text-stone-100">{value.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-stone-400">{value.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="mb-4 mt-14 text-2xl font-semibold tracking-tight text-stone-100">Get started</h2>
+    <p class="max-w-[65ch] leading-relaxed text-stone-400">Ready to compress your images? Head back to our <a href="/" class="font-medium text-accent-300 hover:underline">homepage</a> and start compressing immediately. Whether you need to <a href="/compress-image-to-20kb" class="font-medium text-accent-300 hover:underline">compress to 20KB</a> for a form, <a href="/compress-image-to-100kb" class="font-medium text-accent-300 hover:underline">reduce to 100KB</a> for web use, or <a href="/compress-image-to-200kb" class="font-medium text-accent-300 hover:underline">optimize to 200KB</a> for high-quality display, CompressImg has you covered.</p>
+  </section>
+</Layout>

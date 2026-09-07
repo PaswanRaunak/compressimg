@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+const title = 'Contact Us - CompressImg';
+const description = 'Contact CompressImg for questions, feedback, or support regarding our free online image compression tool.';
+
+const contactInfo = [
+  {
+    title: 'Email',
+    body: 'Coming soon. Email contact will be available shortly.',
+    icon: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75',
+  },
+  {
+    title: 'Response time',
+    body: 'We typically respond within 24-48 hours.',
+    icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z',
+  },
+  {
+    title: 'Privacy note',
+    body: 'We never ask for sensitive information. Please don\u2019t share passwords or financial details.',
+    icon: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
+  },
+];
+---
+<Layout title={title} description={description} canonical="/contact">
+  <section class="border-b border-white/10 py-16 md:py-20">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <p class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-accent-400">Contact</p>
+      <h1 class="mt-4 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-50 md:text-5xl">Get in <span class="text-accent-300">touch</span></h1>
+      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">Questions or feedback about the compressor? We read everything you send.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
+      <div>
+        <h2 class="text-2xl font-semibold tracking-tight text-stone-100">Reach us</h2>
+        <p class="mt-4 max-w-[55ch] leading-relaxed text-stone-400">While CompressImg is designed to be simple and self-service, we welcome your questions, feedback, and suggestions. Fill out the form and we'll get back to you as soon as possible.</p>
+        <div class="mt-10 divide-y divide-white/10 border-t border-white/10">
+          {contactInfo.map((item) => (
+            <div class="flex items-start gap-4 py-6">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={item.icon}></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold tracking-tight text-stone-100">{item.title}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-stone-400">{item.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="self-start rounded-[2rem] border border-white/10 bg-white/[0.02] p-2 shadow-soft">
+        <div class="rounded-[1.625rem] border border-white/10 bg-white/[0.03] p-6 md:p-8">
+          <h2 class="text-lg font-semibold tracking-tight text-stone-100">Send a message</h2>
+          <div class="mt-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+            <p class="text-sm leading-relaxed text-amber-200/90"><strong class="font-semibold">Coming soon:</strong> we're setting up our contact system. Please check back soon.</p>
+          </div>
+          <form class="mt-6 space-y-5" onsubmit="event.preventDefault();">
+            <div>
+              <label for="name" class="mb-2 block text-sm font-medium text-stone-200">Name</label>
+              <input type="text" id="name" name="name" disabled class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-stone-500 placeholder:text-stone-600" placeholder="Your name" />
+            </div>
+            <div>
+              <label for="email" class="mb-2 block text-sm font-medium text-stone-200">Email</label>
+              <input type="email" id="email" name="email" disabled class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-stone-500 placeholder:text-stone-600" placeholder="you@example.com" />
+            </div>
+            <div>
+              <label for="subject" class="mb-2 block text-sm font-medium text-stone-200">Subject</label>
+              <select id="subject" name="subject" disabled class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-stone-500">
+                <option value="general">General question</option>
+                <option value="feedback">Feedback</option>
+                <option value="bug">Bug report</option>
+                <option value="feature">Feature request</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="message" class="mb-2 block text-sm font-medium text-stone-200">Message</label>
+              <textarea id="message" name="message" rows="4" disabled class="w-full cursor-not-allowed resize-none rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-stone-500 placeholder:text-stone-600" placeholder="Your message"></textarea>
+            </div>
+            <button type="submit" disabled class="w-full cursor-not-allowed rounded-full bg-white/10 px-6 py-3 text-sm font-medium text-stone-500">Coming soon</button>
+            <p class="text-center font-mono text-[11px] uppercase tracking-[0.16em] text-stone-600">Form opens once email setup is complete</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

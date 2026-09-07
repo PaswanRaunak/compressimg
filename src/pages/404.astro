@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+const title = 'Page Not Found - CompressImg';
+const description = 'The page you are looking for does not exist. Return to CompressImg homepage to compress your images.';
+---
+<Layout title={title} description={description}>
+  <section class="flex min-h-[60vh] items-center py-24">
+    <div class="mx-auto max-w-lg px-4">
+      <p class="font-mono text-sm font-medium tracking-[0.18em] text-accent-400">Error 404</p>
+      <h1 class="mt-4 text-5xl font-semibold leading-[1.05] tracking-tightest text-stone-50">Page not found</h1>
+      <p class="mt-5 max-w-[55ch] leading-relaxed text-stone-400">The page you're looking for doesn't exist or has been moved. You can still compress your images from the homepage.</p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="/" class="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-sm font-medium text-stone-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+          Back to home
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+            </svg>
+          </span>
+        </a>
+        <a href="/compress-image-to-100kb" class="inline-flex items-center rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-stone-300 transition-all duration-200 hover:border-white/25 hover:bg-white/5 active:scale-[0.98]">Compress to 100KB</a>
+      </div>
+      <div class="mt-14 border-t border-white/10 pt-8">
+        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-600">Popular pages</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a href="/compress-image-to-20kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">20KB</a>
+          <a href="/compress-image-to-30kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">30KB</a>
+          <a href="/compress-image-to-50kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">50KB</a>
+          <a href="/compress-image-to-100kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">100KB</a>
+          <a href="/compress-image-to-200kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">200KB</a>
+          <a href="/about" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">About</a>
+          <a href="/contact" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300">Contact</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

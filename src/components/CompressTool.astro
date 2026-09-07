@@ -1,0 +1,516 @@
+---
+export interface Props {
+  defaultTarget?: number;
+  showCustomTarget?: boolean;
+}
+
+const { defaultTarget = 100, showCustomTarget = true } = Astro.props;
+
+const presetTargets = [20, 30, 50, 100, 200];
+---
+
+<div class="compress-tool" data-default-target={defaultTarget}>
+  <!-- Target Size Selector -->
+  <div class="mb-6 flex flex-wrap items-center justify-center gap-2">
+    <span class="mr-1 self-center font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Target</span>
+    {presetTargets.map((kb) => (
+      <button
+        data-target={kb}
+        class="target-btn rounded-full border px-4 py-2 font-mono text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] border-white/10 bg-white/[0.04] text-stone-400 hover:border-accent-400 hover:text-accent-300"
+      >
+        {kb}KB
+      </button>
+    ))}
+    {showCustomTarget && (
+      <div class="flex items-center gap-2">
+        <input
+          type="number"
+          id="custom-target"
+          placeholder="Custom KB"
+          min="1"
+          max="5000"
+          class="w-28 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-100 placeholder:font-sans placeholder:text-stone-500 transition-colors focus:border-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-400/20"
+        />
+        <button id="custom-target-btn" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Set</button>
+      </div>
+    )}
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <!-- Upload area: double-bezel glass dropzone -->
+  <div class="rounded-[2rem] border border-white/10 bg-white/[0.02] p-2 shadow-soft">
+    <div
+      id="upload-area"
+      class="relative cursor-pointer rounded-[1.625rem] border-2 border-dashed border-white/15 bg-white/[0.03] px-8 py-14 text-center transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-accent-400/60 hover:bg-accent-500/[0.06]"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" id="upload-icon">
+          <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
+          </svg>
+        </span>
+        <div>
+          <p class="text-base font-semibold tracking-tight text-stone-100">Drop your image here</p>
+          <p class="mt-1 text-sm text-stone-500">or click to browse files</p>
+        </div>
+        <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-stone-600">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading: indeterminate shimmer bar -->
+  <div id="loading" class="hidden py-12 text-center">
+    <div class="mx-auto max-w-sm">
+      <div class="h-1.5 overflow-hidden rounded-full bg-white/10">
+        <div class="shimmer-bar h-full w-1/3 rounded-full bg-accent-400"></div>
+      </div>
+      <p id="loading-message" class="mt-5 text-sm font-medium text-stone-300">Preparing compression</p>
+      <p class="mt-1 text-xs text-stone-500">This usually takes a few seconds</p>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results" class="hidden mt-6">
+    <div class="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:p-8">
+      <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="rounded-2xl bg-white/[0.04] p-5 text-center ring-1 ring-inset ring-white/5">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Original</p>
+          <p id="original-size" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-stone-200">--</p>
+        </div>
+        <div class="rounded-2xl bg-white/[0.04] p-5 text-center ring-1 ring-inset ring-white/5">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Compressed</p>
+          <p id="compressed-size" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-accent-300">--</p>
+        </div>
+        <div class="rounded-2xl bg-accent-500/10 p-5 text-center ring-1 ring-inset ring-accent-500/20">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-accent-400/80">Saved</p>
+          <p id="saved-percent" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-accent-300">--</p>
+        </div>
+      </div>
+
+      <!-- Image Preview -->
+      <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Original preview</p>
+          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+            <img id="original-preview" class="h-48 w-full rounded-lg object-contain" alt="Original image preview" />
+          </div>
+        </div>
+        <div>
+          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Compressed preview</p>
+          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
+            <img id="compressed-preview" class="h-48 w-full rounded-lg object-contain" alt="Compressed image preview" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <a id="download-btn" class="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-sm font-medium text-stone-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+          Download compressed image
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path>
+            </svg>
+          </span>
+        </a>
+        <button id="compress-another" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-stone-300 transition-all duration-200 hover:border-white/25 hover:bg-white/5 active:scale-[0.98]">
+          <svg class="h-4 w-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+          </svg>
+          Compress another
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="error" class="hidden mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-300" role="alert"></div>
+</div>
+
+<style>
+  @keyframes shimmer-slide {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(420%); }
+  }
+  .shimmer-bar {
+    animation: shimmer-slide 1.4s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer-bar { animation: none; }
+  }
+
+  #upload-area.is-dragover {
+    border-color: #5cb49e;
+    background-color: rgba(67, 154, 134, 0.1);
+  }
+</style>
+
+<script>
+  (function() {
+    const tool = document.querySelector('.compress-tool[data-default-target]') || document.currentScript.closest('.compress-tool');
+    if (!tool) {
+      console.error('CompressTool: Failed to find tool container');
+      return;
+    }
+    const defaultTarget = parseInt(tool.dataset.defaultTarget) || 100;
+    let currentTarget = defaultTarget;
+    let originalFileName = '';
+    let originalPreviewUrl = '';
+    let compressedPreviewUrl = '';
+
+    const uploadArea = tool.querySelector('#upload-area');
+    const fileInput = tool.querySelector('#file-input');
+    const loading = tool.querySelector('#loading');
+    const results = tool.querySelector('#results');
+    const error = tool.querySelector('#error');
+    const targetBtns = tool.querySelectorAll('.target-btn');
+    const customTargetInput = tool.querySelector('#custom-target');
+    const customTargetBtn = tool.querySelector('#custom-target-btn');
+    const compressAnotherBtn = tool.querySelector('#compress-another');
+    const downloadBtn = tool.querySelector('#download-btn');
+    const loadingMessage = loading.querySelector('#loading-message');
+
+    // Override at build time with PUBLIC_COMPRESSION_WORKER_URL when the proxy moves.
+    const WORKER_URL = import.meta.env.PUBLIC_COMPRESSION_WORKER_URL
+      || 'https://imgcompressortool-proxy.paswanrounak55.workers.dev/shrink';
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function updateTargetButtons() {
+      targetBtns.forEach(btn => {
+        const target = parseInt(btn.dataset.target);
+        if (target === currentTarget) {
+          btn.classList.add('bg-white', 'text-stone-900', 'border-white');
+          btn.classList.remove('border-white/10', 'bg-white/[0.04]', 'text-stone-400', 'hover:border-accent-400', 'hover:text-accent-300');
+        } else {
+          btn.classList.remove('bg-white', 'text-stone-900', 'border-white');
+          btn.classList.add('border-white/10', 'bg-white/[0.04]', 'text-stone-400', 'hover:border-accent-400', 'hover:text-accent-300');
+        }
+      });
+      if (customTargetInput) customTargetInput.value = '';
+    }
+
+    function setTarget(target) {
+      currentTarget = target;
+      updateTargetButtons();
+    }
+
+    function setLoadingMessage(message) {
+      if (loadingMessage) {
+        loadingMessage.textContent = message;
+      }
+    }
+
+    async function compressWithTinyPng(file) {
+      // Use server-side proxy for compression
+      // Server handles: compression + downloading compressed image (avoids CORS issues)
+      // Show compression status
+      setLoadingMessage('Optimizing your image');
+
+      try {
+        console.log('Starting compression for:', file.name, 'Size:', file.size, 'Type:', file.type);
+
+        const resp = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream'
+          },
+          body: file
+        });
+
+        console.log('Compression response status:', resp.status);
+        console.log('Response headers:', {
+          contentType: resp.headers.get('Content-Type')
+        });
+
+        // Handle quota exceeded (429)
+        if (resp.status === 429) {
+          throw new Error('Daily compression quota exceeded. Try again tomorrow.');
+        }
+
+        if (!resp.ok) {
+          let errorText = '';
+          try {
+            errorText = await resp.text();
+          } catch (e) {
+            errorText = 'Unknown error';
+          }
+
+          console.error('Compression error:', resp.status, errorText);
+
+          // Better error messages
+          if (resp.status === 400) {
+            throw new Error('Invalid image format. Supports JPG, PNG, WebP.');
+          } else if (resp.status === 401 || resp.status === 403) {
+            throw new Error('Compression service authentication failed.');
+          } else if (resp.status === 500) {
+            throw new Error('Compression service error. Try again later.');
+          }
+
+          throw new Error(`Compression failed (${resp.status})`);
+        }
+
+        // Download compressed image
+        setLoadingMessage('Finalizing compressed image');
+        const blob = await resp.blob();
+        console.log('Image optimization successful! Size:', blob.size);
+
+        return { blob };
+      } catch (error) {
+        console.error('Image compression error:', error);
+        throw error;
+      }
+    }
+
+    function loadImage(fileOrBlob) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        const objectUrl = URL.createObjectURL(fileOrBlob);
+
+        image.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve(image);
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error('The image could not be decoded in this browser.'));
+        };
+        image.src = objectUrl;
+      });
+    }
+
+    function canvasToBlob(canvas, quality) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error('Canvas encoding failed.')),
+          'image/jpeg',
+          quality
+        );
+      });
+    }
+
+    async function findBestQuality(canvas, targetBytes) {
+      const minimumQuality = 0.05;
+      const minimumBlob = await canvasToBlob(canvas, minimumQuality);
+      if (minimumBlob.size > targetBytes) return null;
+
+      let bestBlob = minimumBlob;
+      let low = minimumQuality;
+      let high = 0.95;
+
+      // Keep the highest JPEG quality that stays under the requested limit.
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const quality = (low + high) / 2;
+        const candidate = await canvasToBlob(canvas, quality);
+        if (candidate.size <= targetBytes) {
+          bestBlob = candidate;
+          low = quality;
+        } else {
+          high = quality;
+        }
+      }
+
+      return bestBlob;
+    }
+
+    async function compressWithCanvas(fileOrBlob, targetKB) {
+      const targetBytes = targetKB * 1024;
+      const image = await loadImage(fileOrBlob);
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d', { alpha: false });
+      if (!context) throw new Error('Canvas is unavailable in this browser.');
+
+      let width = image.naturalWidth;
+      let height = image.naturalHeight;
+      const maximumDimension = 4096;
+      const initialScale = Math.min(1, maximumDimension / Math.max(width, height));
+      width = Math.max(1, Math.round(width * initialScale));
+      height = Math.max(1, Math.round(height * initialScale));
+
+      for (let resizeAttempt = 0; resizeAttempt < 12; resizeAttempt += 1) {
+        canvas.width = width;
+        canvas.height = height;
+        context.fillStyle = '#FFFFFF';
+        context.fillRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+
+        const result = await findBestQuality(canvas, targetBytes);
+        if (result) return result;
+
+        // Quality alone was insufficient, so reduce pixel dimensions and retry.
+        width = Math.max(1, Math.round(width * 0.78));
+        height = Math.max(1, Math.round(height * 0.78));
+      }
+
+      throw new Error(`This image could not be reduced below ${targetKB}KB.`);
+    }
+
+    async function compressToTargetSize(file, targetKB) {
+      const targetBytes = targetKB * 1024;
+      if (file.size <= targetBytes) {
+        return { blob: file, method: 'Original' };
+      }
+
+      setLoadingMessage('Compressing with TinyPNG API');
+
+      try {
+        const tinyResult = await compressWithTinyPng(file);
+        const blob = tinyResult.blob;
+
+        if (blob.size <= targetBytes) {
+          return { blob, method: 'TinyPNG' };
+        }
+
+        setLoadingMessage(`Reducing dimensions to stay under ${targetKB}KB`);
+        const canvasBlob = await compressWithCanvas(blob, targetKB);
+        return { blob: canvasBlob, method: 'TinyPNG+Canvas' };
+      } catch (err) {
+        console.warn('TinyPNG compression failed, falling back to Canvas:', err);
+        setLoadingMessage('Falling back to local Canvas compression');
+        try {
+          const fallback = await compressWithCanvas(file, targetKB);
+          return { blob: fallback, method: 'Canvas' };
+        } catch (fallbackErr) {
+          console.error('Both TinyPNG and Canvas compression failed:', fallbackErr);
+          throw fallbackErr;
+        }
+      }
+    }
+
+    async function processFile(file) {
+      if (!file) return;
+
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        showError('Please upload a JPG, PNG, or WebP image.');
+        return;
+      }
+
+      if (file.size > 20 * 1024 * 1024) {
+        showError('File too large. Maximum size is 20MB.');
+        return;
+      }
+
+      originalFileName = file.name.replace(/\.[^/.]+$/, '');
+
+      uploadArea.closest('.rounded-\\[2rem\\]').classList.add('hidden');
+      results.classList.add('hidden');
+      error.classList.add('hidden');
+      loading.classList.remove('hidden');
+      setLoadingMessage('Preparing compression');
+
+      try {
+        const { blob } = await compressToTargetSize(file, currentTarget);
+        if (blob.size > currentTarget * 1024) {
+          throw new Error(`The result is above the selected ${currentTarget}KB limit.`);
+        }
+
+        tool.querySelector('#original-size').textContent = formatSize(file.size);
+        tool.querySelector('#compressed-size').textContent = formatSize(blob.size);
+
+        const saved = Math.max(0, file.size - blob.size);
+        const savedPercent = file.size > 0 ? Math.round((saved / file.size) * 100) : 0;
+        tool.querySelector('#saved-percent').textContent = savedPercent + '%';
+
+        clearPreviewUrls();
+        originalPreviewUrl = URL.createObjectURL(file);
+        tool.querySelector('#original-preview').src = originalPreviewUrl;
+
+        compressedPreviewUrl = URL.createObjectURL(blob);
+        tool.querySelector('#compressed-preview').src = compressedPreviewUrl;
+
+        const extensions = {
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'image/webp': 'webp'
+        };
+        const ext = extensions[blob.type] || 'jpg';
+        downloadBtn.href = compressedPreviewUrl;
+        downloadBtn.download = `${originalFileName}-compressed.${ext}`;
+
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        uploadArea.closest('.rounded-\\[2rem\\]').classList.remove('hidden');
+        showError(err instanceof Error ? err.message : 'Failed to compress image. Please try a different image.');
+        console.error(err);
+      }
+    }
+
+    function clearPreviewUrls() {
+      if (originalPreviewUrl) URL.revokeObjectURL(originalPreviewUrl);
+      if (compressedPreviewUrl) URL.revokeObjectURL(compressedPreviewUrl);
+      originalPreviewUrl = '';
+      compressedPreviewUrl = '';
+
+      const originalPreview = tool.querySelector('#original-preview');
+      const compressedPreview = tool.querySelector('#compressed-preview');
+      originalPreview.removeAttribute('src');
+      compressedPreview.removeAttribute('src');
+      downloadBtn.removeAttribute('href');
+      downloadBtn.removeAttribute('download');
+    }
+
+    function showError(msg) {
+      error.textContent = msg;
+      error.classList.remove('hidden');
+    }
+
+    targetBtns.forEach(btn => {
+      btn.addEventListener('click', () => setTarget(parseInt(btn.dataset.target)));
+    });
+
+    if (customTargetBtn && customTargetInput) {
+      customTargetBtn.addEventListener('click', () => {
+        const val = parseInt(customTargetInput.value);
+        if (val && val > 0 && val <= 5000) {
+          setTarget(val);
+        }
+      });
+      customTargetInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') customTargetBtn.click();
+      });
+    }
+
+    uploadArea.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('is-dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('is-dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('is-dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) processFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) processFile(e.target.files[0]);
+      fileInput.value = '';
+    });
+
+    compressAnotherBtn.addEventListener('click', () => {
+      clearPreviewUrls();
+      results.classList.add('hidden');
+      uploadArea.closest('.rounded-\\[2rem\\]').classList.remove('hidden');
+      setLoadingMessage('Compressing your image');
+    });
+
+    window.addEventListener('pagehide', clearPreviewUrls, { once: true });
+    updateTargetButtons();
+  })();
+</script>

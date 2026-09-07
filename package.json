@@ -1,0 +1,19 @@
+{
+  "name": "compressimg",
+  "version": "1.0.0",
+  "description": "Free online image compression tool - Compress images to 20KB, 50KB, 100KB, 200KB",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.0.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.7.10",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.0"
+  }
+}

@@ -1,0 +1,7 @@
+name = "imgcompressortool-proxy"
+main = "tinypng-proxy.js"
+compatibility_date = "2026-07-03"
+
+[[kv_namespaces]]
+binding = "TINYPNG_USAGE_KV"
+id = "a972322185944c1c805b1ff3d2d7cb8a"

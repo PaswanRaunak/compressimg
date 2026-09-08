@@ -21,3 +21,4 @@ pnpm-debug.log*
 
 # cloudflare local state
 .wrangler/
+.rocketride/

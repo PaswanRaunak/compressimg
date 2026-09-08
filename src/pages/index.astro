@@ -69,7 +69,7 @@ const sizes = [
             Reduce JPG, PNG, and WebP files to a target you set &mdash; 20KB for forms, 100KB for the web. Images are sent over HTTPS through our Cloudflare Worker to TinyPNG. Our Worker keeps no image copy; TinyPNG may retain submitted content for up to 48 hours.
           </p>
           <div class="reveal reveal-3 mt-8 flex flex-wrap items-center gap-3">
-            <a href="#tool" class="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-stone-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+            <a href="#tool" class="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-stone-900 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
               Start compressing
               <span class="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
                 <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -99,8 +99,8 @@ const sizes = [
               </div>
               <div class="mt-6 flex items-end justify-between gap-4">
                 <div>
-                  <p class="font-mono text-sm text-stone-600 line-through decoration-stone-600">4.21 MB</p>
-                  <p class="mt-1 font-mono text-4xl font-semibold tracking-tight text-stone-50">96.4 KB</p>
+                  <p class="font-mono text-sm text-stone-600 line-through decoration-stone-600">4.21&nbsp;MB</p>
+                  <p class="mt-1 font-mono text-4xl font-semibold tracking-tight text-stone-50">96.4&nbsp;KB</p>
                 </div>
                 <div class="text-right">
                   <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500">Saved</p>
@@ -121,7 +121,7 @@ const sizes = [
                 </div>
                 <div class="flex items-center justify-between py-2.5 text-sm">
                   <span class="text-stone-500">Target limit</span>
-                  <span class="font-mono font-medium text-stone-200">100 KB</span>
+                  <span class="font-mono font-medium text-stone-200">100&nbsp;KB</span>
                 </div>
               </div>
             </div>
@@ -198,7 +198,7 @@ const sizes = [
         {sizes.map(({ kb }) => (
           <a
             href={`/compress-image-to-${kb}kb`}
-            class="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-accent-400/50 hover:shadow-lift active:scale-[0.98]"
+            class="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-accent-400/50 hover:shadow-lift active:scale-[0.98]"
           >
             <span class="block font-mono text-2xl font-semibold tracking-tight text-stone-50 transition-colors group-hover:text-accent-300">{kb}<span class="text-base text-stone-500">KB</span></span>
             <span class="mt-2 block text-xs text-stone-500">Compress to {kb}KB</span>

@@ -16,7 +16,7 @@ const presetTargets = [20, 30, 50, 100, 200];
     {presetTargets.map((kb) => (
       <button
         data-target={kb}
-        class="target-btn rounded-full border px-4 py-2 font-mono text-sm font-medium transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] border-white/10 bg-white/[0.04] text-stone-400 hover:border-accent-400 hover:text-accent-300"
+        class="target-btn rounded-full border px-4 py-2 font-mono text-sm font-medium transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] border-white/10 bg-white/[0.04] text-stone-400 hover:border-accent-400 hover:text-accent-300"
       >
         {kb}KB
       </button>
@@ -26,12 +26,14 @@ const presetTargets = [20, 30, 50, 100, 200];
         <input
           type="number"
           id="custom-target"
-          placeholder="Custom KB"
+          placeholder="e.g. 45 KB…"
+          aria-label="Custom target size in kilobytes"
+          autocomplete="off"
           min="1"
           max="5000"
           class="w-28 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-100 placeholder:font-sans placeholder:text-stone-500 transition-colors focus:border-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-400/20"
         />
-        <button id="custom-target-btn" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition-all duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Set</button>
+        <button id="custom-target-btn" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Set</button>
       </div>
     )}
   </div>
@@ -43,7 +45,7 @@ const presetTargets = [20, 30, 50, 100, 200];
   <div class="rounded-[2rem] border border-white/10 bg-white/[0.02] p-2 shadow-soft">
     <div
       id="upload-area"
-      class="relative cursor-pointer rounded-[1.625rem] border-2 border-dashed border-white/15 bg-white/[0.03] px-8 py-14 text-center transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-accent-400/60 hover:bg-accent-500/[0.06]"
+      class="relative cursor-pointer rounded-[1.625rem] border-2 border-dashed border-white/15 bg-white/[0.03] px-8 py-14 text-center transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-accent-400/60 hover:bg-accent-500/[0.06]"
     >
       <div class="flex flex-col items-center gap-4">
         <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" id="upload-icon">
@@ -61,12 +63,12 @@ const presetTargets = [20, 30, 50, 100, 200];
   </div>
 
   <!-- Loading: indeterminate shimmer bar -->
-  <div id="loading" class="hidden py-12 text-center">
+  <div id="loading" class="hidden py-12 text-center" aria-live="polite">
     <div class="mx-auto max-w-sm">
       <div class="h-1.5 overflow-hidden rounded-full bg-white/10">
         <div class="shimmer-bar h-full w-1/3 rounded-full bg-accent-400"></div>
       </div>
-      <p id="loading-message" class="mt-5 text-sm font-medium text-stone-300">Preparing compression</p>
+      <p id="loading-message" class="mt-5 text-sm font-medium text-stone-300">Preparing compression…</p>
       <p class="mt-1 text-xs text-stone-500">This usually takes a few seconds</p>
     </div>
   </div>
@@ -106,7 +108,7 @@ const presetTargets = [20, 30, 50, 100, 200];
       </div>
 
       <div class="flex flex-wrap justify-center gap-3">
-        <a id="download-btn" class="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-sm font-medium text-stone-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+        <a id="download-btn" class="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-sm font-medium text-stone-900 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
           Download compressed image
           <span class="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
@@ -114,7 +116,7 @@ const presetTargets = [20, 30, 50, 100, 200];
             </svg>
           </span>
         </a>
-        <button id="compress-another" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-stone-300 transition-all duration-200 hover:border-white/25 hover:bg-white/5 active:scale-[0.98]">
+        <button id="compress-another" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-stone-300 transition duration-200 hover:border-white/25 hover:bg-white/5 active:scale-[0.98]">
           <svg class="h-4 w-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
           </svg>
@@ -209,7 +211,7 @@ const presetTargets = [20, 30, 50, 100, 200];
       // Use server-side proxy for compression
       // Server handles: compression + downloading compressed image (avoids CORS issues)
       // Show compression status
-      setLoadingMessage('Optimizing your image');
+      setLoadingMessage('Optimizing your image…');
 
       try {
         console.log('Starting compression for:', file.name, 'Size:', file.size, 'Type:', file.type);
@@ -255,7 +257,7 @@ const presetTargets = [20, 30, 50, 100, 200];
         }
 
         // Download compressed image
-        setLoadingMessage('Finalizing compressed image');
+        setLoadingMessage('Finalizing compressed image…');
         const blob = await resp.blob();
         console.log('Image optimization successful! Size:', blob.size);
 
@@ -355,7 +357,7 @@ const presetTargets = [20, 30, 50, 100, 200];
         return { blob: file, method: 'Original' };
       }
 
-      setLoadingMessage('Compressing with TinyPNG API');
+      setLoadingMessage('Compressing with TinyPNG API…');
 
       try {
         const tinyResult = await compressWithTinyPng(file);
@@ -365,12 +367,12 @@ const presetTargets = [20, 30, 50, 100, 200];
           return { blob, method: 'TinyPNG' };
         }
 
-        setLoadingMessage(`Reducing dimensions to stay under ${targetKB}KB`);
+        setLoadingMessage(`Reducing dimensions to stay under ${targetKB}KB…`);
         const canvasBlob = await compressWithCanvas(blob, targetKB);
         return { blob: canvasBlob, method: 'TinyPNG+Canvas' };
       } catch (err) {
         console.warn('TinyPNG compression failed, falling back to Canvas:', err);
-        setLoadingMessage('Falling back to local Canvas compression');
+        setLoadingMessage('Falling back to local Canvas compression…');
         try {
           const fallback = await compressWithCanvas(file, targetKB);
           return { blob: fallback, method: 'Canvas' };
@@ -401,7 +403,7 @@ const presetTargets = [20, 30, 50, 100, 200];
       results.classList.add('hidden');
       error.classList.add('hidden');
       loading.classList.remove('hidden');
-      setLoadingMessage('Preparing compression');
+      setLoadingMessage('Preparing compression…');
 
       try {
         const { blob } = await compressToTargetSize(file, currentTarget);
@@ -507,7 +509,7 @@ const presetTargets = [20, 30, 50, 100, 200];
       clearPreviewUrls();
       results.classList.add('hidden');
       uploadArea.closest('.rounded-\\[2rem\\]').classList.remove('hidden');
-      setLoadingMessage('Compressing your image');
+      setLoadingMessage('Compressing your image…');
     });
 
     window.addEventListener('pagehide', clearPreviewUrls, { once: true });

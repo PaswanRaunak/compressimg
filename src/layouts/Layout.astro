@@ -185,7 +185,7 @@ const schemaMarkup = schemaNodes.length > 0
       </div>
 
       <div class="hidden md:block">
-        <a href="/#tool" class="group inline-flex items-center gap-2 rounded-full bg-white py-2 pl-5 pr-2 text-sm font-medium text-stone-900 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+        <a href="/#tool" class="group inline-flex items-center gap-2 rounded-full bg-white py-2 pl-5 pr-2 text-sm font-medium text-stone-900 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
           Compress now
           <span class="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
             <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -285,6 +285,20 @@ const schemaMarkup = schemaNodes.length > 0
   <style>
     html {
       scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    h1, h2, h3 {
+      text-wrap: balance;
+    }
+
+    p {
+      text-wrap: pretty;
+    }
+
+    a, button {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     ::selection {
@@ -349,6 +363,11 @@ const schemaMarkup = schemaNodes.length > 0
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .reveal, .menu-item { animation: none; transition: none; opacity: 1; transform: none; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 

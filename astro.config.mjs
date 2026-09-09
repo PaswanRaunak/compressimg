@@ -13,5 +13,5 @@ export default defineConfig({
     }),
   ],
   output: 'static',
-  site: 'https://imgcompressortool.pages.dev',
+  site: 'https://imgcompressor.tools',
 });

@@ -27,4 +27,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://imgcompressortool.pages.dev/sitemap-index.xml
+Sitemap: https://imgcompressor.tools/sitemap-index.xml

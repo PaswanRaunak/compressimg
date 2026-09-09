@@ -17,7 +17,7 @@ const {
   schemaData = {}
 } = Astro.props;
 
-const siteUrl = Astro.site ?? new URL('https://imgcompressortool.pages.dev');
+const siteUrl = Astro.site ?? new URL('https://imgcompressor.tools');
 const fullCanonical = new URL(canonical, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 const currentYear = new Date().getFullYear();

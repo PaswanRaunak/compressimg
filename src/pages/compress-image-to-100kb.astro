@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CompressTool from '../components/CompressTool.astro';
 const title = 'Compress Image to 100KB Online - Free | CompressImg';
-const description = 'Compress JPG, PNG, and WebP images to 100KB or less for forms, email attachments, and blog thumbnails.';
+const description = 'Compress JPG, PNG and WebP images to 100KB or less — free, no signup. Meet form, email and web upload limits while keeping your image quality clear.';
 const faqItems = [
   {
     question: 'How to compress image to 100KB?',
@@ -19,69 +19,69 @@ const faqItems = [
 ];
 ---
 <Layout title={title} description={description} canonical="/compress-image-to-100kb" schemaType="WebApplication" faqItems={faqItems}>
-      <section class="border-b border-white/10 py-16 md:py-20">
+      <section class="border-b border-stone-200 py-16 md:py-20">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <p class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-400">
-        <span class="h-1.5 w-1.5 rounded-full bg-accent-400"></span>
+      <p class="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-100 px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-600">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent-500"></span>
         Compress to 100KB
       </p>
-      <h1 class="mt-6 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-50 md:text-5xl">Compress image to <span class="text-accent-300">100KB</span> online - free</h1>
-      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">Reduce your image to 100KB or less. Perfect for web uploads, forms, and email attachments. Supports JPG, PNG, and WebP formats.</p>
+      <h1 class="mt-6 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-900 md:text-5xl">Compress image to <span class="text-accent-700">100KB</span> online - free</h1>
+      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-600 md:text-lg">Reduce your image to 100KB or less. Perfect for web uploads, forms, and email attachments. Supports JPG, PNG, and WebP formats.</p>
     </div>
   </section>
   <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 mb-12">
     <CompressTool defaultTarget={100} showCustomTarget={true} />
   </section>
   <section class="mx-auto max-w-3xl px-4 pb-20 sm:px-6 lg:px-8">
-    <h2 class="mb-5 text-base font-semibold tracking-tight text-stone-100">Other compression sizes</h2>
+    <h2 class="mb-5 text-base font-semibold tracking-tight text-stone-900">Other compression sizes</h2>
     <div class="flex flex-wrap justify-center gap-3">
-      <a href="/compress-image-to-20kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 20KB</a>
-      <a href="/compress-image-to-30kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 30KB</a>
-      <a href="/compress-image-to-50kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 50KB</a>
-      <a href="/compress-image-to-200kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 200KB</a>
+      <a href="/compress-image-to-20kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 20KB</a>
+      <a href="/compress-image-to-30kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 30KB</a>
+      <a href="/compress-image-to-50kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 50KB</a>
+      <a href="/compress-image-to-200kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 200KB</a>
     </div>
   </section>
   <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
-    <h2 class="mb-4 text-2xl font-semibold tracking-tight text-stone-100">Why Compress Images to 100KB?</h2>
-    <p class="mb-4 leading-relaxed text-stone-400">The 100KB file size is one of the most commonly requested targets for image compression. Many websites, online forms, and application portals set 100KB as the maximum allowed file size for uploaded images. This limit strikes a reasonable balance between image quality and file size - large enough to maintain decent visual clarity for most purposes, yet small enough to ensure fast uploads and efficient storage. Whether you're submitting a resume photo, uploading a product image, or sharing pictures on forums, 100KB is often the magic number that meets requirements while preserving acceptable quality.</p>
-    <p class="mb-4 leading-relaxed text-stone-400">Government websites, educational portals, and job application sites frequently require images under 100KB. For example, passport photo uploads for visa applications, profile pictures for professional networking sites, and document scans for online submissions often have this limit. By using our compress image to 100KB tool, you can ensure your images meet these requirements without the frustration of repeated rejection due to oversized files.</p>
-    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Common Uses for 100KB Images</h2>
-    <p class="mb-4 leading-relaxed text-stone-400">There are numerous practical applications for images compressed to 100KB or less. <strong class="font-medium text-stone-200">Website optimization</strong> is a primary use case - web developers and content creators use 100KB as a benchmark for hero images, blog post featured images, and gallery thumbnails. Keeping images at or under this size ensures pages load quickly, which improves user experience and search engine rankings. Google has explicitly stated that page speed is a ranking factor, and images are typically the largest contributors to page weight.</p>
-    <p class="mb-4 leading-relaxed text-stone-400"><strong class="font-medium text-stone-200">Email marketing</strong> is another common use case. Marketing emails with images over 100KB each can trigger spam filters or cause slow loading times for recipients. By compressing images to 100KB, you can include visually appealing graphics without deliverability issues. Similarly, <strong class="font-medium text-stone-200">social media managers</strong> often need to compress images before scheduling posts, as some platforms have upload limits or compress images poorly if the original is too large.</p>
-    <p class="mb-4 leading-relaxed text-stone-400"><strong class="font-medium text-stone-200">E-commerce sellers</strong> on platforms like Amazon, eBay, Etsy, and Shopify benefit greatly from compressing product images to around 100KB. These platforms often have file size limits, and faster-loading product pages lead to higher conversion rates. Customers are impatient - if your product images take too long to load, they may leave before making a purchase. Compressed images ensure your listings look professional while loading quickly on both desktop and mobile devices.</p>
-    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">How to Compress an Image to 100KB While Preserving Quality</h2>
-    <p class="mb-4 leading-relaxed text-stone-400">Achieving a 100KB maximum while maintaining quality requires an adaptive approach. The browser tests JPEG quality levels and keeps the highest tested setting below the limit. If quality adjustment alone is insufficient, it reduces pixel dimensions in measured steps and tries again. Original resolution and image complexity still affect the final appearance: detailed photographs generally show more artifacts than simple graphics at the same file size.</p>
-    <p class="mb-4 leading-relaxed text-stone-400">Image dimensions matter. A 4000x3000 pixel photo has far more detail to represent than an 800x600 image at the same file size. To honor the selected maximum, the tool may reduce very large dimensions after trying quality adjustment first. Check whether the destination portal also specifies minimum dimensions before downloading your final file.</p>
+    <h2 class="mb-4 text-2xl font-semibold tracking-tight text-stone-900">Why Compress Images to 100KB?</h2>
+    <p class="mb-4 leading-relaxed text-stone-600">The 100KB file size is one of the most commonly requested targets for image compression. Many websites, online forms, and application portals set 100KB as the maximum allowed file size for uploaded images. This limit strikes a reasonable balance between image quality and file size - large enough to maintain decent visual clarity for most purposes, yet small enough to ensure fast uploads and efficient storage. Whether you're submitting a resume photo, uploading a product image, or sharing pictures on forums, 100KB is often the magic number that meets requirements while preserving acceptable quality.</p>
+    <p class="mb-4 leading-relaxed text-stone-600">Government websites, educational portals, and job application sites frequently require images under 100KB. For example, passport photo uploads for visa applications, profile pictures for professional networking sites, and document scans for online submissions often have this limit. By using our compress image to 100KB tool, you can ensure your images meet these requirements without the frustration of repeated rejection due to oversized files.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-900">Common Uses for 100KB Images</h2>
+    <p class="mb-4 leading-relaxed text-stone-600">There are numerous practical applications for images compressed to 100KB or less. <strong class="font-medium text-stone-700">Website optimization</strong> is a primary use case - web developers and content creators use 100KB as a benchmark for hero images, blog post featured images, and gallery thumbnails. Keeping images at or under this size ensures pages load quickly, which improves user experience and search engine rankings. Google has explicitly stated that page speed is a ranking factor, and images are typically the largest contributors to page weight.</p>
+    <p class="mb-4 leading-relaxed text-stone-600"><strong class="font-medium text-stone-700">Email marketing</strong> is another common use case. Marketing emails with images over 100KB each can trigger spam filters or cause slow loading times for recipients. By compressing images to 100KB, you can include visually appealing graphics without deliverability issues. Similarly, <strong class="font-medium text-stone-700">social media managers</strong> often need to compress images before scheduling posts, as some platforms have upload limits or compress images poorly if the original is too large.</p>
+    <p class="mb-4 leading-relaxed text-stone-600"><strong class="font-medium text-stone-700">E-commerce sellers</strong> on platforms like Amazon, eBay, Etsy, and Shopify benefit greatly from compressing product images to around 100KB. These platforms often have file size limits, and faster-loading product pages lead to higher conversion rates. Customers are impatient - if your product images take too long to load, they may leave before making a purchase. Compressed images ensure your listings look professional while loading quickly on both desktop and mobile devices.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-900">How to Compress an Image to 100KB While Preserving Quality</h2>
+    <p class="mb-4 leading-relaxed text-stone-600">Achieving a 100KB maximum while maintaining quality requires an adaptive approach. The browser tests JPEG quality levels and keeps the highest tested setting below the limit. If quality adjustment alone is insufficient, it reduces pixel dimensions in measured steps and tries again. Original resolution and image complexity still affect the final appearance: detailed photographs generally show more artifacts than simple graphics at the same file size.</p>
+    <p class="mb-4 leading-relaxed text-stone-600">Image dimensions matter. A 4000x3000 pixel photo has far more detail to represent than an 800x600 image at the same file size. To honor the selected maximum, the tool may reduce very large dimensions after trying quality adjustment first. Check whether the destination portal also specifies minimum dimensions before downloading your final file.</p>
   </section>
-  <section class="border-t border-white/10 bg-white/[0.02] py-20">
+  <section class="border-t border-stone-200 bg-white py-20">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <h2 class="mb-10 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">Frequently Asked Questions - 100KB Compression</h2>
-      <div class="divide-y divide-white/10 border-y border-white/10">
+      <div class="divide-y divide-stone-200 border-y border-stone-200">
         <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
+          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-900 transition-colors hover:text-accent-700">
             How to compress image to 100KB?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">Upload a JPG, PNG, or WebP file with 100KB selected. The image is optimized through TinyPNG, then the browser adjusts JPEG quality and dimensions when needed so the result is at or below 100KB.</p>
+            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-600">Upload a JPG, PNG, or WebP file with 100KB selected. The image is optimized through TinyPNG, then the browser adjusts JPEG quality and dimensions when needed so the result is at or below 100KB.</p>
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
+          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-900 transition-colors hover:text-accent-700">
             Which format is best for 100KB images?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">JPEG is generally the most efficient option for photographs. TinyPNG may preserve PNG or WebP when its result already meets the limit; local refinement outputs JPEG for broad compatibility.</p>
+            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-600">JPEG is generally the most efficient option for photographs. TinyPNG may preserve PNG or WebP when its result already meets the limit; local refinement outputs JPEG for broad compatibility.</p>
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
+          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-900 transition-colors hover:text-accent-700">
             Will my image quality be good at 100KB?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">Quality depends on the original dimensions and visual complexity. The tool keeps the highest tested JPEG quality that stays under 100KB and reduces dimensions only when quality adjustment alone is insufficient.</p>
+            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-600">Quality depends on the original dimensions and visual complexity. The tool keeps the highest tested JPEG quality that stays under 100KB and reduces dimensions only when quality adjustment alone is insufficient.</p>
           </div>
         </div>
       </div>

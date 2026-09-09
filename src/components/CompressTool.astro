@@ -11,12 +11,12 @@ const presetTargets = [20, 30, 50, 100, 200];
 
 <div class="compress-tool" data-default-target={defaultTarget}>
   <!-- Target Size Selector -->
-  <div class="mb-6 flex flex-wrap items-center justify-center gap-2">
-    <span class="mr-1 self-center font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Target</span>
+  <div class="mb-5 flex flex-wrap items-center gap-2">
+    <span class="mr-1 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-stone-400">Target</span>
     {presetTargets.map((kb) => (
       <button
         data-target={kb}
-        class="target-btn rounded-full border px-4 py-2 font-mono text-sm font-medium transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97] border-white/10 bg-white/[0.04] text-stone-400 hover:border-accent-400 hover:text-accent-300"
+        class="target-btn inline-flex min-h-[40px] items-center rounded-lg border px-3.5 font-mono text-[13px] font-medium transition duration-200 ease-out border-stone-200 bg-white text-stone-600 hover:border-stone-400 hover:text-stone-900 active:scale-[0.97]"
       >
         {kb}KB
       </button>
@@ -26,14 +26,14 @@ const presetTargets = [20, 30, 50, 100, 200];
         <input
           type="number"
           id="custom-target"
-          placeholder="e.g. 45 KB…"
+          placeholder="Custom KB"
           aria-label="Custom target size in kilobytes"
           autocomplete="off"
           min="1"
           max="5000"
-          class="w-28 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm text-stone-100 placeholder:font-sans placeholder:text-stone-500 transition-colors focus:border-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-400/20"
+          class="inline-flex h-[40px] w-24 items-center rounded-lg border border-stone-200 bg-white px-3 font-mono text-[13px] text-stone-900 placeholder:font-sans placeholder:text-stone-400 transition-colors focus:border-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-600/20"
         />
-        <button id="custom-target-btn" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Set</button>
+        <button id="custom-target-btn" class="inline-flex min-h-[40px] items-center rounded-lg border border-stone-200 bg-white px-3.5 font-mono text-[13px] font-medium text-stone-600 transition duration-200 hover:border-stone-400 hover:text-stone-900 active:scale-[0.97]">Set</button>
       </div>
     )}
   </div>
@@ -41,83 +41,81 @@ const presetTargets = [20, 30, 50, 100, 200];
   <!-- Hidden file input -->
   <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
 
-  <!-- Upload area: double-bezel glass dropzone -->
-  <div class="rounded-[2rem] border border-white/10 bg-white/[0.02] p-2 shadow-soft">
+  <!-- Upload area -->
+  <div class="upload-shell">
     <div
       id="upload-area"
-      class="relative cursor-pointer rounded-[1.625rem] border-2 border-dashed border-white/15 bg-white/[0.03] px-8 py-14 text-center transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-accent-400/60 hover:bg-accent-500/[0.06]"
+      class="relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50/60 px-8 py-14 text-center transition duration-200 ease-out hover:border-accent-500 hover:bg-accent-50/70"
     >
-      <div class="flex flex-col items-center gap-4">
-        <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" id="upload-icon">
-          <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
-          </svg>
-        </span>
-        <div>
-          <p class="text-base font-semibold tracking-tight text-stone-100">Drop your image here</p>
-          <p class="mt-1 text-sm text-stone-500">or click to browse files</p>
-        </div>
-        <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-stone-600">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
+      <span class="flex items-center justify-center rounded-xl bg-accent-100 text-accent-700 transition-transform duration-200 ease-out" id="upload-icon">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
+        </svg>
+      </span>
+      <div>
+        <p class="text-[15px] font-semibold tracking-tight text-stone-900">Drop your image here</p>
+        <p class="mt-1 text-sm text-stone-500">or click to browse files</p>
       </div>
+      <p class="font-mono text-[11px] uppercase tracking-[0.08em] text-stone-400">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
     </div>
   </div>
 
-  <!-- Loading: indeterminate shimmer bar -->
+  <!-- Loading -->
   <div id="loading" class="hidden py-12 text-center" aria-live="polite">
     <div class="mx-auto max-w-sm">
-      <div class="h-1.5 overflow-hidden rounded-full bg-white/10">
-        <div class="shimmer-bar h-full w-1/3 rounded-full bg-accent-400"></div>
+      <div class="h-1.5 overflow-hidden rounded-full bg-stone-200">
+        <div class="shimmer-bar h-full w-1/3 rounded-full bg-accent-600"></div>
       </div>
-      <p id="loading-message" class="mt-5 text-sm font-medium text-stone-300">Preparing compression…</p>
+      <p id="loading-message" class="mt-5 text-sm font-medium text-stone-800">Preparing compression&hellip;</p>
       <p class="mt-1 text-xs text-stone-500">This usually takes a few seconds</p>
     </div>
   </div>
 
   <!-- Results -->
   <div id="results" class="hidden mt-6">
-    <div class="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:p-8">
-      <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div class="rounded-2xl bg-white/[0.04] p-5 text-center ring-1 ring-inset ring-white/5">
-          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Original</p>
-          <p id="original-size" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-stone-200">--</p>
+    <div class="rounded-xl border border-stone-200 bg-white p-5 md:p-6">
+      <div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div class="rounded-lg bg-stone-50 p-4 text-center">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-stone-400">Original</p>
+          <p id="original-size" class="mt-1.5 font-mono text-lg font-semibold tracking-tight text-stone-900">--</p>
         </div>
-        <div class="rounded-2xl bg-white/[0.04] p-5 text-center ring-1 ring-inset ring-white/5">
-          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Compressed</p>
-          <p id="compressed-size" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-accent-300">--</p>
+        <div class="rounded-lg bg-stone-50 p-4 text-center">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-stone-400">Compressed</p>
+          <p id="compressed-size" class="mt-1.5 font-mono text-lg font-semibold tracking-tight text-stone-900">--</p>
         </div>
-        <div class="rounded-2xl bg-accent-500/10 p-5 text-center ring-1 ring-inset ring-accent-500/20">
-          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-accent-400/80">Saved</p>
-          <p id="saved-percent" class="mt-1.5 font-mono text-xl font-semibold tracking-tight text-accent-300">--</p>
+        <div class="rounded-lg bg-accent-50 p-4 text-center">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-accent-700/70">Saved</p>
+          <p id="saved-percent" class="mt-1.5 font-mono text-lg font-semibold tracking-tight text-accent-700">--</p>
         </div>
       </div>
 
       <!-- Image Preview -->
-      <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Original preview</p>
-          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
-            <img id="original-preview" class="h-48 w-full rounded-lg object-contain" alt="Original image preview" />
+          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-stone-400">Original preview</p>
+          <div class="rounded-lg border border-stone-200 bg-stone-50 p-2.5">
+            <img id="original-preview" class="h-44 w-full rounded-md object-contain" alt="Original image preview" />
           </div>
         </div>
         <div>
-          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">Compressed preview</p>
-          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
-            <img id="compressed-preview" class="h-48 w-full rounded-lg object-contain" alt="Compressed image preview" />
+          <p class="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-stone-400">Compressed preview</p>
+          <div class="rounded-lg border border-stone-200 bg-stone-50 p-2.5">
+            <img id="compressed-preview" class="h-44 w-full rounded-md object-contain" alt="Compressed image preview" />
           </div>
         </div>
       </div>
 
-      <div class="flex flex-wrap justify-center gap-3">
-        <a id="download-btn" class="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-sm font-medium text-stone-900 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a id="download-btn" class="group inline-flex cursor-pointer items-center gap-2.5 rounded-full bg-stone-900 py-2 pl-5 pr-1.5 text-sm font-semibold text-white transition duration-200 ease-out hover:bg-stone-700 active:scale-[0.98]">
           Download compressed image
-          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-transform duration-200 ease-out group-hover:translate-y-0.5">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path>
             </svg>
           </span>
         </a>
-        <button id="compress-another" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-stone-300 transition duration-200 hover:border-white/25 hover:bg-white/5 active:scale-[0.98]">
-          <svg class="h-4 w-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+        <button id="compress-another" class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-5 py-2.5 text-sm font-medium text-stone-700 transition duration-200 hover:border-stone-400 hover:text-stone-900 active:scale-[0.98]">
+          <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
           </svg>
           Compress another
@@ -127,25 +125,18 @@ const presetTargets = [20, 30, 50, 100, 200];
   </div>
 
   <!-- Error -->
-  <div id="error" class="hidden mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-300" role="alert"></div>
+  <div id="error" class="hidden mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-800" role="alert"></div>
 </div>
 
 <style>
-  @keyframes shimmer-slide {
-    0% { transform: translateX(-120%); }
-    100% { transform: translateX(420%); }
-  }
-  .shimmer-bar {
-    animation: shimmer-slide 1.4s cubic-bezier(0.32, 0.72, 0, 1) infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .shimmer-bar { animation: none; }
-  }
-
-  #upload-area.is-dragover {
-    border-color: #5cb49e;
-    background-color: rgba(67, 154, 134, 0.1);
-  }
+  .compress-tool { padding: 4px 2px 2px; }
+  #upload-icon { width: 52px; height: 52px; }
+  #upload-area.is-dragover { border-color: var(--accent); background: var(--accent-soft); }
+  .shimmer-bar { animation: shimmer-slide 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+  #results img { background: transparent; }
+  @keyframes shimmer-slide { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
+  @media (hover: hover) { #upload-area:hover #upload-icon { transform: translateY(-2px); } }
+  @media (prefers-reduced-motion: reduce) { .shimmer-bar { animation: none; transform: none; } #upload-area:hover #upload-icon { transform: none; } }
 </style>
 
 <script>
@@ -186,11 +177,11 @@ const presetTargets = [20, 30, 50, 100, 200];
       targetBtns.forEach(btn => {
         const target = parseInt(btn.dataset.target);
         if (target === currentTarget) {
-          btn.classList.add('bg-white', 'text-stone-900', 'border-white');
-          btn.classList.remove('border-white/10', 'bg-white/[0.04]', 'text-stone-400', 'hover:border-accent-400', 'hover:text-accent-300');
+          btn.classList.add('bg-stone-900', 'text-white', 'border-stone-900');
+          btn.classList.remove('border-stone-200', 'bg-white', 'text-stone-600', 'hover:border-stone-400', 'hover:text-stone-900');
         } else {
-          btn.classList.remove('bg-white', 'text-stone-900', 'border-white');
-          btn.classList.add('border-white/10', 'bg-white/[0.04]', 'text-stone-400', 'hover:border-accent-400', 'hover:text-accent-300');
+          btn.classList.remove('bg-stone-900', 'text-white', 'border-stone-900');
+          btn.classList.add('border-stone-200', 'bg-white', 'text-stone-600', 'hover:border-stone-400', 'hover:text-stone-900');
         }
       });
       if (customTargetInput) customTargetInput.value = '';
@@ -224,11 +215,6 @@ const presetTargets = [20, 30, 50, 100, 200];
           body: file
         });
 
-        console.log('Compression response status:', resp.status);
-        console.log('Response headers:', {
-          contentType: resp.headers.get('Content-Type')
-        });
-
         // Handle quota exceeded (429)
         if (resp.status === 429) {
           throw new Error('Daily compression quota exceeded. Try again tomorrow.');
@@ -259,7 +245,6 @@ const presetTargets = [20, 30, 50, 100, 200];
         // Download compressed image
         setLoadingMessage('Finalizing compressed image…');
         const blob = await resp.blob();
-        console.log('Image optimization successful! Size:', blob.size);
 
         return { blob };
       } catch (error) {
@@ -399,7 +384,7 @@ const presetTargets = [20, 30, 50, 100, 200];
 
       originalFileName = file.name.replace(/\.[^/.]+$/, '');
 
-      uploadArea.closest('.rounded-\\[2rem\\]').classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.add('hidden');
       results.classList.add('hidden');
       error.classList.add('hidden');
       loading.classList.remove('hidden');
@@ -438,7 +423,7 @@ const presetTargets = [20, 30, 50, 100, 200];
         results.classList.remove('hidden');
       } catch (err) {
         loading.classList.add('hidden');
-        uploadArea.closest('.rounded-\\[2rem\\]').classList.remove('hidden');
+        tool.querySelector('.upload-shell').classList.remove('hidden');
         showError(err instanceof Error ? err.message : 'Failed to compress image. Please try a different image.');
         console.error(err);
       }
@@ -508,7 +493,7 @@ const presetTargets = [20, 30, 50, 100, 200];
     compressAnotherBtn.addEventListener('click', () => {
       clearPreviewUrls();
       results.classList.add('hidden');
-      uploadArea.closest('.rounded-\\[2rem\\]').classList.remove('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
       setLoadingMessage('Compressing your image…');
     });
 

@@ -4,34 +4,34 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Geist', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
-        mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['Outfit', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
-        // Desaturated mint-teal accent — one accent for the whole dark interface.
+        // Single deep-green accent, calibrated for a warm paper-light interface.
         accent: {
-          50: '#eff9f6',
-          100: '#d7f0e8',
-          200: '#b0e1d3',
-          300: '#84cdb9',
-          400: '#5cb49e',
-          500: '#439a86',
-          600: '#377d6e',
-          700: '#2f6459',
-          800: '#28514a',
-          900: '#22433e',
+          50: '#f0f6f2',
+          100: '#dcebe2',
+          200: '#bcd7c8',
+          300: '#93bda7',
+          400: '#679f83',
+          500: '#4a8268',
+          600: '#386853',
+          700: '#2e5443',
+          800: '#284538',
+          900: '#223a30',
         },
       },
       maxWidth: {
         '8xl': '88rem',
       },
       boxShadow: {
-        // On dark, depth comes from near-black falloff plus hairlines, not gray shadows.
-        soft: '0 0 0 1px rgba(255,255,255,0.03), 0 16px 40px -20px rgba(0,0,0,0.7)',
-        lift: '0 0 0 1px rgba(255,255,255,0.06), 0 24px 60px -24px rgba(0,0,0,0.8)',
+        // Light theme: soft warm falloff, never gray-black.
+        soft: '0 1px 2px rgba(28,25,23,0.04), 0 12px 32px -16px rgba(28,25,23,0.14)',
+        lift: '0 2px 4px rgba(28,25,23,0.05), 0 24px 48px -20px rgba(28,25,23,0.2)',
       },
       letterSpacing: {
-        tightest: '-0.045em',
+        tightest: '-0.035em',
       },
     },
   },

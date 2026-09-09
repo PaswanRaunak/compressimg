@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CompressTool from '../components/CompressTool.astro';
 const title = 'Compress Image to 50KB Online - Free | CompressImg';
-const description = 'Compress JPG, PNG, and WebP images to 50KB or less for job applications, passport photos, and small uploads.';
+const description = 'Compress JPG, PNG and WebP images to 50KB or less online — free, no signup. Made for job applications, passport photos and portals with small file limits.';
 const faqItems = [
   {
     question: 'How to compress image to 50KB?',
@@ -15,56 +15,56 @@ const faqItems = [
 ];
 ---
 <Layout title={title} description={description} canonical="/compress-image-to-50kb" schemaType="WebApplication" faqItems={faqItems}>
-      <section class="border-b border-white/10 py-16 md:py-20">
+      <section class="border-b border-stone-200 py-16 md:py-20">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <p class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-400">
-        <span class="h-1.5 w-1.5 rounded-full bg-accent-400"></span>
+      <p class="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-100 px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-stone-600">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent-500"></span>
         Compress to 50KB
       </p>
-      <h1 class="mt-6 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-50 md:text-5xl">Compress image to <span class="text-accent-300">50KB</span> online - free</h1>
-      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">Reduce your image to 50KB or less. Ideal for small form uploads, thumbnails, and quick sharing. Supports JPG, PNG, and WebP formats.</p>
+      <h1 class="mt-6 text-4xl font-semibold leading-[1.08] tracking-tightest text-stone-900 md:text-5xl">Compress image to <span class="text-accent-700">50KB</span> online - free</h1>
+      <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-stone-600 md:text-lg">Reduce your image to 50KB or less. Ideal for small form uploads, thumbnails, and quick sharing. Supports JPG, PNG, and WebP formats.</p>
     </div>
   </section>
   <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 mb-12">
     <CompressTool defaultTarget={50} showCustomTarget={true} />
   </section>
   <section class="mx-auto max-w-3xl px-4 pb-20 sm:px-6 lg:px-8">
-    <h2 class="mb-5 text-base font-semibold tracking-tight text-stone-100">Other compression sizes</h2>
+    <h2 class="mb-5 text-base font-semibold tracking-tight text-stone-900">Other compression sizes</h2>
     <div class="flex flex-wrap justify-center gap-3">
-      <a href="/compress-image-to-20kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 20KB</a>
-      <a href="/compress-image-to-30kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 30KB</a>
-      <a href="/compress-image-to-100kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 100KB</a>
-      <a href="/compress-image-to-200kb" class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-mono text-sm font-medium text-stone-400 transition duration-200 hover:border-accent-400 hover:text-accent-300 active:scale-[0.97]">Compress to 200KB</a>
+      <a href="/compress-image-to-20kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 20KB</a>
+      <a href="/compress-image-to-30kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 30KB</a>
+      <a href="/compress-image-to-100kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 100KB</a>
+      <a href="/compress-image-to-200kb" class="rounded-full border border-stone-200 bg-white px-4 py-2 font-mono text-sm font-medium text-stone-600 transition duration-200 hover:border-accent-600 hover:text-accent-700 active:scale-[0.97]">Compress to 200KB</a>
     </div>
   </section>
   <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
-    <h2 class="mb-4 text-2xl font-semibold tracking-tight text-stone-100">Why Compress Images to 50KB?</h2>
-    <p class="mb-4 leading-relaxed text-stone-400">A 50KB file size is a common requirement for many online forms, application portals, and websites that need to limit upload sizes for storage efficiency. Government forms, job applications, and document submission portals frequently set 50KB as the maximum file size for uploaded photographs. This limit ensures their servers don't get overwhelmed with large files while still allowing reasonably clear images for identification and verification purposes.</p>
-    <p class="mb-4 leading-relaxed text-stone-400">Thumbnails and preview images are another excellent use case for 50KB compression. When displaying galleries or lists of images, smaller thumbnails load faster and use less bandwidth. A 50KB thumbnail is typically sufficient for a clear preview while keeping page load times minimal. Social media platforms, content management systems, and e-commerce sites all benefit from using small, optimized thumbnails that load instantly.</p>
-    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-100">Best Practices for 50KB Image Compression</h2>
-    <p class="mb-4 leading-relaxed text-stone-400">To get the best quality when compressing to 50KB, start with the highest quality original image available. The compression algorithm works by reducing quality to meet the target size, so starting with more data yields better results. Images with simpler compositions - less fine detail, fewer colors, smoother gradients - will compress to 50KB with better visual quality than highly detailed photographs. If your image contains text or sharp edges, consider whether 50KB will provide sufficient clarity, as compression artifacts can blur fine details.</p>
-    <p class="mb-4 leading-relaxed text-stone-400">For images that need to look sharp at 50KB, consider reducing the dimensions before compression. An image that is 600x400 pixels will look much better at 50KB than one that is 2000x1500 pixels. If your use case allows for smaller display dimensions, resizing your image before using our compressor will significantly improve the final quality. Our tool maintains your original dimensions and focuses on quality optimization to hit the 50KB target.</p>
+    <h2 class="mb-4 text-2xl font-semibold tracking-tight text-stone-900">Why Compress Images to 50KB?</h2>
+    <p class="mb-4 leading-relaxed text-stone-600">A 50KB file size is a common requirement for many online forms, application portals, and websites that need to limit upload sizes for storage efficiency. Government forms, job applications, and document submission portals frequently set 50KB as the maximum file size for uploaded photographs. This limit ensures their servers don't get overwhelmed with large files while still allowing reasonably clear images for identification and verification purposes.</p>
+    <p class="mb-4 leading-relaxed text-stone-600">Thumbnails and preview images are another excellent use case for 50KB compression. When displaying galleries or lists of images, smaller thumbnails load faster and use less bandwidth. A 50KB thumbnail is typically sufficient for a clear preview while keeping page load times minimal. Social media platforms, content management systems, and e-commerce sites all benefit from using small, optimized thumbnails that load instantly.</p>
+    <h2 class="mb-4 mt-12 text-2xl font-semibold tracking-tight text-stone-900">Best Practices for 50KB Image Compression</h2>
+    <p class="mb-4 leading-relaxed text-stone-600">To get the best quality when compressing to 50KB, start with the highest quality original image available. The compression algorithm works by reducing quality to meet the target size, so starting with more data yields better results. Images with simpler compositions - less fine detail, fewer colors, smoother gradients - will compress to 50KB with better visual quality than highly detailed photographs. If your image contains text or sharp edges, consider whether 50KB will provide sufficient clarity, as compression artifacts can blur fine details.</p>
+    <p class="mb-4 leading-relaxed text-stone-600">For images that need to look sharp at 50KB, consider reducing the dimensions before compression. An image that is 600x400 pixels will look much better at 50KB than one that is 2000x1500 pixels. If your use case allows for smaller display dimensions, resizing your image before using our compressor will significantly improve the final quality. Our tool maintains your original dimensions and focuses on quality optimization to hit the 50KB target.</p>
   </section>
-  <section class="border-t border-white/10 bg-white/[0.02] py-20">
+  <section class="border-t border-stone-200 bg-white py-20">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <h2 class="mb-10 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">Frequently Asked Questions - 50KB Compression</h2>
-      <div class="divide-y divide-white/10 border-y border-white/10">
+      <div class="divide-y divide-stone-200 border-y border-stone-200">
         <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
+          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-900 transition-colors hover:text-accent-700">
             How to compress image to 50KB?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">Use the tool above with 50KB selected. After optimization, the browser adjusts JPEG quality and dimensions when necessary so the result is at or below 50KB.</p>
+            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-600">Use the tool above with 50KB selected. After optimization, the browser adjusts JPEG quality and dimensions when necessary so the result is at or below 50KB.</p>
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
+          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-900 transition-colors hover:text-accent-700">
             Is 50KB enough for a passport photo?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">Many government portals accept passport photos around 50KB, while others require different limits or dimensions. Check the exact portal requirements before submitting.</p>
+            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-600">Many government portals accept passport photos around 50KB, while others require different limits or dimensions. Check the exact portal requirements before submitting.</p>
           </div>
         </div>
       </div>

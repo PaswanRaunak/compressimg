@@ -22,3 +22,7 @@ pnpm-debug.log*
 # cloudflare local state
 .wrangler/
 .rocketride/
+
+# local AI tool configs
+.claude/
+.github/

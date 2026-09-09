@@ -1,0 +1,19 @@
+# CompressImg
+
+> Free online tool that compresses JPG, PNG and WebP images to an exact target file size — 20KB, 30KB, 50KB, 100KB, 200KB or any custom limit. No account, no watermark; images are optimized through TinyPNG with local browser refinement to guarantee the size limit is met.
+
+Main tool: https://imgcompressortool.pages.dev/
+
+## Compress to a specific size
+
+- [Compress image to 20KB](https://imgcompressortool.pages.dev/compress-image-to-20kb): strict government forms, passport and ID portals
+- [Compress image to 30KB](https://imgcompressortool.pages.dev/compress-image-to-30kb): profile pictures, ID photos, tight upload limits
+- [Compress image to 50KB](https://imgcompressortool.pages.dev/compress-image-to-50kb): job applications, passport photos, small uploads
+- [Compress image to 100KB](https://imgcompressortool.pages.dev/compress-image-to-100kb): web forms, email attachments, blog thumbnails
+- [Compress image to 200KB](https://imgcompressortool.pages.dev/compress-image-to-200kb): blog images, product photos, faster page loads
+
+## Company
+
+- [About](https://imgcompressortool.pages.dev/about): how the compressor works and where images are processed
+- [Privacy policy](https://imgcompressortool.pages.dev/privacy-policy): what is (and is not) stored — the Worker keeps no image copy
+- [Contact](https://imgcompressortool.pages.dev/contact)

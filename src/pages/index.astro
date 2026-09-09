@@ -2,395 +2,158 @@
 import Layout from '../layouts/Layout.astro';
 import CompressTool from '../components/CompressTool.astro';
 
-const title = 'Compress Image Online - Free & Fast | CompressImg';
-const description = 'Compress JPG, PNG, and WebP images to a selected maximum size. Images are optimized through TinyPNG, with local browser refinement when needed.';
-
-const steps = [
-  {
-    title: 'Upload image',
-    body: 'Drag & drop or click to select your JPG, PNG, or WebP file.',
-  },
-  {
-    title: 'Choose target size',
-    body: 'Select 20KB, 50KB, 100KB, 200KB or enter a custom size.',
-  },
-  {
-    title: 'Compress',
-    body: 'The tool automatically finds the best quality for your target size.',
-  },
-  {
-    title: 'Download',
-    body: 'Get your compressed image instantly. No waiting, no watermarks.',
-  },
-];
-
-const features = [
-  {
-    title: 'Private and secure',
-    body: 'Our Worker keeps no image copy. TinyPNG may temporarily retain submitted content for up to 48 hours under its terms.',
-  },
-  {
-    title: 'Fast',
-    body: 'Compression finishes in seconds with an optimized Canvas-based processing engine.',
-  },
-  {
-    title: 'Free',
-    body: 'No hidden fees or subscriptions. TinyPNG optimization has a fair-use quota, with local compression as a fallback.',
-  },
-];
-
-const sizes = [
-  { kb: 20 },
-  { kb: 30 },
-  { kb: 50 },
-  { kb: 100 },
-  { kb: 200 },
+const title = 'Compress Images to Exact Sizes Online | CompressImg';
+const description = 'Compress JPG, PNG, and WebP images to an exact target size. Create free, optimized files for forms, email, and web uploads — no signup required.';
+const sizes = [20, 30, 50, 100, 200];
+const faqItems = [
+  { question: 'Which image formats can I compress?', answer: 'CompressImg accepts JPG, PNG, and WebP files up to 20MB.' },
+  { question: 'Does CompressImg keep my images?', answer: 'The Cloudflare Worker processes image bytes in memory and does not keep an image copy. TinyPNG may retain submitted content temporarily under its terms.' },
+  { question: 'Can I set a custom file size?', answer: 'Yes. Use the custom target input to enter any target between 1KB and 5000KB.' }
 ];
 ---
 
-<Layout
-  title={title}
-  description={description}
-  schemaType="WebApplication"
->
-  <!-- Hero: asymmetric split -->
-  <section class="relative overflow-hidden">
-    <div class="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 md:pt-24 lg:px-8">
-      <div class="grid grid-cols-1 items-center gap-14 lg:grid-cols-12">
-        <div class="lg:col-span-7">
-          <p class="reveal inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-stone-400">
-            <span class="h-1.5 w-1.5 rounded-full bg-accent-400"></span>
-            Free image compressor
-          </p>
-          <h1 class="reveal reveal-1 mt-6 max-w-xl text-4xl font-semibold leading-[1.05] tracking-tightest text-stone-50 md:text-6xl">
-            Compress images to an exact size, <span class="text-accent-300">free and fast</span>
-          </h1>
-          <p class="reveal reveal-2 mt-6 max-w-[60ch] text-base leading-relaxed text-stone-400 md:text-lg">
-            Reduce JPG, PNG, and WebP files to a target you set &mdash; 20KB for forms, 100KB for the web. Images are sent over HTTPS through our Cloudflare Worker to TinyPNG. Our Worker keeps no image copy; TinyPNG may retain submitted content for up to 48 hours.
-          </p>
-          <div class="reveal reveal-3 mt-8 flex flex-wrap items-center gap-3">
-            <a href="#tool" class="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-stone-900 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-200 active:scale-[0.98]">
-              Start compressing
-              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-px">
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H8m9 0v9"></path>
-                </svg>
-              </span>
-            </a>
-            <a href="#how-it-works" class="inline-flex items-center rounded-full px-5 py-3 text-sm font-medium text-stone-400 transition-colors hover:text-white">
-              How it works
-            </a>
-          </div>
+<Layout title={title} description={description} schemaType="WebApplication" faqItems={faqItems}>
+  <section class="hero" id="compress">
+    <div class="hero__intro">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Free image compressor</p>
+      <h1>Compress any image to an <em>exact size</em>.</h1>
+      <p class="hero__summary">Set the limit, drop in an image, and download a file that stays under it. Built for form uploads, email attachments, product listings, and fast pages.</p>
+      <div class="hero__actions">
+        <span class="hero__hint">Pick a target size in the panel to start &mdash; no account needed.</span>
+      </div>
+      <dl class="hero__facts" aria-label="Compressor capabilities">
+        <div><dt>Formats</dt><dd>JPG, PNG, WebP</dd></div>
+        <div><dt>Max upload</dt><dd>20MB</dd></div>
+        <div><dt>Account</dt><dd>Not required</dd></div>
+      </dl>
+    </div>
+    <div class="hero__tool" aria-label="Image compression workspace">
+      <div class="tool-card">
+        <div class="tool-card__head">
+          <span>Compression bench</span>
+          <span class="tool-card__badge" aria-hidden="true">Free</span>
         </div>
-
-        <!-- Compression receipt: dark glass card -->
-        <div class="reveal reveal-2 lg:col-span-5">
-          <div class="rounded-[2rem] border border-white/10 bg-white/[0.02] p-2 shadow-soft">
-            <div class="rounded-[1.625rem] border border-white/10 bg-white/[0.04] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-              <div class="flex items-center justify-between">
-                <p class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-stone-500">Compression result</p>
-                <span class="flex items-center gap-1.5 rounded-full bg-accent-500/10 px-2.5 py-1 text-[11px] font-medium text-accent-300 ring-1 ring-inset ring-accent-500/20">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
-                    <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-400"></span>
-                  </span>
-                  Done
-                </span>
-              </div>
-              <div class="mt-6 flex items-end justify-between gap-4">
-                <div>
-                  <p class="font-mono text-sm text-stone-600 line-through decoration-stone-600">4.21&nbsp;MB</p>
-                  <p class="mt-1 font-mono text-4xl font-semibold tracking-tight text-stone-50">96.4&nbsp;KB</p>
-                </div>
-                <div class="text-right">
-                  <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-stone-500">Saved</p>
-                  <p class="mt-1 font-mono text-2xl font-semibold text-accent-300">97.7%</p>
-                </div>
-              </div>
-              <div class="mt-6 h-1.5 overflow-hidden rounded-full bg-white/10">
-                <div class="h-full w-[2.3%] rounded-full bg-accent-400"></div>
-              </div>
-              <div class="mt-6 divide-y divide-white/5 border-t border-white/5">
-                <div class="flex items-center justify-between py-2.5 text-sm">
-                  <span class="text-stone-500">Format</span>
-                  <span class="font-mono font-medium text-stone-200">JPEG</span>
-                </div>
-                <div class="flex items-center justify-between py-2.5 text-sm">
-                  <span class="text-stone-500">Quality found</span>
-                  <span class="font-mono font-medium text-stone-200">82</span>
-                </div>
-                <div class="flex items-center justify-between py-2.5 text-sm">
-                  <span class="text-stone-500">Target limit</span>
-                  <span class="font-mono font-medium text-stone-200">100&nbsp;KB</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CompressTool defaultTarget={100} showCustomTarget={true} />
       </div>
     </div>
   </section>
 
-  <!-- Tool -->
-  <section id="tool" class="mx-auto max-w-3xl scroll-mt-28 px-4 pb-24 sm:px-6 lg:px-8">
-    <CompressTool defaultTarget={100} showCustomTarget={true} />
+  <section id="process" class="process">
+    <div class="process__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>How it works</p>
+      <h2>Four steps, nothing hidden.</h2>
+    </div>
+    <ol class="process__list">
+      <li><span class="process__num">01</span><div><h3>Set the ceiling</h3><p>Choose a preset or enter the exact limit the destination requires.</p></div></li>
+      <li><span class="process__num">02</span><div><h3>Drop in one image</h3><p>The tool checks the format and size before any work begins.</p></div></li>
+      <li><span class="process__num">03</span><div><h3>Keep the useful detail</h3><p>TinyPNG optimizes first; quality and dimensions are adjusted locally only when needed.</p></div></li>
+      <li><span class="process__num">04</span><div><h3>Download with proof</h3><p>Compare before and after sizes, then take the compressed file.</p></div></li>
+    </ol>
   </section>
 
-  <!-- How it works: numbered steps on a hairline -->
-  <section id="how-it-works" class="scroll-mt-28 border-y border-white/10 bg-white/[0.02] py-24">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold tracking-tight text-stone-50 md:text-4xl">How it works</h2>
-      <p class="mt-3 max-w-[55ch] text-base leading-relaxed text-stone-400">Four steps, no account, no watermark on the output.</p>
-      <ol class="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-4">
-        {steps.map((step, i) => (
-          <li class="relative border-t border-white/10 pt-6">
-            <span class="absolute -top-[5px] left-0 h-2.5 w-2.5 rounded-full bg-accent-400" aria-hidden="true"></span>
-            <p class="font-mono text-xs font-medium tracking-[0.18em] text-accent-400">0{i + 1}</p>
-            <h3 class="mt-3 text-base font-semibold tracking-tight text-stone-100">{step.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-stone-400">{step.body}</p>
-          </li>
-        ))}
-      </ol>
+  <section class="targets" aria-labelledby="targets-title">
+    <div class="targets__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Common limits</p>
+      <h2 id="targets-title">Start from the size you were given.</h2>
+    </div>
+    <div class="targets__grid">
+      {sizes.map((size) => <a href={`/compress-image-to-${size}kb`}><strong>{size}<small>KB</small></strong><span>Compress to {size}KB</span></a>)}
     </div>
   </section>
 
-  <!-- Features: asymmetric bento -->
-  <section class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-5">
-      <div class="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors duration-300 hover:border-white/20 md:col-span-3 md:p-10">
-        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-500/10 text-accent-300 ring-1 ring-inset ring-accent-500/20">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
-          </svg>
-        </div>
-        <h3 class="mt-6 text-xl font-semibold tracking-tight text-stone-100">{features[0].title}</h3>
-        <p class="mt-3 max-w-[52ch] text-sm leading-relaxed text-stone-400 md:text-base">{features[0].body}</p>
-      </div>
-      <div class="grid grid-cols-1 gap-5 md:col-span-2">
-        <div class="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors duration-300 hover:border-white/20">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-stone-300 ring-1 ring-inset ring-white/10">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path>
-            </svg>
-          </div>
-          <h3 class="mt-5 text-lg font-semibold tracking-tight text-stone-100">{features[1].title}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-stone-400">{features[1].body}</p>
-        </div>
-        <div class="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors duration-300 hover:border-white/20">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-stone-300 ring-1 ring-inset ring-white/10">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"></path>
-            </svg>
-          </div>
-          <h3 class="mt-5 text-lg font-semibold tracking-tight text-stone-100">{features[2].title}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-stone-400">{features[2].body}</p>
-        </div>
-      </div>
+  <section class="details">
+    <article>
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Privacy</p>
+      <h2>Compression without the vague parts.</h2>
+      <p>Images travel over HTTPS to a Cloudflare Worker and on to TinyPNG for perceptual optimization. The Worker processes bytes in memory and keeps no image copy. If a result still exceeds your limit, the browser re-encodes it locally and adjusts dimensions only as needed.</p>
+      <a class="arrow-link" href="/privacy-policy">Read the privacy details</a>
+    </article>
+    <aside class="details__note">
+      <p>Quality depends on the source image and the target you choose.</p>
+      <strong>For the best result, choose the largest limit your destination accepts.</strong>
+    </aside>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="faq__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="faq-title">Useful details before you start.</h2>
+    </div>
+    <div class="faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
     </div>
   </section>
 
-  <!-- Target size links: mono tiles -->
-  <section class="border-y border-white/10 bg-accent-500/[0.03] py-24">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold tracking-tight text-stone-50 md:text-4xl">Compress to a specific size</h2>
-      <p class="mt-3 max-w-[60ch] text-base leading-relaxed text-stone-400">Pick a target and start compressing instantly. Sized for forms, websites, and email attachments.</p>
-      <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-        {sizes.map(({ kb }) => (
-          <a
-            href={`/compress-image-to-${kb}kb`}
-            class="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-accent-400/50 hover:shadow-lift active:scale-[0.98]"
-          >
-            <span class="block font-mono text-2xl font-semibold tracking-tight text-stone-50 transition-colors group-hover:text-accent-300">{kb}<span class="text-base text-stone-500">KB</span></span>
-            <span class="mt-2 block text-xs text-stone-500">Compress to {kb}KB</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
 
-  <!-- SEO content -->
-  <section class="mx-auto max-w-3xl px-4 py-24 sm:px-6 lg:px-8">
-    <h2 class="text-2xl font-semibold tracking-tight text-stone-100 md:text-3xl">Free online image compression tool</h2>
-    <p class="mt-6 leading-relaxed text-stone-400">
-      In today's digital world, image file size matters more than ever. Whether you're building a website,
-      submitting an online form, or sending images via email, large file sizes can cause problems. Slow
-      loading websites frustrate visitors, email attachments bounce back, and storage space runs out quickly.
-      That's where CompressImg comes in - a free online image compression tool that helps
-      you reduce image file sizes without sacrificing noticeable quality.
-    </p>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      Our online image compressor supports the most popular formats including <strong class="font-medium text-stone-200">JPEG/JPG</strong>,
-      <strong class="font-medium text-stone-200">PNG</strong>, and <strong class="font-medium text-stone-200">WebP</strong>. The tool is designed with simplicity in mind -
-      no technical knowledge required. Simply upload your image, choose your desired target size (20KB, 30KB,
-      50KB, 100KB, 200KB, or any custom size), and let our tool do the rest. The compression algorithm
-      automatically adjusts quality settings to achieve your target file size while maintaining the best
-      possible visual quality.
-    </p>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      Images are sent over HTTPS through a Cloudflare Worker to TinyPNG for perceptual optimization. The Worker processes each request in memory and keeps no image copy. Under TinyPNG's terms, submitted content may be stored temporarily for up to 48 hours. If further reduction is needed, a Canvas re-encode runs locally in your browser.
-    </p>
-    <h2 class="mt-12 text-xl font-semibold tracking-tight text-stone-100 md:text-2xl">How does image compression work?</h2>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      Image compression works by reducing the amount of data required to represent an image. There are
-      two main types: <strong class="font-medium text-stone-200">lossy compression</strong> and <strong class="font-medium text-stone-200">lossless compression</strong>.
-      Lossy compression, which is what most online tools use, reduces file size by permanently eliminating
-      certain information, especially data that the human eye is less likely to notice. JPEG is the most
-      common lossy format. Lossless compression, used by formats like PNG, reduces file size without
-      losing any quality, though the size reduction is typically smaller.
-    </p>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      CompressImg uses a two-stage pipeline: images are first sent to TinyPNG through our HTTPS Worker for perceptual optimization. If that result is still above your selected limit, the browser iteratively adjusts JPEG quality and pixel dimensions until the result is at or below the target.
-    </p>
-    <h2 class="mt-12 text-xl font-semibold tracking-tight text-stone-100 md:text-2xl">Use cases for image compression</h2>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      There are countless scenarios where you might need to compress an image to a specific file size.
-      Government websites and job portals often require passport photos or documents under 20KB or 50KB.
-      E-commerce platforms may have listing image size limits. Social media platforms and messaging apps
-      often compress images anyway, so pre-compressing gives you control over the quality. Web developers
-      use image compression to improve page load speeds and SEO rankings. Email services typically have
-      attachment limits, making image compression essential for sharing photos.
-    </p>
-    <p class="mt-4 leading-relaxed text-stone-400">
-      With CompressImg, you can handle all these use cases and more. The ability to set custom target
-      sizes means you're not limited to preset options. Whether you need a tiny 20KB thumbnail or a
-      200KB product image, our tool adapts to your needs on any modern device with an internet connection.
-    </p>
-  </section>
+    .hero { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .hero__intro h1 { max-width: 13ch; margin-top: 20px; font-size: clamp(40px, 5.6vw, 66px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.02; }
+    .hero__intro h1 em { color: var(--accent-strong); font-style: normal; }
+    .hero__summary { max-width: 50ch; margin: 22px 0 0; color: var(--muted); font-size: 17.5px; line-height: 1.65; }
+    .hero__hint { display: inline-block; margin-top: 24px; color: var(--muted); font-size: 14.5px; }
+    .hero__facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 40px; margin: 34px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+    .hero__facts dt { color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; }
+    .hero__facts dd { margin: 6px 0 0; font-size: 14.5px; font-weight: 600; }
+    .tool-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 24px 56px -28px rgba(28,25,23,0.22); }
+    .tool-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
 
-  <!-- FAQ -->
-  <section class="border-t border-white/10 bg-white/[0.02] py-24">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold tracking-tight text-stone-50 md:text-4xl">Frequently asked questions</h2>
-      <div class="mt-12 divide-y divide-white/10 border-y border-white/10">
-        <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
-            How do I compress an image without losing quality?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">
-              Completely lossless compression is only possible with formats like PNG. For significant size
-              reductions, some quality loss is inevitable. However, our tool minimizes visible quality loss
-              by using smart quality iteration - it starts with high quality and only reduces as much as
-              needed to hit your target size. For best results, start with a high-resolution original image
-              and choose the largest target size that meets your requirements.
-            </p>
-          </div>
-        </div>
+    .process { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .process h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .process__list { display: grid; gap: 0 56px; padding: 0; margin: 44px 0 0; list-style: none; }
+    .process__list li { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 26px 0; border-top: 1px solid var(--line); }
+    .process__num { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; padding-top: 4px; }
+    .process__list h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .process__list p { max-width: 44ch; margin: 7px 0 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
 
-        <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
-            What is the best free image compressor online?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">
-              The best free image compressor depends on your needs. CompressImg requires no registration,
-              supports JPG, PNG, and WebP, and offers customizable maximum sizes. Images are sent through
-              our HTTPS Worker to TinyPNG, with a local Canvas fallback when the API is unavailable.
-            </p>
-          </div>
-        </div>
+    .targets { display: grid; gap: 36px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .targets h2 { max-width: 16ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .targets__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .targets__grid a { display: flex; flex-direction: column; gap: 26px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+    .targets__grid a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+    .targets__grid strong { color: var(--ink); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+    .targets__grid strong small { margin-left: 2px; color: var(--accent-strong); font-size: 15px; font-weight: 600; }
+    .targets__grid span { color: var(--muted); font-size: 13px; }
 
-        <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
-            How to reduce image file size for email?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">
-              Most email services have attachment size limits. To reduce image file size for email, use
-              CompressImg to compress your images before attaching them. For photos, 100KB per image is
-              usually a good balance of quality and size. For thumbnails or small inline images, 50KB
-              or even 20KB works well.
-            </p>
-          </div>
-        </div>
+    .details { display: grid; gap: 40px; align-items: end; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .details h2 { max-width: 15ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .details article > p:not(.kicker) { max-width: 56ch; margin: 20px 0 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
+    .arrow-link { display: inline-block; margin-top: 20px; color: var(--accent-strong); font-weight: 600; text-decoration: none; border-bottom: 2px solid #bcd7c8; padding-bottom: 2px; transition: border-color 160ms ease; }
+    .arrow-link:hover { border-color: var(--accent-strong); }
+    .details__note { padding: 26px; border-radius: 16px; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-soft); }
+    .details__note p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+    .details__note strong { display: block; margin-top: 12px; color: var(--accent-strong); font-size: 15.5px; line-height: 1.45; letter-spacing: -0.01em; }
 
-        <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
-            What is the difference between lossy and lossless compression?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">
-              <strong class="font-medium text-stone-200">Lossy compression</strong> reduces file size by permanently removing some image data.
-              JPEG uses lossy compression, which is why it can achieve such small file sizes.
-              <strong class="font-medium text-stone-200">Lossless compression</strong> reduces file size without losing any data. PNG and GIF
-              use lossless compression. Our tool outputs JPEG format for best compression ratios.
-            </p>
-          </div>
-        </div>
+    .faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 96px; border-top: 1px solid var(--line); }
+    .faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .faq__list { border-top: 1px solid var(--line); }
+    .faq__list details { border-bottom: 1px solid var(--line); }
+    .faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .faq__list summary:hover { color: var(--accent-strong); }
+    .faq__list summary::-webkit-details-marker { display: none; }
+    .faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
 
-        <div class="faq-item">
-          <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-medium text-stone-100 transition-colors hover:text-accent-300">
-            How to compress PNG images online?
-            <svg class="faq-icon h-4 w-4 flex-shrink-0 text-stone-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div class="faq-content hidden pb-5">
-            <p class="max-w-[65ch] text-sm leading-relaxed text-stone-400">
-              You can compress PNG images using CompressImg by simply uploading your PNG file. Our tool
-              will process it and output a compressed image. For maximum file size reduction, the output
-              will be in JPEG format. If you need to keep transparency, you'll need a tool that preserves
-              PNG format. However, for most use cases, converting PNG to compressed JPEG works great.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</Layout>
-
-<script>
-  document.querySelectorAll('.faq-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const content = btn.nextElementSibling;
-      const icon = btn.querySelector('.faq-icon');
-      content.classList.toggle('hidden');
-      icon.classList.toggle('rotate-180');
-    });
-  });
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I compress an image without losing quality?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Completely lossless compression is only possible with formats like PNG. For significant size reductions, some quality loss is inevitable. CompressImg minimizes visible quality loss by iterating quality levels, starting high and reducing only as needed to hit your target size. For best results, start with a high-resolution original and choose the largest target size that meets your requirements."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the best free image compressor online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "CompressImg is a free tool that requires no registration. It sends images through an HTTPS Worker to TinyPNG for perceptual optimization and uses a local Canvas fallback to meet selected maximum sizes."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How to reduce image file size for email?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Most email services have attachment limits. Use CompressImg to compress images before attaching them. For photos, 100KB per image balances quality and size; for thumbnails, 50KB or 20KB may be sufficient."
-      }
+    @media (min-width: 56rem) {
+      .hero { grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.1fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+      .process__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .process__list li:nth-child(2) { border-top: none; }
+      .targets { grid-template-columns: minmax(260px, 0.62fr) 1fr; align-items: end; }
+      .details { grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr); }
+      .faq { grid-template-columns: minmax(260px, 0.55fr) 1fr; }
     }
-  ]
-}
-</script>
+    @media (max-width: 56rem) {
+      .targets__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero__facts { gap: 28px; }
+    }
+    @media (max-width: 30rem) {
+      .targets__grid { grid-template-columns: 1fr; }
+      .hero__facts { grid-template-columns: 1fr 1fr; gap: 20px; }
+    }
+  </style>
+</Layout>

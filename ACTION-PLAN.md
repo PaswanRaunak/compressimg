@@ -62,6 +62,14 @@ Homepage Flesch 49.2 → target 55+. Shorten sentences over ~20 words in the FAQ
 ### A9 · Measure CWV after re-deploy · [F9]
 `python ~/.agents/skills/seo/scripts/pagespeed.py https://imgcompressortool.pages.dev --strategy mobile` (add `PAGESPEED_API_KEY` to `~/.agentic-seo/.env` to avoid rate limits). Re-run the full audit after deploying the redesign so on-page checks match production.
 
-## Verified pass items (no action)
+## 4. Growth roadmap (post-deploy, added 2026-09-09)
 
-robots.txt + sitemap declaration, internal linking (10/10 pages, no orphans), 0 broken links, HTTPS redirect chain, OG/Twitter completeness, unique titles/H1s.
+Competitor topic gap analysis (vs tinypng.com — 516 topics/35 pages, iloveimg.com — 239 topics/40 pages; ours: 46 topics/13 pages) surfaced these expansion priorities, ordered by traffic potential for a free-tool brand:
+
+1. **Format-conversion pages** — the single biggest gap. Both competitors rank heavily for "convert png to webp", "webp converter", "convert to jpg". Build `/convert-png-to-jpg`, `/convert-png-to-webp`, `/convert-jpg-to-webp` etc. using the same landing-page template as the size pages (the browser canvas already re-encodes to JPEG/WebP-capable formats, so the tool work is small).
+2. **FAQ depth on landing pages** — competitors carry much richer FAQ sections; expand each size page from 3 to 6–8 questions drawn from real upload failures (photos too detailed, minimum dimensions, CMYK JPEGs).
+3. **Social proof** — both competitors feature customer quotes; add a lightweight "about the tool" trust block.
+4. **Backlink outreach targets** — tool-roundup listicles ("best free image compressors"), Reddit (r/webdev, r/wordpress), dev forums. No backlink data is available without GSC or a link API; once Search Console is verified, connect it to see which pages attract links naturally.
+5. **Developer angle (later)** — TinyPNG's moat is its API/CDN docs. A public "how we compress" engineering post could earn organic links from the dev community.
+
+**Performance (CWV):** Google PSI remains rate-limited without an API key (environment limitation, not a site issue). Add a free `PAGESPEED_API_KEY` to `~/.agentic-seo/.env` and re-run `python ~/.agents/skills/seo/scripts/pagespeed.py https://imgcompressor.tools --strategy mobile --json`.

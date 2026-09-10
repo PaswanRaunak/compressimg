@@ -2,22 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import PdfCompressTool from '../components/PdfCompressTool.astro';
 
-const title = 'Compress PDF Online Free — No Quality Loss | ImgCompressor.tools';
-const description = 'Compress PDF without losing quality — free and fully in your browser. Reduce PDF file size with lossless optimization or smart image re-encoding. Files never leave your device.';
+const title = 'Compress PDF Online Free - No Quality Loss | ImgCompressor.tools';
+const description = 'Compress PDF without losing quality, free and fully in your browser. Reduce PDF file size with lossless optimization or smart image re-encoding. Files never leave your device.';
 const canonical = '/compress-pdf';
 
 const faqItems = [
   {
     question: 'Will compressing my PDF reduce quality?',
-    answer: 'Not with Best Quality or Recommended levels. Best Quality applies only lossless optimizations — metadata cleanup, stream compression, and object packing — so text, fonts, and vector graphics are untouched byte-for-byte in appearance. Recommended additionally re-encodes embedded raster images at roughly 85% JPEG quality, which is visually near-identical. Only the Smallest Size level meaningfully reduces image detail, and it is clearly labeled as such.'
+    answer: 'Not with Best Quality or Recommended levels. Best Quality applies only lossless optimizations, metadata cleanup, stream compression, and object packing, so text, fonts, and vector graphics are untouched byte-for-byte in appearance. Recommended additionally re-encodes embedded raster images at roughly 85% JPEG quality, which is visually near-identical. Only the Smallest Size level meaningfully reduces image detail, and it is clearly labeled as such.'
   },
   {
     question: 'How do I compress a PDF to under 1MB?',
-    answer: 'Upload your PDF, choose the Smallest Size level, and check the result. That level re-encodes embedded images at reduced resolution (capped around 1400px) and lower JPEG quality, which is what gives scanned and image-heavy documents the biggest reduction. If the PDF is mostly text with few images, gains are smaller because text is never degraded — in that case there is usually little to remove safely.'
+    answer: 'Upload your PDF, choose the Smallest Size level, and check the result. That level re-encodes embedded images at reduced resolution (capped around 1400px) and lower JPEG quality, which is what gives scanned and image-heavy documents the biggest reduction. If the PDF is mostly text with few images, gains are smaller because text is never degraded, in that case there is usually little to remove safely.'
   },
   {
     question: 'Is it safe to upload my PDF here?',
-    answer: 'There is no upload at all. Compression runs entirely inside your browser using JavaScript — your file is processed on your own device and never sent to any server. You can even disconnect from the internet after the page loads and it will still work.'
+    answer: 'There is no upload at all. Compression runs entirely inside your browser using JavaScript, your file is processed on your own device and never sent to any server. You can even disconnect from the internet after the page loads and it will still work.'
   }
 ];
 ---
@@ -26,8 +26,8 @@ const faqItems = [
   <section class="pdf-hero">
     <div class="pdf-hero__intro">
       <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>New tool</p>
-      <h1>Compress PDF Files Online — Free, Fast, No Quality Loss</h1>
-      <p class="pdf-hero__summary">Reduce PDF file size right in your browser. Text, fonts, and vector content are never degraded — only embedded images are optimized, and you choose how aggressively.</p>
+      <h1>Compress PDF Files Online - Free, Fast, No Quality Loss</h1>
+      <p class="pdf-hero__summary">Reduce PDF file size right in your browser. Text, fonts, and vector content are never degraded, only embedded images are optimized, and you choose how aggressively.</p>
     </div>
     <div class="pdf-hero__tool" aria-label="PDF compression workspace">
       <div class="tool-card">
@@ -48,7 +48,7 @@ const faqItems = [
     <div class="pdf-how__grid">
       <article>
         <h3>Best quality</h3>
-        <p>Lossless structural optimization: metadata cleanup, unused object removal, and stream compression. Every PDF can use this safely — images stay exactly as they are.</p>
+        <p>Lossless structural optimization: metadata cleanup, unused object removal, and stream compression. Every PDF can use this safely, images stay exactly as they are.</p>
       </article>
       <article>
         <h3>Recommended</h3>
@@ -59,7 +59,7 @@ const faqItems = [
         <p>Aggressive image re-encoding plus resolution downscaling for the biggest reduction on scanned and image-heavy documents. May reduce image quality inside the PDF.</p>
       </article>
     </div>
-    <p class="pdf-how__note">Text, fonts, and drawn vector shapes are never re-rendered or rasterized at any level — only embedded images are touched.</p>
+    <p class="pdf-how__note">Text, fonts, and drawn vector shapes are never re-rendered or rasterized at any level, only embedded images are touched.</p>
   </section>
 
   <section class="pdf-faq" aria-labelledby="pdf-faq-title">

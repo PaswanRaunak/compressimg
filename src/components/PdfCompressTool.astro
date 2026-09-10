@@ -1,5 +1,5 @@
 ---
-// Client-side PDF compressor — files never leave the browser.
+// Client-side PDF compressor, files never leave the browser.
 // pdf-lib for structural optimization, canvas re-encoding for embedded JPEGs,
 // pdf.js (lazy-loaded) for before/after first-page previews.
 export interface Props {
@@ -18,7 +18,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
         <input type="radio" name="pdf-level" value="best" />
         <span class="level-card">
           <strong>Best quality</strong>
-          <span>Lossless only — structure, fonts and text untouched. Images unchanged.</span>
+          <span>Lossless only: structure, fonts and text untouched. Images unchanged.</span>
         </span>
       </label>
       <label class="level-option">
@@ -63,7 +63,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
     </div>
     <p class="pdf-privacy">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
-      Your files never leave your device — everything is compressed right here in your browser.
+      Your files never leave your device, everything is compressed right here in your browser.
     </p>
   </div>
 
@@ -241,7 +241,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
     }
 
     // Structural optimization: always applied. Never touches page content
-    // streams, fonts, or vector operators — only metadata and object packing.
+    // streams, fonts, or vector operators, only metadata and object packing.
     function stripMetadata(doc) {
       try {
         doc.setTitle('');
@@ -275,7 +275,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
         if (!ctx) return 0;
         ctx.drawImage(bitmap, 0, 0, w, h);
         const outBlob = await canvas.convertToBlob({ type: 'image/jpeg', quality });
-        if (outBlob.size >= stream.contents.length) return 0; // re-encode didn't help — keep original
+        if (outBlob.size >= stream.contents.length) return 0; // re-encode didn't help, keep original
 
         const newBytes = new Uint8Array(await outBlob.arrayBuffer());
         stream.contents = newBytes;
@@ -339,7 +339,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
         return;
       }
       if (file.size > MAX_FILE_BYTES) {
-        showError('This PDF is ' + formatSize(file.size) + '. The limit is 50MB — please choose a smaller file.');
+        showError('This PDF is ' + formatSize(file.size) + '. The limit is 50MB, please choose a smaller file.');
         return;
       }
 
@@ -385,7 +385,7 @@ const { defaultLevel = 'recommended' } = Astro.props;
         const compressedBytes = await doc.save({ useObjectStreams: true });
 
         if (compressedBytes.length >= originalBytes.length) {
-          // Already fully optimized — return the original bytes as the result.
+          // Already fully optimized, return the original bytes as the result.
           noteBox.textContent = 'This PDF was already well optimized, so its structure could not be improved further' +
             (level === 'best' ? '. Try the Recommended or Smallest Size level to also re-encode embedded images.' : '.');
           noteBox.classList.remove('hidden');

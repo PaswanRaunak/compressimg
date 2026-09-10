@@ -345,19 +345,27 @@ const { defaultLevel = 'recommended' } = Astro.props;
         const { PDFDocument } = await import('pdf-lib');
         const originalBytes = new Uint8Array(await file.arrayBuffer());
 
+        const noteLines = [];
         let doc;
         try {
           doc = await PDFDocument.load(originalBytes, { ignoreEncryption: false });
-        } catch (err) {
-          throw new Error('This PDF appears to be password-protected or corrupted. Password-protected files are not supported.');
+        } catch (strictErr) {
+          // Some PDFs carry owner-password flags but open fine with an empty
+          // user password; pdf-lib rejects them in strict mode only.
+          try {
+            doc = await PDFDocument.load(originalBytes, { ignoreEncryption: true });
+            noteLines.push('This PDF had restriction flags, which were removed during compression.');
+          } catch (finalErr) {
+            console.error('PDF load failed:', finalErr);
+            throw new Error('This PDF could not be opened for compression. It may be password-protected (a real password required) or use a very unusual internal format.');
+          }
         }
 
         stripMetadata(doc);
 
         const level = getLevel();
-        const noteLines = [];
         let imageCount = 0, recompressedCount = 0, bytesSavedOnImages = 0;
-        if (level !== 'best') {
+        if (level !== 'best') try {
           setProgress(15, 'Analyzing embedded images…');
           const streams = await collectImageStreams(doc);
           imageCount = streams.filter(s => s.isJpeg).length;
@@ -378,12 +386,22 @@ const { defaultLevel = 'recommended' } = Astro.props;
             }
           }
           if (skippedImages > 0) noteLines.push(skippedImages + ' embedded image' + (skippedImages > 1 ? 's were' : ' was') + ' left untouched because they could not be decoded.');
-        } else {
+        } catch (stageErr) {
+          console.error('Image optimization stage failed, continuing with structural optimization:', stageErr);
+          noteLines.push('Image optimization was skipped for this file because of unsupported internal features; structural optimization was applied instead.');
+        }
+        if (level === 'best') {
           setProgress(40, 'Optimizing document structure…');
         }
 
         setProgress(92, 'Finalizing…');
-        const compressedBytes = await doc.save({ useObjectStreams: true });
+        let compressedBytes;
+        try {
+          compressedBytes = await doc.save({ useObjectStreams: true });
+        } catch (saveErr) {
+          console.error('Object-stream save failed, retrying plain save:', saveErr);
+          compressedBytes = await doc.save({ useObjectStreams: false });
+        }
 
         if (compressedBytes.length >= originalBytes.length) {
           // Already fully optimized, return the original bytes as the result.
@@ -426,9 +444,10 @@ const { defaultLevel = 'recommended' } = Astro.props;
       } catch (err) {
         loading.classList.add('hidden');
         tool.querySelector('.upload-shell').classList.remove('hidden');
-        showError(err instanceof Error && err.message.startsWith('This PDF')
-          ? err.message
-          : 'Compression failed for this file. Please try a different PDF.');
+        const detail = err instanceof Error ? err.message : String(err);
+        showError(detail.startsWith('This PDF')
+          ? detail
+          : 'Compression failed for this file. Reason: ' + detail.slice(0, 140) + '. Try a different PDF, or share the file with us so we can support it.');
         console.error(err);
       }
     }

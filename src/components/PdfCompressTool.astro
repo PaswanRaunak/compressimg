@@ -13,29 +13,12 @@ const { defaultLevel = 'recommended' } = Astro.props;
   <!-- Compression level selector -->
   <fieldset class="level-picker">
     <legend class="level-legend">Compression level</legend>
-    <div class="level-options" role="radiogroup" aria-label="Compression level">
-      <label class="level-option">
-        <input type="radio" name="pdf-level" value="best" />
-        <span class="level-card">
-          <strong>Best quality</strong>
-          <span>Lossless only: structure, fonts and text untouched. Images unchanged.</span>
-        </span>
-      </label>
-      <label class="level-option">
-        <input type="radio" name="pdf-level" value="recommended" checked />
-        <span class="level-card">
-          <strong>Recommended</strong>
-          <span>Lossless cleanup + moderate image re-encoding. Visually near-identical.</span>
-        </span>
-      </label>
-      <label class="level-option">
-        <input type="radio" name="pdf-level" value="smallest" />
-        <span class="level-card">
-          <strong>Smallest size</strong>
-          <span>Aggressive image re-encoding and downscaling. <em>May reduce image quality inside the PDF.</em></span>
-        </span>
-      </label>
+    <div class="level-seg" role="radiogroup" aria-label="Compression level">
+      <label><input type="radio" name="pdf-level" value="best" /><span>Best quality</span></label>
+      <label><input type="radio" name="pdf-level" value="recommended" checked /><span>Recommended</span></label>
+      <label><input type="radio" name="pdf-level" value="smallest" /><span>Smallest size</span></label>
     </div>
+    <p class="level-desc" id="level-desc">Lossless cleanup plus moderate image re-encoding. Visually near-identical.</p>
   </fieldset>
 
   <!-- Hidden file input -->
@@ -66,6 +49,8 @@ const { defaultLevel = 'recommended' } = Astro.props;
       Your files never leave your device, everything is compressed right here in your browser.
     </p>
   </div>
+
+  <div id="pdf-error" class="hidden" role="alert"></div>
 
   <!-- Loading -->
   <div id="pdf-loading" class="hidden" aria-live="polite">
@@ -121,26 +106,23 @@ const { defaultLevel = 'recommended' } = Astro.props;
     </div>
   </div>
 
-  <!-- Error -->
-  <div id="pdf-error" class="hidden" role="alert"></div>
 </div>
 
 <style>
   .pdf-tool { padding: 4px 2px 2px; }
-  .level-picker { margin: 0 0 16px; padding: 0; border: 0; }
+  .level-picker { margin: 0 0 14px; padding: 0; border: 0; }
   .level-legend { padding: 0; margin: 0 0 8px; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .level-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  .level-option { position: relative; display: block; }
-  .level-option input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-  .level-card { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 12px 14px; border: 1.5px solid var(--line, #e7e5e4); border-radius: 12px; background: var(--card, #fff); cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
-  .level-card strong { color: var(--ink, #1c1917); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
-  .level-card > span:last-child { color: var(--muted, #57534e); font-size: 12px; line-height: 1.45; }
-  .level-card em { color: var(--danger, #b3261e); font-style: normal; font-weight: 600; }
-  .level-option input:checked + .level-card { border-color: var(--accent, #386853); background: var(--accent-soft, #f0f6f2); box-shadow: 0 0 0 1px var(--accent, #386853); }
-  .level-option input:focus-visible + .level-card { outline: 2px solid var(--accent, #386853); outline-offset: 2px; }
-  .level-option:hover .level-card { border-color: var(--accent, #386853); }
+  .level-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border: 1px solid var(--line, #e7e5e4); border-radius: 12px; background: rgba(28, 25, 23, 0.03); }
+  .level-seg label { position: relative; }
+  .level-seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .level-seg span { display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 9px; color: var(--muted, #57534e); font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease; }
+  .level-seg input:checked + span { background: var(--card, #fff); color: var(--accent-strong, #2e5443); box-shadow: 0 1px 3px rgba(28,25,23,0.12); }
+  .level-seg input:focus-visible + span { outline: 2px solid var(--accent, #386853); outline-offset: 2px; }
+  .level-desc { margin: 8px 0 0; min-height: 20px; color: var(--muted, #57534e); font-size: 12.5px; line-height: 1.5; text-align: center; }
+  .level-desc em { color: var(--danger, #b3261e); font-style: normal; font-weight: 600; }
+  #pdf-error { margin-top: 12px; padding: 12px 14px; border: 1px solid #fecaca; border-radius: 10px; background: #fef2f2; color: #b91c1c; font-size: 13.5px; text-align: center; }
 
-  .pdf-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 230px; justify-content: center; padding: 32px 24px; border: 2px dashed var(--line-strong, #d6d3d1); border-radius: 14px; background: rgba(28, 25, 23, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
+  .pdf-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 190px; justify-content: center; padding: 32px 24px; border: 2px dashed var(--line-strong, #d6d3d1); border-radius: 14px; background: rgba(28, 25, 23, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
   .pdf-dropzone:hover, .pdf-dropzone:focus-visible, .pdf-dropzone.is-dragover { border-color: var(--accent, #386853); background: var(--accent-soft, #f0f6f2); outline: none; }
   .pdf-dropzone__icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; background: var(--accent-soft, #f0f6f2); color: var(--accent-strong, #2e5443); transition: transform 200ms ease; }
   .pdf-dropzone:hover .pdf-dropzone__icon, .pdf-dropzone.is-dragover .pdf-dropzone__icon { transform: translateY(-2px); }
@@ -205,6 +187,15 @@ const { defaultLevel = 'recommended' } = Astro.props;
     const resetBtn = tool.querySelector('#pdf-reset-btn');
     const noteBox = tool.querySelector('#pdf-note');
     const levelInputs = tool.querySelectorAll('input[name="pdf-level"]');
+    const levelDesc = tool.querySelector('#level-desc');
+    const LEVEL_DESCRIPTIONS = {
+      best: 'Lossless only: structure, fonts and text untouched. Images stay exactly as they are.',
+      recommended: 'Lossless cleanup plus moderate image re-encoding. Visually near-identical.',
+      smallest: 'Aggressive image re-encoding and downscaling. <em>May reduce image quality inside the PDF.</em>',
+    };
+    levelInputs.forEach((input) => input.addEventListener('change', () => {
+      levelDesc.innerHTML = LEVEL_DESCRIPTIONS[input.value];
+    }));
 
     let currentFile = null;
     let objectUrl = null;
@@ -364,19 +355,29 @@ const { defaultLevel = 'recommended' } = Astro.props;
         stripMetadata(doc);
 
         const level = getLevel();
+        const noteLines = [];
         let imageCount = 0, recompressedCount = 0, bytesSavedOnImages = 0;
         if (level !== 'best') {
           setProgress(15, 'Analyzing embedded images…');
           const streams = await collectImageStreams(doc);
           imageCount = streams.filter(s => s.isJpeg).length;
+          let skippedImages = 0;
           for (let i = 0; i < streams.length; i++) {
             const pct = 15 + (i / Math.max(1, streams.length)) * 70;
             setProgress(pct, 'Recompressing image ' + (i + 1) + ' of ' + streams.length + '…');
             if (!streams[i].isJpeg) continue;
-            const oldLen = streams[i].stream.contents.length;
-            const newLen = await recompressImage(doc, streams[i].stream, level);
-            if (newLen > 0) { recompressedCount++; bytesSavedOnImages += oldLen - newLen; }
+            try {
+              const oldLen = streams[i].stream.contents.length;
+              const newLen = await recompressImage(doc, streams[i].stream, level);
+              if (newLen > 0) { recompressedCount++; bytesSavedOnImages += oldLen - newLen; }
+            } catch (imgErr) {
+              // One undecodable image must not fail the whole document:
+              // keep that image as-is and carry on.
+              console.warn('Skipping undecodable image ' + (i + 1), imgErr);
+              skippedImages++;
+            }
           }
+          if (skippedImages > 0) noteLines.push(skippedImages + ' embedded image' + (skippedImages > 1 ? 's were' : ' was') + ' left untouched because they could not be decoded.');
         } else {
           setProgress(40, 'Optimizing document structure…');
         }

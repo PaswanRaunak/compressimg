@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageToPdfTool from '../components/ImageToPdfTool.astro';
+
+const title = 'Image to PDF Converter Online — Free & Private | ImgCompressor.tools';
+const description = 'Convert JPG, PNG, and WebP images to PDF online for free. Combine multiple images into one PDF in your browser — no upload, no signup, no watermark.';
+const canonical = '/image-to-pdf';
+
+const faqItems = [
+  {
+    question: 'How do I convert multiple images into one PDF?',
+    answer: 'Drop all your images into the tool at once, drag the order you want by removing and re-adding if needed, then click Convert to PDF. Each image becomes one page, in the order shown. There is no limit on combining beyond 50 images per PDF.'
+  },
+  {
+    question: 'Are my images uploaded to a server?',
+    answer: 'No. The conversion runs entirely in your browser — your images are read locally, assembled into a PDF with JavaScript, and offered as a download. Nothing is transmitted anywhere, and the tool keeps working even if you go offline after the page loads.'
+  },
+  {
+    question: 'What image formats and sizes are supported?',
+    answer: 'JPG, PNG, and WebP files up to 20MB each, with up to 50 images per PDF. JPG and PNG images are embedded at their original quality; WebP images are converted to PNG internally before embedding.'
+  },
+  {
+    question: 'Will the PDF keep my images\u2019 original quality?',
+    answer: 'Yes. Images are embedded as-is at their original resolution — the converter never re-compresses or downscales them. On A4 or Letter pages, images are scaled to fit the page, but the embedded data remains your original file.'
+  }
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schemaType="WebApplication">
+  <section class="i2p-hero">
+    <div class="i2p-hero__intro">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>New tool</p>
+      <h1>Convert Images to PDF Online — Free, Fast, Private</h1>
+      <p class="i2p-hero__summary">Combine JPG, PNG, and WebP images into a single PDF right in your browser. Original quality is preserved, nothing is uploaded, and no account is needed.</p>
+    </div>
+    <div class="i2p-hero__tool" aria-label="Image to PDF workspace">
+      <div class="tool-card">
+        <div class="tool-card__head">
+          <span>Image to PDF bench</span>
+          <span class="tool-card__badge" aria-hidden="true">100% local</span>
+        </div>
+        <ImageToPdfTool />
+      </div>
+    </div>
+  </section>
+
+  <section class="i2p-how">
+    <div class="i2p-how__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>How it works</p>
+      <h2>Three steps, zero uploads.</h2>
+    </div>
+    <ol class="i2p-how__list">
+      <li><span>01</span><div><h3>Add your images</h3><p>Drop or browse one or more JPG, PNG, or WebP files. Thumbnails show the page order.</p></div></li>
+      <li><span>02</span><div><h3>Choose the page layout</h3><p>Fit each page to the image, or use A4 / US Letter with an optional margin.</p></div></li>
+      <li><span>03</span><div><h3>Download your PDF</h3><p>One PDF, original image quality, built locally — remove or reorder images any time before converting.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="i2p-faq" aria-labelledby="i2p-faq-title">
+    <div class="i2p-faq__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="i2p-faq-title">Before you convert.</h2>
+    </div>
+    <div class="i2p-faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+    </div>
+  </section>
+
+  <section class="i2p-related">
+    <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Related tools</p>
+    <div class="i2p-related__links">
+      <a href="/compress-pdf"><strong>Compress PDF</strong><span>Shrink PDF files in your browser — no quality loss</span></a>
+      <a href="/compress-image-to-100kb"><strong>Compress images</strong><span>Reduce JPG, PNG, and WebP files to an exact size</span></a>
+      <a href="/compress-image-to-20kb"><strong>Compress to 20KB</strong><span>For strict forms, passport photos, and tiny uploads</span></a>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'CompressImg Image to PDF Converter',
+        applicationCategory: 'UtilityApplication',
+        operatingSystem: 'Any (browser-based)',
+        url: 'https://imgcompressor.tools/image-to-pdf',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Free online tool that converts JPG, PNG, and WebP images into a single PDF entirely in the browser.'
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map(({ question, answer }) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: { '@type': 'Answer', text: answer }
+        }))
+      }
+    ]
+  })} />
+
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
+
+    .i2p-hero { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .i2p-hero__intro h1 { max-width: 15ch; margin-top: 20px; font-size: clamp(34px, 4.6vw, 54px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.05; }
+    .i2p-hero__summary { max-width: 52ch; margin: 20px 0 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .tool-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 24px 56px -28px rgba(28,25,23,0.22); }
+    .tool-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+    .tool-card :global(.i2p-tool) { padding: 18px 20px 20px; }
+
+    .i2p-how { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .i2p-how h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .i2p-how__list { display: grid; gap: 0 56px; padding: 0; margin: 40px 0 0; list-style: none; }
+    .i2p-how__list li { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 24px 0; border-top: 1px solid var(--line); }
+    .i2p-how__list li > span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; padding-top: 4px; }
+    .i2p-how__list h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .i2p-how__list p { max-width: 48ch; margin: 6px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+
+    .i2p-faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .i2p-faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .i2p-faq__list { border-top: 1px solid var(--line); }
+    .i2p-faq__list details { border-bottom: 1px solid var(--line); }
+    .i2p-faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .i2p-faq__list summary:hover { color: var(--accent-strong); }
+    .i2p-faq__list summary::-webkit-details-marker { display: none; }
+    .i2p-faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .i2p-faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .i2p-faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+    .i2p-related { padding-top: 72px; padding-bottom: 96px; border-top: 1px solid var(--line); }
+    .i2p-related__links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+    .i2p-related__links a { display: flex; flex-direction: column; gap: 6px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+    .i2p-related__links a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+    .i2p-related__links strong { color: var(--ink); font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .i2p-related__links span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    @media (min-width: 56rem) {
+      .i2p-hero { grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+      .i2p-how__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .i2p-how__list li:nth-child(2) { border-top: none; }
+    }
+  </style>
+</Layout>

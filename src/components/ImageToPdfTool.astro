@@ -1,0 +1,337 @@
+---
+// Client-side image → PDF converter. pdf-lib embeds JPG/PNG directly;
+// anything else (e.g. WebP) is normalized through canvas first.
+---
+
+<div class="i2p-tool">
+  <input type="file" id="i2p-input" accept="image/png,image/jpeg,image/webp" multiple style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="i2p-dropzone" class="i2p-dropzone" role="button" tabindex="0" aria-label="Add images to convert to PDF">
+      <span class="i2p-dropzone__icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A1.5 1.5 0 0021.75 19.5V4.5A1.5 1.5 0 0020.25 3H3.75A1.5 1.5 0 002.25 4.5v15A1.5 1.5 0 003.75 21z"></path>
+        </svg>
+      </span>
+      <div>
+        <p class="i2p-dropzone__title">Drop images here</p>
+        <p class="i2p-dropzone__sub">or click to browse — add as many as you like</p>
+      </div>
+      <p class="i2p-dropzone__meta">JPG &middot; PNG &middot; WebP &middot; up to 20MB each</p>
+    </div>
+    <p class="i2p-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your files never leave your device — the PDF is built right here in your browser.
+    </p>
+  </div>
+
+  <!-- Selected images -->
+  <div id="i2p-list" class="hidden">
+    <p class="i2p-list__label"><span id="i2p-count">0</span> images ready — order matches the PDF pages</p>
+    <div id="i2p-thumbs" class="i2p-thumbs"></div>
+    <div class="i2p-options">
+      <label class="i2p-option">
+        <span>Page size</span>
+        <select id="i2p-pagesize" aria-label="Page size">
+          <option value="fit" selected>Fit to image</option>
+          <option value="a4">A4</option>
+          <option value="letter">US Letter</option>
+        </select>
+      </label>
+      <label class="i2p-option">
+        <span>Margin</span>
+        <select id="i2p-margin" aria-label="Margin">
+          <option value="0" selected>None</option>
+          <option value="24">Small</option>
+          <option value="56">Large</option>
+        </select>
+      </label>
+      <button id="i2p-convert" class="i2p-btn i2p-btn--primary" type="button">
+        Convert to PDF
+        <span class="i2p-btn__chip" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg>
+        </span>
+      </button>
+      <button id="i2p-clear" class="i2p-btn i2p-btn--ghost" type="button">Remove all</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="i2p-loading" class="hidden" aria-live="polite">
+    <div class="i2p-progress">
+      <div class="i2p-progress__bar"><div id="i2p-progress-fill"></div></div>
+      <p id="i2p-progress-msg" class="i2p-progress__msg">Building your PDF&hellip;</p>
+      <p class="i2p-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="i2p-result" class="hidden">
+    <div class="i2p-result-card">
+      <p class="i2p-result__title">PDF ready</p>
+      <p id="i2p-result-meta" class="i2p-result__meta"></p>
+      <div class="i2p-actions">
+        <a id="i2p-download" class="i2p-btn i2p-btn--primary">
+          Download PDF
+          <span class="i2p-btn__chip" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg>
+          </span>
+        </a>
+        <button id="i2p-again" class="i2p-btn i2p-btn--ghost" type="button">Convert more images</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="i2p-error" class="hidden" role="alert"></div>
+</div>
+
+<style>
+  .i2p-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 200px; justify-content: center; padding: 30px 24px; border: 2px dashed var(--line-strong, #d6d3d1); border-radius: 14px; background: rgba(28, 25, 23, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
+  .i2p-dropzone:hover, .i2p-dropzone:focus-visible, .i2p-dropzone.is-dragover { border-color: var(--accent, #386853); background: var(--accent-soft, #f0f6f2); outline: none; }
+  .i2p-dropzone__icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; background: var(--accent-soft, #f0f6f2); color: var(--accent-strong, #2e5443); transition: transform 200ms ease; }
+  .i2p-dropzone:hover .i2p-dropzone__icon, .i2p-dropzone.is-dragover .i2p-dropzone__icon { transform: translateY(-2px); }
+  .i2p-dropzone__title { margin: 0; color: var(--ink, #1c1917); font-size: 15.5px; font-weight: 600; }
+  .i2p-dropzone__sub { margin: 2px 0 0; color: var(--muted, #57534e); font-size: 13.5px; }
+  .i2p-dropzone__meta { margin: 8px 0 0; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .i2p-privacy { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 12px 0 0; color: var(--accent-strong, #2e5443); font-size: 13px; font-weight: 500; text-align: center; }
+
+  .i2p-list__label { margin: 4px 0 10px; color: var(--muted, #57534e); font-size: 13px; }
+  .i2p-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 8px; }
+  .i2p-thumb { position: relative; border: 1px solid var(--line, #e7e5e4); border-radius: 10px; overflow: hidden; background: #fff; }
+  .i2p-thumb img { display: block; width: 100%; height: 72px; object-fit: cover; }
+  .i2p-thumb__num { position: absolute; top: 4px; left: 4px; padding: 1px 6px; border-radius: 999px; background: rgba(28,25,23,0.72); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+  .i2p-thumb__remove { position: absolute; top: 4px; right: 4px; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 0; border-radius: 50%; background: rgba(28,25,23,0.72); color: #fff; font-size: 11px; line-height: 1; cursor: pointer; }
+  .i2p-thumb__remove:hover { background: var(--danger, #b3261e); }
+
+  .i2p-options { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin-top: 14px; }
+  .i2p-option { display: flex; flex-direction: column; gap: 4px; }
+  .i2p-option > span { color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .i2p-option select { min-height: 44px; padding: 0 12px; border: 1px solid var(--line, #e7e5e4); border-radius: 10px; background: var(--card, #fff); color: var(--ink, #1c1917); font-size: 14px; }
+  .i2p-btn { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
+  .i2p-btn:active { transform: scale(0.98); }
+  .i2p-btn--primary { background: var(--ink, #1c1917); color: #fff; border: 0; margin-left: auto; }
+  .i2p-btn--primary:hover { background: #33302c; }
+  .i2p-btn__chip { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
+  .i2p-btn--ghost { border: 1px solid var(--line-strong, #d6d3d1); background: var(--card, #fff); color: var(--muted, #57534e); }
+  .i2p-btn--ghost:hover { border-color: var(--faint, #a8a29e); color: var(--ink, #1c1917); }
+
+  .i2p-progress { max-width: 380px; margin: 0 auto; padding: 40px 0; text-align: center; }
+  .i2p-progress__bar { height: 6px; overflow: hidden; border-radius: 999px; background: var(--line, #e7e5e4); }
+  .i2p-progress__bar > div { height: 100%; width: 0%; border-radius: 999px; background: var(--accent, #386853); transition: width 250ms ease; }
+  .i2p-progress__msg { margin: 14px 0 0; color: var(--ink, #1c1917); font-size: 14px; font-weight: 600; }
+  .i2p-progress__sub { margin: 4px 0 0; color: var(--muted, #57534e); font-size: 12.5px; }
+
+  .i2p-result-card { padding: 22px; border: 1px solid var(--line, #e7e5e4); border-radius: 16px; background: var(--card, #fff); text-align: center; }
+  .i2p-result__title { margin: 0; color: var(--accent-strong, #2e5443); font-size: 16px; font-weight: 700; }
+  .i2p-result__meta { margin: 6px 0 0; color: var(--muted, #57534e); font-size: 14px; }
+  .i2p-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+
+  #i2p-error { margin-top: 12px; padding: 14px; border: 1px solid #fecaca; border-radius: 10px; background: #fef2f2; color: #b91c1c; font-size: 14px; text-align: center; }
+  .hidden { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { .i2p-dropzone, .i2p-dropzone__icon, .i2p-btn, .i2p-progress__bar > div { transition: none; } }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.i2p-tool');
+    if (!tool) return;
+
+    const MAX_FILE_BYTES = 20 * 1024 * 1024;
+    const MAX_IMAGES = 50;
+    const A4 = [595.28, 841.89];
+    const LETTER = [612, 792];
+
+    const dropzone = tool.querySelector('#i2p-dropzone');
+    const fileInput = tool.querySelector('#i2p-input');
+    const listBox = tool.querySelector('#i2p-list');
+    const thumbsBox = tool.querySelector('#i2p-thumbs');
+    const countLabel = tool.querySelector('#i2p-count');
+    const loading = tool.querySelector('#i2p-loading');
+    const progressFill = tool.querySelector('#i2p-progress-fill');
+    const progressMsg = tool.querySelector('#i2p-progress-msg');
+    const resultBox = tool.querySelector('#i2p-result');
+    const resultMeta = tool.querySelector('#i2p-result-meta');
+    const downloadBtn = tool.querySelector('#i2p-download');
+    const errorBox = tool.querySelector('#i2p-error');
+
+    // { file, url } in page order
+    let images = [];
+    let objectUrl = null;
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.remove('hidden');
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function refreshList() {
+      thumbsBox.innerHTML = '';
+      countLabel.textContent = String(images.length);
+      images.forEach((item, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'i2p-thumb';
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.alt = 'Page ' + (index + 1) + ': ' + item.file.name;
+        const num = document.createElement('span');
+        num.className = 'i2p-thumb__num';
+        num.textContent = String(index + 1);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'i2p-thumb__remove';
+        remove.setAttribute('aria-label', 'Remove ' + item.file.name);
+        remove.textContent = '\u00d7';
+        remove.addEventListener('click', () => {
+          URL.revokeObjectURL(item.url);
+          images.splice(index, 1);
+          if (images.length === 0) resetTool();
+          else refreshList();
+        });
+        cell.append(img, num, remove);
+        thumbsBox.appendChild(cell);
+      });
+      listBox.classList.toggle('hidden', images.length === 0);
+    }
+
+    function resetTool() {
+      images.forEach((item) => URL.revokeObjectURL(item.url));
+      images = [];
+      if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+      resultBox.classList.add('hidden');
+      loading.classList.add('hidden');
+      errorBox.classList.add('hidden');
+      refreshList();
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      setProgress(0);
+    }
+
+    function setProgress(pct, message) {
+      if (progressFill) progressFill.style.width = Math.min(100, Math.round(pct)) + '%';
+      if (message && progressMsg) progressMsg.textContent = message;
+    }
+
+    function addFiles(fileList) {
+      errorBox.classList.add('hidden');
+      for (const file of Array.from(fileList)) {
+        const ok = ['image/png', 'image/jpeg', 'image/webp'].includes(file.type);
+        if (!ok) { showError('"' + file.name + '" is not a PNG, JPG, or WebP image.'); continue; }
+        if (file.size > MAX_FILE_BYTES) { showError('"' + file.name + '" is ' + formatSize(file.size) + '. Each image must be under 20MB.'); continue; }
+        if (images.length >= MAX_IMAGES) { showError('Maximum ' + MAX_IMAGES + ' images per PDF.'); break; }
+        images.push({ file, url: URL.createObjectURL(file) });
+      }
+      if (images.length > 0) {
+        tool.querySelector('.upload-shell').classList.add('hidden');
+        refreshList();
+      }
+    }
+
+    // Normalize any image to bytes pdf-lib can embed: JPEG and PNG pass
+    // through untouched; everything else (e.g. WebP) is re-drawn via canvas to PNG.
+    async function toEmbeddable(file) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        return { bytes: new Uint8Array(await file.arrayBuffer()), type: file.type };
+      }
+      const bitmap = await createImageBitmap(file);
+      try {
+        const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+        canvas.getContext('2d').drawImage(bitmap, 0, 0);
+        const blob = await canvas.convertToBlob({ type: 'image/png' });
+        return { bytes: new Uint8Array(await blob.arrayBuffer()), type: 'image/png' };
+      } finally {
+        bitmap.close();
+      }
+    }
+
+    async function convert() {
+      if (images.length === 0) { showError('Add at least one image first.'); return; }
+      errorBox.classList.add('hidden');
+      resultBox.classList.add('hidden');
+      listBox.classList.add('hidden');
+      loading.classList.remove('hidden');
+      setProgress(8, 'Reading images…');
+
+      try {
+        const { PDFDocument } = await import('pdf-lib');
+        const doc = await PDFDocument.create();
+        const sizeChoice = tool.querySelector('#i2p-pagesize').value;
+        const margin = parseFloat(tool.querySelector('#i2p-margin').value) || 0;
+
+        for (let i = 0; i < images.length; i++) {
+          setProgress(8 + (i / images.length) * 80, 'Adding image ' + (i + 1) + ' of ' + images.length + '…');
+          const { bytes, type } = await toEmbeddable(images[i].file);
+          const embedded = type === 'image/png' ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
+
+          let pageWidth, pageHeight;
+          if (sizeChoice === 'fit') {
+            pageWidth = embedded.width + margin * 2;
+            pageHeight = embedded.height + margin * 2;
+          } else {
+            const base = sizeChoice === 'a4' ? A4 : LETTER;
+            pageWidth = base[0];
+            pageHeight = base[1];
+          }
+          const page = doc.addPage([pageWidth, pageHeight]);
+          const landscape = sizeChoice !== 'fit' && embedded.width > embedded.height && pageWidth < pageHeight;
+          if (landscape) [pageWidth, pageHeight] = [pageHeight, pageWidth], page.setSize(pageWidth, pageHeight);
+
+          const availW = pageWidth - margin * 2;
+          const availH = pageHeight - margin * 2;
+          const scale = Math.min(availW / embedded.width, availH / embedded.height);
+          const drawW = embedded.width * scale;
+          const drawH = embedded.height * scale;
+          page.drawImage(embedded, {
+            x: (pageWidth - drawW) / 2,
+            y: (pageHeight - drawH) / 2,
+            width: drawW,
+            height: drawH,
+          });
+        }
+
+        setProgress(94, 'Finalizing PDF…');
+        const pdfBytes = await doc.save();
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+        downloadBtn.href = objectUrl;
+        downloadBtn.download = 'images.pdf';
+
+        resultMeta.textContent = images.length + ' image' + (images.length > 1 ? 's' : '') +
+          ' → 1 PDF (' + formatSize(pdfBytes.length) + ')';
+        loading.classList.add('hidden');
+        resultBox.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        listBox.classList.remove('hidden');
+        showError('Could not build the PDF from these images. Please try different files.');
+        console.error(err);
+      }
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+    });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('is-dragover');
+      addFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', (e) => {
+      addFiles(e.target.files);
+      fileInput.value = '';
+    });
+    tool.querySelector('#i2p-convert').addEventListener('click', convert);
+    tool.querySelector('#i2p-clear').addEventListener('click', resetTool);
+    tool.querySelector('#i2p-again').addEventListener('click', resetTool);
+    window.addEventListener('pagehide', () => {
+      images.forEach((item) => URL.revokeObjectURL(item.url));
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    }, { once: true });
+  })();
+</script>

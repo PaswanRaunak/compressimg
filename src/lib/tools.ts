@@ -20,6 +20,14 @@ export const tools: ToolEntry[] = [
     related: ['/compress-pdf', '/image-to-pdf', '/resize-image'],
   },
   {
+    name: 'Compress image',
+    href: '/compress-image',
+    description: 'The full compressor on a dedicated page',
+    group: 'Compress',
+    icon: 'compress',
+    related: ['/compress-pdf', '/resize-image', '/image-to-pdf'],
+  },
+  {
     name: 'Compress PDF',
     href: '/compress-pdf',
     description: 'Shrink PDF files in your browser, no quality loss',

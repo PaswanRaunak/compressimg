@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CompressTool from '../components/CompressTool.astro';
+import ToolLinks from '../components/ToolLinks.astro';
+
+const title = 'Compress Image Online Free - JPG, PNG, WebP | ImgCompressor.tools';
+const description = 'Compress JPG, PNG, and WebP images online for free. Pick any target size from 20KB to 200KB or set a custom limit, right in your browser with no signup.';
+const canonical = '/compress-image';
+
+const faqItems = [
+  { question: 'Which image formats can I compress here?', answer: 'JPG, PNG, and WebP files up to 20MB. Choose a preset target (20KB, 30KB, 50KB, 100KB, 200KB) or enter any custom limit between 1KB and 5000KB.' },
+  { question: 'How does the compression choose what to optimize?', answer: 'Images are first optimized perceptually through TinyPNG. If the result is still above your chosen limit, your browser re-encodes it locally, testing JPEG quality levels and only reducing dimensions when necessary, so the file always lands under the target.' },
+  { question: 'Is there a difference between this page and the homepage?', answer: 'No, the compressor is identical. This page exists as a direct landing spot for the tool; the homepage adds guides, the process overview, and the full tools directory around the same compressor.' },
+  { question: 'Do I need an account?', answer: 'No. There is no signup, no watermark, and no daily limit on the local compression path. The TinyPNG-powered stage has a small per-visitor fair-use quota, with the local fallback always available.' }
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schemaType="WebApplication">
+  <section class="hero" id="compress">
+    <div class="hero__intro">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Free image compressor</p>
+      <h1>Compress images online, <em>free and fast</em>.</h1>
+      <p class="hero__summary">Drop in a JPG, PNG, or WebP file, pick the size limit you need, and download a smaller image that stays under it. Everything runs in your browser.</p>
+      <dl class="hero__facts" aria-label="Compressor capabilities">
+        <div><dt>Formats</dt><dd>JPG, PNG, WebP</dd></div>
+        <div><dt>Max upload</dt><dd>20MB</dd></div>
+        <div><dt>Account</dt><dd>Not required</dd></div>
+      </dl>
+    </div>
+    <div class="hero__tool" aria-label="Image compression workspace">
+      <div class="tool-card">
+        <div class="tool-card__head">
+          <span>Compression bench</span>
+          <span class="tool-card__badge" aria-hidden="true">Free</span>
+        </div>
+        <CompressTool defaultTarget={100} showCustomTarget={true} />
+      </div>
+    </div>
+  </section>
+
+  <section class="sizes" aria-labelledby="sizes-title">
+    <div class="sizes__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Common limits</p>
+      <h2 id="sizes-title">Know the exact size you need?</h2>
+    </div>
+    <div class="sizes__grid">
+      {[
+        ['/compress-image-to-20kb', '20KB', 'Strict forms and passport portals'],
+        ['/compress-image-to-30kb', '30KB', 'Profile pictures and ID photos'],
+        ['/compress-image-to-50kb', '50KB', 'Job applications and small uploads'],
+        ['/compress-image-to-100kb', '100KB', 'Web forms and email attachments'],
+        ['/compress-image-to-200kb', '200KB', 'Blog images and product photos'],
+      ].map(([href, size, use]) => (
+        <a href={href}><strong>{size}<small>KB</small></strong><span>{use}</span></a>
+      ))}
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="faq__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="faq-title">Before you compress.</h2>
+    </div>
+    <div class="faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+    </div>
+  </section>
+
+  <ToolLinks hrefs={['/compress-pdf', '/resize-image', '/image-to-pdf']} exclude="/compress-image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'CompressImg Image Compressor',
+        applicationCategory: 'UtilityApplication',
+        operatingSystem: 'Any (browser-based)',
+        url: 'https://imgcompressor.tools/compress-image',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Free online image compressor for JPG, PNG, and WebP files with exact target sizes and browser-based processing.'
+      },
+      { '@type': 'FAQPage', mainEntity: faqItems.map(({ question, answer }) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })) }
+    ]
+  })} />
+
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
+
+    .hero { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .hero__intro h1 { max-width: 13ch; margin-top: 20px; font-size: clamp(40px, 5.6vw, 66px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.02; }
+    .hero__intro h1 em { color: var(--accent-strong); font-style: normal; }
+    .hero__summary { max-width: 50ch; margin: 22px 0 0; color: var(--muted); font-size: 17.5px; line-height: 1.65; }
+    .hero__facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 40px; margin: 34px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+    .hero__facts dt { color: var(--faint); font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; }
+    .hero__facts dd { margin: 6px 0 0; font-size: 14.5px; font-weight: 600; }
+    .tool-card { overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 36px 70px -36px rgba(0,0,0,0.25); }
+    .tool-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+
+    .sizes { display: grid; gap: 36px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .sizes h2 { max-width: 18ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .sizes__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .sizes__grid a { display: flex; flex-direction: column; gap: 22px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+    .sizes__grid a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+    .sizes__grid strong { color: var(--ink); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+    .sizes__grid strong small { margin-left: 2px; color: var(--accent-strong); font-size: 15px; font-weight: 600; }
+    .sizes__grid span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 96px; border-top: 1px solid var(--line); }
+    .faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .faq__list { border-top: 1px solid var(--line); }
+    .faq__list details { border-bottom: 1px solid var(--line); }
+    .faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .faq__list summary:hover { color: var(--accent-strong); }
+    .faq__list summary::-webkit-details-marker { display: none; }
+    .faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+    @media (min-width: 56rem) {
+      .hero { grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.1fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+    }
+    @media (max-width: 56rem) {
+      .sizes__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero__facts { gap: 28px; }
+    }
+    @media (max-width: 30rem) {
+      .sizes__grid { grid-template-columns: 1fr; }
+      .hero__facts { grid-template-columns: 1fr 1fr; gap: 20px; }
+    }
+  </style>
+</Layout>

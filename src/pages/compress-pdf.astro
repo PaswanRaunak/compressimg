@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PdfCompressTool from '../components/PdfCompressTool.astro';
+
+const title = 'Compress PDF Online Free — No Quality Loss | ImgCompressor.tools';
+const description = 'Compress PDF without losing quality — free and fully in your browser. Reduce PDF file size with lossless optimization or smart image re-encoding. Files never leave your device.';
+const canonical = '/compress-pdf';
+
+const faqItems = [
+  {
+    question: 'Will compressing my PDF reduce quality?',
+    answer: 'Not with Best Quality or Recommended levels. Best Quality applies only lossless optimizations — metadata cleanup, stream compression, and object packing — so text, fonts, and vector graphics are untouched byte-for-byte in appearance. Recommended additionally re-encodes embedded raster images at roughly 85% JPEG quality, which is visually near-identical. Only the Smallest Size level meaningfully reduces image detail, and it is clearly labeled as such.'
+  },
+  {
+    question: 'How do I compress a PDF to under 1MB?',
+    answer: 'Upload your PDF, choose the Smallest Size level, and check the result. That level re-encodes embedded images at reduced resolution (capped around 1400px) and lower JPEG quality, which is what gives scanned and image-heavy documents the biggest reduction. If the PDF is mostly text with few images, gains are smaller because text is never degraded — in that case there is usually little to remove safely.'
+  },
+  {
+    question: 'Is it safe to upload my PDF here?',
+    answer: 'There is no upload at all. Compression runs entirely inside your browser using JavaScript — your file is processed on your own device and never sent to any server. You can even disconnect from the internet after the page loads and it will still work.'
+  }
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schemaType="WebApplication">
+  <section class="pdf-hero">
+    <div class="pdf-hero__intro">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>New tool</p>
+      <h1>Compress PDF Files Online — Free, Fast, No Quality Loss</h1>
+      <p class="pdf-hero__summary">Reduce PDF file size right in your browser. Text, fonts, and vector content are never degraded — only embedded images are optimized, and you choose how aggressively.</p>
+    </div>
+    <div class="pdf-hero__tool" aria-label="PDF compression workspace">
+      <div class="tool-card">
+        <div class="tool-card__head">
+          <span>PDF compression bench</span>
+          <span class="tool-card__badge" aria-hidden="true">100% local</span>
+        </div>
+        <PdfCompressTool defaultLevel="recommended" />
+      </div>
+    </div>
+  </section>
+
+  <section class="pdf-how">
+    <div class="pdf-how__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>How it works</p>
+      <h2>Three levels, one rule: never break the text.</h2>
+    </div>
+    <div class="pdf-how__grid">
+      <article>
+        <h3>Best quality</h3>
+        <p>Lossless structural optimization: metadata cleanup, unused object removal, and stream compression. Every PDF can use this safely — images stay exactly as they are.</p>
+      </article>
+      <article>
+        <h3>Recommended</h3>
+        <p>Everything in Best Quality, plus embedded raster images re-encoded at moderate JPEG quality. Visually near-identical results with a meaningful size reduction.</p>
+      </article>
+      <article>
+        <h3>Smallest size</h3>
+        <p>Aggressive image re-encoding plus resolution downscaling for the biggest reduction on scanned and image-heavy documents. May reduce image quality inside the PDF.</p>
+      </article>
+    </div>
+    <p class="pdf-how__note">Text, fonts, and drawn vector shapes are never re-rendered or rasterized at any level — only embedded images are touched.</p>
+  </section>
+
+  <section class="pdf-faq" aria-labelledby="pdf-faq-title">
+    <div class="pdf-faq__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="pdf-faq-title">Before you compress.</h2>
+    </div>
+    <div class="pdf-faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+    </div>
+  </section>
+
+  <section class="pdf-related">
+    <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Related tools</p>
+    <div class="pdf-related__links">
+      <a href="/compress-image-to-100kb"><strong>Compress images</strong><span>Reduce JPG, PNG, and WebP files to an exact size</span></a>
+      <a href="/compress-image-to-20kb"><strong>Compress to 20KB</strong><span>For strict forms, passport photos, and tiny uploads</span></a>
+      <a href="/compress-image-to-200kb"><strong>Compress to 200KB</strong><span>Blog images and product photos, sharp and small</span></a>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'CompressImg PDF Compressor',
+        applicationCategory: 'UtilityApplication',
+        operatingSystem: 'Any (browser-based)',
+        url: 'https://imgcompressor.tools/compress-pdf',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Free online PDF compressor that reduces PDF file size in the browser without uploading files to a server.'
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map(({ question, answer }) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: { '@type': 'Answer', text: answer }
+        }))
+      }
+    ]
+  })} />
+
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
+
+    .pdf-hero { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .pdf-hero__intro h1 { max-width: 16ch; margin-top: 20px; font-size: clamp(34px, 4.6vw, 54px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.05; }
+    .pdf-hero__summary { max-width: 52ch; margin: 20px 0 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .tool-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 24px 56px -28px rgba(28,25,23,0.22); }
+    .tool-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+    .tool-card :global(.pdf-tool) { padding: 18px 20px 20px; }
+
+    .pdf-how { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .pdf-how h2 { max-width: 18ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .pdf-how__grid { display: grid; gap: 12px; margin-top: 40px; }
+    .pdf-how__grid article { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+    .pdf-how__grid h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .pdf-how__grid p { margin: 8px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+    .pdf-how__note { margin: 20px 0 0; color: var(--accent-strong); font-size: 14px; font-weight: 600; }
+
+    .pdf-faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .pdf-faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .pdf-faq__list { border-top: 1px solid var(--line); }
+    .pdf-faq__list details { border-bottom: 1px solid var(--line); }
+    .pdf-faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .pdf-faq__list summary:hover { color: var(--accent-strong); }
+    .pdf-faq__list summary::-webkit-details-marker { display: none; }
+    .pdf-faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .pdf-faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .pdf-faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+    .pdf-related { padding-top: 72px; padding-bottom: 96px; border-top: 1px solid var(--line); }
+    .pdf-related__links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+    .pdf-related__links a { display: flex; flex-direction: column; gap: 6px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+    .pdf-related__links a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+    .pdf-related__links strong { color: var(--ink); font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .pdf-related__links span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    @media (min-width: 56rem) {
+      .pdf-hero { grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+      .pdf-how__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</Layout>

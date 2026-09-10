@@ -1,0 +1,453 @@
+---
+// Client-side PDF compressor — files never leave the browser.
+// pdf-lib for structural optimization, canvas re-encoding for embedded JPEGs,
+// pdf.js (lazy-loaded) for before/after first-page previews.
+export interface Props {
+  defaultLevel?: 'best' | 'recommended' | 'smallest';
+}
+
+const { defaultLevel = 'recommended' } = Astro.props;
+---
+
+<div class="pdf-tool" data-default-level={defaultLevel}>
+  <!-- Compression level selector -->
+  <fieldset class="level-picker">
+    <legend class="level-legend">Compression level</legend>
+    <div class="level-options" role="radiogroup" aria-label="Compression level">
+      <label class="level-option">
+        <input type="radio" name="pdf-level" value="best" />
+        <span class="level-card">
+          <strong>Best quality</strong>
+          <span>Lossless only — structure, fonts and text untouched. Images unchanged.</span>
+        </span>
+      </label>
+      <label class="level-option">
+        <input type="radio" name="pdf-level" value="recommended" checked />
+        <span class="level-card">
+          <strong>Recommended</strong>
+          <span>Lossless cleanup + moderate image re-encoding. Visually near-identical.</span>
+        </span>
+      </label>
+      <label class="level-option">
+        <input type="radio" name="pdf-level" value="smallest" />
+        <span class="level-card">
+          <strong>Smallest size</strong>
+          <span>Aggressive image re-encoding and downscaling. <em>May reduce image quality inside the PDF.</em></span>
+        </span>
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- Hidden file input -->
+  <input type="file" id="pdf-input" accept="application/pdf,.pdf" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <!-- Upload zone -->
+  <div class="upload-shell">
+    <div
+      id="pdf-upload-area"
+      class="pdf-dropzone"
+      role="button"
+      tabindex="0"
+      aria-label="Upload a PDF file to compress"
+    >
+      <span class="pdf-dropzone__icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
+        </svg>
+      </span>
+      <div>
+        <p class="pdf-dropzone__title">Drop your PDF here</p>
+        <p class="pdf-dropzone__sub">or click to browse files</p>
+      </div>
+      <p class="pdf-dropzone__meta">PDF only &middot; up to 50MB &middot; processed in your browser</p>
+    </div>
+    <p class="pdf-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your files never leave your device — everything is compressed right here in your browser.
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div id="pdf-loading" class="hidden" aria-live="polite">
+    <div class="pdf-progress">
+      <div class="pdf-progress__bar"><div id="pdf-progress-fill"></div></div>
+      <p id="pdf-loading-message" class="pdf-progress__msg">Reading PDF&hellip;</p>
+      <p class="pdf-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="pdf-results" class="hidden">
+    <div class="pdf-results-card">
+      <div class="pdf-stats">
+        <div class="pdf-stat">
+          <p class="pdf-stat__label">Original</p>
+          <p id="pdf-original-size" class="pdf-stat__value">--</p>
+        </div>
+        <div class="pdf-stat">
+          <p class="pdf-stat__label">Compressed</p>
+          <p id="pdf-compressed-size" class="pdf-stat__value">--</p>
+        </div>
+        <div class="pdf-stat pdf-stat--accent">
+          <p class="pdf-stat__label">Smaller by</p>
+          <p id="pdf-saved-percent" class="pdf-stat__value">--</p>
+        </div>
+      </div>
+
+      <div class="pdf-previews">
+        <div>
+          <p class="pdf-preview-label">Before</p>
+          <canvas id="pdf-preview-before" width="340" height="440" aria-label="First page before compression"></canvas>
+        </div>
+        <div>
+          <p class="pdf-preview-label">After</p>
+          <canvas id="pdf-preview-after" width="340" height="440" aria-label="First page after compression"></canvas>
+        </div>
+      </div>
+
+      <div class="pdf-actions">
+        <a id="pdf-download-btn" class="pdf-btn pdf-btn--primary">
+          Download compressed PDF
+          <span class="pdf-btn__chip" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg>
+          </span>
+        </a>
+        <button id="pdf-reset-btn" class="pdf-btn pdf-btn--ghost" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path></svg>
+          Compress another file
+        </button>
+      </div>
+      <p id="pdf-note" class="pdf-note hidden"></p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="pdf-error" class="hidden" role="alert"></div>
+</div>
+
+<style>
+  .pdf-tool { padding: 4px 2px 2px; }
+  .level-picker { margin: 0 0 16px; padding: 0; border: 0; }
+  .level-legend { padding: 0; margin: 0 0 8px; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .level-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .level-option { position: relative; display: block; }
+  .level-option input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .level-card { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 12px 14px; border: 1.5px solid var(--line, #e7e5e4); border-radius: 12px; background: var(--card, #fff); cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
+  .level-card strong { color: var(--ink, #1c1917); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .level-card > span:last-child { color: var(--muted, #57534e); font-size: 12px; line-height: 1.45; }
+  .level-card em { color: var(--danger, #b3261e); font-style: normal; font-weight: 600; }
+  .level-option input:checked + .level-card { border-color: var(--accent, #386853); background: var(--accent-soft, #f0f6f2); box-shadow: 0 0 0 1px var(--accent, #386853); }
+  .level-option input:focus-visible + .level-card { outline: 2px solid var(--accent, #386853); outline-offset: 2px; }
+  .level-option:hover .level-card { border-color: var(--accent, #386853); }
+
+  .pdf-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 230px; justify-content: center; padding: 32px 24px; border: 2px dashed var(--line-strong, #d6d3d1); border-radius: 14px; background: rgba(28, 25, 23, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
+  .pdf-dropzone:hover, .pdf-dropzone:focus-visible, .pdf-dropzone.is-dragover { border-color: var(--accent, #386853); background: var(--accent-soft, #f0f6f2); outline: none; }
+  .pdf-dropzone__icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; background: var(--accent-soft, #f0f6f2); color: var(--accent-strong, #2e5443); transition: transform 200ms ease; }
+  .pdf-dropzone:hover .pdf-dropzone__icon, .pdf-dropzone.is-dragover .pdf-dropzone__icon { transform: translateY(-2px); }
+  .pdf-dropzone__title { margin: 0; color: var(--ink, #1c1917); font-size: 15.5px; font-weight: 600; }
+  .pdf-dropzone__sub { margin: 2px 0 0; color: var(--muted, #57534e); font-size: 13.5px; }
+  .pdf-dropzone__meta { margin: 8px 0 0; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .pdf-privacy { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 12px 0 0; color: var(--accent-strong, #2e5443); font-size: 13px; font-weight: 500; text-align: center; }
+
+  .pdf-progress { max-width: 380px; margin: 0 auto; padding: 40px 0; text-align: center; }
+  .pdf-progress__bar { height: 6px; overflow: hidden; border-radius: 999px; background: var(--line, #e7e5e4); }
+  .pdf-progress__bar > div { height: 100%; width: 0%; border-radius: 999px; background: var(--accent, #386853); transition: width 250ms ease; }
+  .pdf-progress__msg { margin: 14px 0 0; color: var(--ink, #1c1917); font-size: 14px; font-weight: 600; }
+  .pdf-progress__sub { margin: 4px 0 0; color: var(--muted, #57534e); font-size: 12.5px; }
+
+  .pdf-results-card { padding: 20px; border: 1px solid var(--line, #e7e5e4); border-radius: 16px; background: var(--card, #fff); }
+  .pdf-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .pdf-stat { padding: 14px; border-radius: 10px; background: rgba(28, 25, 23, 0.03); text-align: center; }
+  .pdf-stat--accent { background: var(--accent-soft, #f0f6f2); }
+  .pdf-stat__label { margin: 0; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .pdf-stat__value { margin: 5px 0 0; color: var(--ink, #1c1917); font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; }
+  .pdf-stat--accent .pdf-stat__value { color: var(--accent-strong, #2e5443); }
+  .pdf-previews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+  .pdf-preview-label { margin: 0 0 6px; color: var(--faint, #a8a29e); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .pdf-previews canvas { width: 100%; height: auto; border: 1px solid var(--line, #e7e5e4); border-radius: 8px; background: #fff; }
+  .pdf-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
+  .pdf-btn { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
+  .pdf-btn:active { transform: scale(0.98); }
+  .pdf-btn--primary { background: var(--ink, #1c1917); color: #fff; border: 0; }
+  .pdf-btn--primary:hover { background: #33302c; }
+  .pdf-btn__chip { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
+  .pdf-btn--ghost { border: 1px solid var(--line-strong, #d6d3d1); background: var(--card, #fff); color: var(--muted, #57534e); }
+  .pdf-btn--ghost:hover { border-color: var(--faint, #a8a29e); color: var(--ink, #1c1917); }
+  .pdf-note { margin: 14px 0 0; color: var(--muted, #57534e); font-size: 13px; line-height: 1.5; text-align: center; }
+
+  #pdf-error { margin-top: 12px; padding: 14px; border: 1px solid #fecaca; border-radius: 10px; background: #fef2f2; color: #b91c1c; font-size: 14px; text-align: center; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 40rem) {
+    .level-options { grid-template-columns: 1fr; }
+    .pdf-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .pdf-previews { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pdf-dropzone, .pdf-dropzone__icon, .pdf-btn, .level-card, .pdf-progress__bar > div { transition: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.pdf-tool');
+    if (!tool) return;
+
+    const MAX_FILE_BYTES = 50 * 1024 * 1024;
+    const uploadArea = tool.querySelector('#pdf-upload-area');
+    const fileInput = tool.querySelector('#pdf-input');
+    const loading = tool.querySelector('#pdf-loading');
+    const loadingMessage = tool.querySelector('#pdf-loading-message');
+    const progressFill = tool.querySelector('#pdf-progress-fill');
+    const results = tool.querySelector('#pdf-results');
+    const errorBox = tool.querySelector('#pdf-error');
+    const downloadBtn = tool.querySelector('#pdf-download-btn');
+    const resetBtn = tool.querySelector('#pdf-reset-btn');
+    const noteBox = tool.querySelector('#pdf-note');
+    const levelInputs = tool.querySelectorAll('input[name="pdf-level"]');
+
+    let currentFile = null;
+    let objectUrl = null;
+
+    function getLevel() {
+      const checked = tool.querySelector('input[name="pdf-level"]:checked');
+      return checked ? checked.value : 'recommended';
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.remove('hidden');
+    }
+
+    function setProgress(pct, message) {
+      if (progressFill) progressFill.style.width = Math.min(100, Math.round(pct)) + '%';
+      if (message && loadingMessage) loadingMessage.textContent = message;
+    }
+
+    function resetTool() {
+      if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+      currentFile = null;
+      results.classList.add('hidden');
+      loading.classList.add('hidden');
+      errorBox.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      setProgress(0, 'Reading PDF…');
+    }
+
+    // Structural optimization: always applied. Never touches page content
+    // streams, fonts, or vector operators — only metadata and object packing.
+    function stripMetadata(doc) {
+      try {
+        doc.setTitle('');
+        doc.setAuthor('');
+        doc.setSubject('');
+        doc.setKeywords([]);
+      } catch (_) { /* some docs disallow metadata edits; structure still optimized */ }
+    }
+
+    // Re-encode an embedded DCTDecode (JPEG) image XObject via canvas.
+    // Returns new byte length, or 0 if left untouched.
+    async function recompressImage(doc, stream, level) {
+      const { PDFName, PDFNumber } = await import('pdf-lib');
+      const dict = stream.dict;
+      const filter = dict.get(PDFName.of('Filter'));
+      if (!filter || !filter.toString().includes('DCTDecode')) return 0; // non-JPEG images stay lossless in v1
+
+      const bitmap = await createImageBitmap(new Blob([stream.contents], { type: 'image/jpeg' }));
+      try {
+        let w = bitmap.width;
+        let h = bitmap.height;
+        if (level === 'smallest') {
+          const maxDim = 1400;
+          const scale = Math.min(1, maxDim / Math.max(w, h));
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+        }
+        const quality = level === 'recommended' ? 0.82 : 0.55;
+        const canvas = new OffscreenCanvas(w, h);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return 0;
+        ctx.drawImage(bitmap, 0, 0, w, h);
+        const outBlob = await canvas.convertToBlob({ type: 'image/jpeg', quality });
+        if (outBlob.size >= stream.contents.length) return 0; // re-encode didn't help — keep original
+
+        const newBytes = new Uint8Array(await outBlob.arrayBuffer());
+        stream.contents = newBytes;
+        dict.set(PDFName.of('Filter'), PDFName.of('DCTDecode'));
+        dict.set(PDFName.of('ColorSpace'), PDFName.of('DeviceRGB'));
+        dict.set(PDFName.of('BitsPerComponent'), PDFNumber.of(8));
+        dict.set(PDFName.of('Width'), PDFNumber.of(w));
+        dict.set(PDFName.of('Height'), PDFNumber.of(h));
+        dict.delete(PDFName.of('Decode'));
+        return newBytes.length;
+      } finally {
+        bitmap.close();
+      }
+    }
+
+    // Collect unique image XObject streams across all pages (deduped by ref).
+    async function collectImageStreams(doc) {
+      const { PDFName, PDFDict, PDFRawStream } = await import('pdf-lib');
+      const seen = new Set();
+      const streams = [];
+      for (const page of doc.getPages()) {
+        const resources = page.node.Resources();
+        if (!resources) continue;
+        const xobjDict = resources.lookup(PDFName.of('XObject'), PDFDict);
+        if (!xobjDict) continue;
+        for (const [, ref] of xobjDict.entries()) {
+          if (seen.has(ref)) continue;
+          seen.add(ref);
+          const stream = doc.context.lookup(ref);
+          if (stream instanceof PDFRawStream) {
+            const filter = stream.dict.get(PDFName.of('Filter'));
+            const subtype = stream.dict.get(PDFName.of('Subtype'));
+            if (subtype && subtype.toString() === '/Image') {
+              streams.push({ stream, isJpeg: !!(filter && filter.toString().includes('DCTDecode')) });
+            }
+          }
+        }
+      }
+      return streams;
+    }
+
+    async function renderPreview(bytes, canvasId) {
+      const pdfjs = await import('pdfjs-dist');
+      const workerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default;
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+      const doc = await pdfjs.getDocument({ data: bytes.slice() }).promise;
+      const page = await doc.getPage(1);
+      const canvas = tool.querySelector('#' + canvasId);
+      const scale = Math.min(340 / page.getViewport({ scale: 1 }).width, 1.2);
+      const viewport = page.getViewport({ scale });
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      await doc.destroy();
+    }
+
+    async function processFile(file) {
+      if (!file) return;
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        showError('That is not a PDF file. Please choose a .pdf document.');
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        showError('This PDF is ' + formatSize(file.size) + '. The limit is 50MB — please choose a smaller file.');
+        return;
+      }
+
+      currentFile = file;
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      errorBox.classList.add('hidden');
+      results.classList.add('hidden');
+      loading.classList.remove('hidden');
+      setProgress(5, 'Reading PDF…');
+
+      try {
+        const { PDFDocument } = await import('pdf-lib');
+        const originalBytes = new Uint8Array(await file.arrayBuffer());
+
+        let doc;
+        try {
+          doc = await PDFDocument.load(originalBytes, { ignoreEncryption: false });
+        } catch (err) {
+          throw new Error('This PDF appears to be password-protected or corrupted. Password-protected files are not supported.');
+        }
+
+        stripMetadata(doc);
+
+        const level = getLevel();
+        let imageCount = 0, recompressedCount = 0, bytesSavedOnImages = 0;
+        if (level !== 'best') {
+          setProgress(15, 'Analyzing embedded images…');
+          const streams = await collectImageStreams(doc);
+          imageCount = streams.filter(s => s.isJpeg).length;
+          for (let i = 0; i < streams.length; i++) {
+            const pct = 15 + (i / Math.max(1, streams.length)) * 70;
+            setProgress(pct, 'Recompressing image ' + (i + 1) + ' of ' + streams.length + '…');
+            if (!streams[i].isJpeg) continue;
+            const oldLen = streams[i].stream.contents.length;
+            const newLen = await recompressImage(doc, streams[i].stream, level);
+            if (newLen > 0) { recompressedCount++; bytesSavedOnImages += oldLen - newLen; }
+          }
+        } else {
+          setProgress(40, 'Optimizing document structure…');
+        }
+
+        setProgress(92, 'Finalizing…');
+        const compressedBytes = await doc.save({ useObjectStreams: true });
+
+        if (compressedBytes.length >= originalBytes.length) {
+          // Already fully optimized — return the original bytes as the result.
+          noteBox.textContent = 'This PDF was already well optimized, so its structure could not be improved further' +
+            (level === 'best' ? '. Try the Recommended or Smallest Size level to also re-encode embedded images.' : '.');
+          noteBox.classList.remove('hidden');
+        } else {
+          noteBox.classList.add('hidden');
+        }
+
+        const finalBytes = compressedBytes.length < originalBytes.length ? compressedBytes : originalBytes;
+        const saved = Math.max(0, originalBytes.length - finalBytes.length);
+        const savedPct = originalBytes.length > 0 ? Math.round((saved / originalBytes.length) * 100) : 0;
+
+        tool.querySelector('#pdf-original-size').textContent = formatSize(originalBytes.length);
+        tool.querySelector('#pdf-compressed-size').textContent = formatSize(finalBytes.length);
+        tool.querySelector('#pdf-saved-percent').textContent = savedPct + '%';
+
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(new Blob([finalBytes], { type: 'application/pdf' }));
+        downloadBtn.href = objectUrl;
+        const baseName = file.name.replace(/\.pdf$/i, '');
+        downloadBtn.download = baseName + '-compressed.pdf';
+
+        setProgress(96, 'Generating preview…');
+        await Promise.all([
+          renderPreview(originalBytes, 'pdf-preview-before').catch(() => {}),
+          renderPreview(finalBytes, 'pdf-preview-after').catch(() => {}),
+        ]);
+
+        if (recompressedCount > 0) {
+          noteBox.textContent = recompressedCount + ' embedded image' + (recompressedCount > 1 ? 's' : '') +
+            ' re-encoded (' + formatSize(bytesSavedOnImages) + ' saved on images). Text, fonts and vector content were never touched.';
+          noteBox.classList.remove('hidden');
+        }
+
+        setProgress(100);
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        tool.querySelector('.upload-shell').classList.remove('hidden');
+        showError(err instanceof Error && err.message.startsWith('This PDF')
+          ? err.message
+          : 'Compression failed for this file. Please try a different PDF.');
+        console.error(err);
+      }
+    }
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+    });
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('is-dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('is-dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('is-dragover');
+      if (e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) processFile(e.target.files[0]);
+      fileInput.value = '';
+    });
+    resetBtn.addEventListener('click', resetTool);
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); }, { once: true });
+  })();
+</script>

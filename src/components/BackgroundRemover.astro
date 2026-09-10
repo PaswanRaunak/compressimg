@@ -1,0 +1,148 @@
+---
+// Background remover via remove.bg through our Worker proxy.
+// This is the ONE tool in the suite that is not client-side; copy says so.
+const WORKER_URL = import.meta.env.PUBLIC_COMPRESSION_WORKER_URL
+  ? import.meta.env.PUBLIC_COMPRESSION_WORKER_URL.replace(/\/shrink$/, '')
+  : 'https://imgcompressortool-proxy.paswanrounak55.workers.dev';
+---
+
+<div class="bg-tool" data-endpoint={WORKER_URL + '/remove-bg'}>
+  <input type="file" id="bg-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="bg-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label="Upload an image to remove its background">
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your image here</p>
+        <p class="tool-dropzone__sub">or click to browse files, people and products work best</p>
+      </div>
+      <p class="tool-dropzone__meta">JPG &middot; PNG &middot; WebP &middot; up to 10MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v2h8z"></path></svg>
+      Image is sent securely to our processing service and not stored. All other tools on this site run fully in your browser.
+    </p>
+  </div>
+
+  <div id="bg-loading" class="hidden" aria-live="polite">
+    <div class="tool-progress">
+      <div class="tool-progress__bar"><div class="bg-spin-fill"></div></div>
+      <p class="tool-progress__msg">Removing the background&hellip;</p>
+      <p class="tool-progress__sub">Usually takes 2 to 5 seconds</p>
+    </div>
+  </div>
+
+  <div id="bg-result" class="hidden">
+    <div class="bg-result-card">
+      <div class="bg-compare">
+        <div><p class="bg-label">Original</p><img id="bg-before" alt="Original image" /></div>
+        <div><p class="bg-label">Background removed</p><div class="tool-checker bg-checker"><img id="bg-after" alt="Result with transparent background" /></div></div>
+      </div>
+      <p id="bg-note" class="bg-note hidden">The free tier returns a lower-resolution preview. For a full-resolution transparent PNG, more credits are needed on the processing service.</p>
+      <div class="bg-actions">
+        <a id="bg-download" class="tool-btn tool-btn--primary">
+          Download transparent PNG
+          <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+        </a>
+        <button id="bg-reset" class="tool-btn tool-btn--ghost" type="button">Try another image</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bg-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .bg-spin-fill { width: 30%; animation: bg-slide 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+  @keyframes bg-slide { 0% { transform: translateX(-120%); } 100% { transform: translateX(430%); } }
+  .bg-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bg-label { margin: 0 0 6px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .bg-compare img { display: block; width: 100%; height: 220px; object-fit: contain; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .bg-checker { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .bg-checker img { border: 0; border-radius: 0; background: transparent; }
+  .bg-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; text-align: center; }
+  .bg-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+  @media (prefers-reduced-motion: reduce) { .bg-spin-fill { animation: none; transform: none; } }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.bg-tool');
+    if (!tool) return;
+    const endpoint = tool.dataset.endpoint;
+
+    const dropzone = tool.querySelector('#bg-dropzone');
+    const fileInput = tool.querySelector('#bg-input');
+    const loading = tool.querySelector('#bg-loading');
+    const result = tool.querySelector('#bg-result');
+    const errorBox = tool.querySelector('#bg-error');
+    const note = tool.querySelector('#bg-note');
+    const downloadBtn = tool.querySelector('#bg-download');
+
+    let objectUrl = null, downloadUrl = null;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+
+    async function loadFile(file) {
+      errorBox.classList.add('hidden');
+      result.classList.add('hidden');
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) { showError('Please choose a JPG, PNG, or WebP image.'); return; }
+      if (file.size > 10 * 1024 * 1024) { showError('This image is ' + (file.size / 1048576).toFixed(2) + 'MB. The limit is 10MB.'); return; }
+
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(file);
+      tool.querySelector('#bg-before').src = objectUrl;
+
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      try {
+        const form = new FormData();
+        form.append('image_file', file, file.name);
+        form.append('size', 'auto');
+        const resp = await fetch(endpoint, { method: 'POST', body: form });
+
+        if (!resp.ok) {
+          let msg = 'Background removal failed. Please try again later.';
+          if (resp.status === 501) msg = 'The background removal service is not configured yet. The site owner needs to add an API key.';
+          else if (resp.status === 402 || resp.status === 429) msg = 'The monthly free quota for background removal is used up. Please try again next month.';
+          else if (resp.status === 400) msg = 'This image is not supported. Please use a clear photo of a person, product, or object.';
+          throw new Error(msg);
+        }
+
+        const blob = await resp.blob();
+        if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+        downloadUrl = URL.createObjectURL(blob);
+        tool.querySelector('#bg-after').src = downloadUrl;
+        downloadBtn.href = downloadUrl;
+        downloadBtn.download = file.name.replace(/\.[^/.]+$/, '') + '-no-background.png';
+
+        const isPreview = resp.headers.get('X-Preview-Result') === 'true';
+        note.classList.toggle('hidden', !isPreview);
+
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        tool.querySelector('.upload-shell').classList.remove('hidden');
+        showError(err instanceof Error && err.message.startsWith('The ') ? err.message : 'Background removal failed. Please check your connection and try again.');
+        console.error(err);
+      }
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+    tool.querySelector('#bg-reset').addEventListener('click', () => {
+      result.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    });
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); if (downloadUrl) URL.revokeObjectURL(downloadUrl); }, { once: true });
+  })();
+</script>

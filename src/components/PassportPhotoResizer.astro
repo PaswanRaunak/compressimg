@@ -1,0 +1,247 @@
+---
+// Passport/ID photo resizer: center-crop with pan + zoom, output at 300 DPI.
+const PRESETS = [
+  { id: 'us', label: 'US Passport (2 x 2 in)', w: 600, h: 600 },
+  { id: 'uk', label: 'UK Passport (35 x 45 mm)', w: 413, h: 531 },
+  { id: 'in', label: 'Indian Passport (51 x 51 mm)', w: 600, h: 600 },
+  { id: 'schengen', label: 'Schengen Visa (35 x 45 mm)', w: 413, h: 531 },
+  { id: 'pan', label: 'PAN Card (3.5 x 2.5 cm)', w: 413, h: 295 },
+  { id: 'aadhaar', label: 'Aadhaar (2.5 x 3.125 cm)', w: 295, h: 369 },
+];
+---
+
+<div class="pp-tool" data-presets={JSON.stringify(PRESETS)}>
+  <input type="file" id="pp-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="pp-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label="Upload a photo to resize for ID documents">
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your photo here</p>
+        <p class="tool-dropzone__sub">or click to browse files, face centered works best</p>
+      </div>
+      <p class="tool-dropzone__meta">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your images never leave your device, everything happens right here in your browser.
+    </p>
+  </div>
+
+  <div id="pp-editor" class="hidden">
+    <div class="pp-controls">
+      <label class="tool-field"><span>Document preset</span>
+        <select id="pp-preset">
+          {PRESETS.map((p) => <option value={p.id} selected={p.id === 'us'}>{p.label}</option>)}
+        </select>
+      </label>
+      <div class="pp-zoom tool-field"><span>Zoom</span><input type="range" id="pp-zoom" min="1" max="3" step="0.05" value="1" aria-label="Zoom" /></div>
+    </div>
+    <div id="pp-stage" class="pp-stage tool-checker">
+      <img id="pp-canvas-img" alt="Photo being fitted, drag to reposition" draggable="false" />
+      <div id="pp-frame" class="pp-frame" aria-hidden="true"></div>
+    </div>
+    <p class="pp-hint">Drag the photo to position it inside the frame, then zoom to fit.</p>
+    <div class="pp-actions">
+      <button id="pp-apply" class="tool-btn tool-btn--primary" type="button">
+        Create {`photo`}
+        <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+      </button>
+      <button id="pp-change" class="tool-btn tool-btn--ghost" type="button">Choose another photo</button>
+    </div>
+  </div>
+
+  <div id="pp-loading" class="hidden" aria-live="polite">
+    <div class="tool-progress">
+      <div class="tool-progress__bar"><div style="width:85%"></div></div>
+      <p class="tool-progress__msg">Processing&hellip;</p>
+      <p class="tool-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <div id="pp-result" class="hidden">
+    <div class="pp-result-card">
+      <div class="pp-result-preview"><img id="pp-result-img" alt="Resized ID photo result" /></div>
+      <p id="pp-out-line" class="pp-out-line"></p>
+      <div class="pp-actions">
+        <a id="pp-download" class="tool-btn tool-btn--primary">
+          Download photo
+          <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+        </a>
+        <button id="pp-reset" class="tool-btn tool-btn--ghost" type="button">Resize another photo</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pp-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .pp-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-bottom: 12px; }
+  .pp-controls .tool-field:first-child { flex: 1; min-width: 220px; }
+  .pp-zoom { flex: 1; min-width: 160px; }
+  .pp-zoom input { width: 100%; accent-color: var(--accent); min-height: 44px; }
+  .pp-stage { position: relative; display: flex; justify-content: center; align-items: center; min-height: 300px; border-radius: 12px; border: 1px solid var(--line); overflow: hidden; touch-action: none; user-select: none; cursor: grab; }
+  .pp-stage:active { cursor: grabbing; }
+  .pp-stage img { max-width: 100%; max-height: 340px; pointer-events: none; }
+  .pp-frame { position: absolute; border: 2px solid var(--accent); border-radius: 2px; box-shadow: 0 0 0 9999px rgba(28, 25, 23, 0.4); pointer-events: none; }
+  .pp-hint { margin: 10px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+  .pp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .pp-result-card { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-align: center; }
+  .pp-result-preview { display: inline-block; padding: 6px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .pp-result-preview img { display: block; max-width: 100%; max-height: 300px; }
+  .pp-out-line { margin: 12px 0 0; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 14.5px; font-weight: 600; }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.pp-tool');
+    if (!tool) return;
+    const presets = JSON.parse(tool.dataset.presets);
+
+    const dropzone = tool.querySelector('#pp-dropzone');
+    const fileInput = tool.querySelector('#pp-input');
+    const editor = tool.querySelector('#pp-editor');
+    const stage = tool.querySelector('#pp-stage');
+    const img = tool.querySelector('#pp-canvas-img');
+    const frame = tool.querySelector('#pp-frame');
+    const presetSel = tool.querySelector('#pp-preset');
+    const zoomInput = tool.querySelector('#pp-zoom');
+    const loading = tool.querySelector('#pp-loading');
+    const result = tool.querySelector('#pp-result');
+    const errorBox = tool.querySelector('#pp-error');
+
+    let bitmap = null, fileName = 'photo', fileType = 'image/jpeg';
+    let offset = { x: 0, y: 0 }; // pan offset in display px
+    let objectUrl = null, downloadUrl = null;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+    const formatSize = (b) => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+
+    function currentPreset() { return presets.find((p) => p.id === presetSel.value); }
+
+    // Compute the frame rectangle over the displayed image for the current preset + zoom.
+    function layout() {
+      if (!bitmap) return;
+      const dispW = img.clientWidth, dispH = img.clientHeight;
+      if (!dispW) return;
+      const p = currentPreset();
+      const aspect = p.w / p.h;
+      const zoom = parseFloat(zoomInput.value);
+      // base frame: largest crop with preset aspect that fits the image, times zoom
+      let fw = Math.min(dispW, dispH * aspect) * zoom;
+      let fh = fw / aspect;
+      fw = Math.min(fw, dispW); fh = Math.min(fh, dispH);
+      // clamp offset so the frame stays over the image
+      const maxX = (dispW - fw) / 2, maxY = (dispH - fh) / 2;
+      offset.x = Math.max(-maxX, Math.min(maxX, offset.x));
+      offset.y = Math.max(-maxY, Math.min(maxY, offset.y));
+      frame.style.width = fw + 'px';
+      frame.style.height = fh + 'px';
+      frame.style.left = (dispW - fw) / 2 + offset.x + 'px';
+      frame.style.top = (dispH - fh) / 2 + offset.y + 'px';
+    }
+
+    async function loadFile(file) {
+      errorBox.classList.add('hidden');
+      result.classList.add('hidden');
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) { showError('Please choose a JPG, PNG, or WebP image.'); return; }
+      if (file.size > 20 * 1024 * 1024) { showError('This image is ' + formatSize(file.size) + '. The limit is 20MB.'); return; }
+      try { bitmap = await createImageBitmap(file); }
+      catch (_) { showError('This image could not be read in this browser.'); return; }
+      fileName = file.name.replace(/\.[^/.]+$/, '');
+      fileType = file.type;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(file);
+      img.src = objectUrl;
+      offset = { x: 0, y: 0 };
+      zoomInput.value = '1';
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      editor.classList.remove('hidden');
+      requestAnimationFrame(layout);
+    }
+
+    // Drag to pan
+    let drag = null;
+    stage.addEventListener('pointerdown', (e) => {
+      if (!bitmap) return;
+      drag = { x: e.clientX, y: e.clientY, ox: offset.x, oy: offset.y };
+      stage.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      offset.x = drag.ox + (e.clientX - drag.x);
+      offset.y = drag.oy + (e.clientY - drag.y);
+      layout();
+    });
+    const endDrag = () => { drag = null; };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    zoomInput.addEventListener('input', layout);
+    presetSel.addEventListener('change', () => { offset = { x: 0, y: 0 }; zoomInput.value = '1'; layout(); });
+    window.addEventListener('resize', layout);
+
+    async function apply() {
+      editor.classList.add('hidden');
+      loading.classList.remove('hidden');
+      try {
+        const p = currentPreset();
+        const dispW = img.clientWidth, dispH = img.clientHeight;
+        const scale = Math.max(bitmap.width / dispW, bitmap.height / dispH); // image px per display px
+        const fw = parseFloat(frame.style.width) * scale;
+        const fh = parseFloat(frame.style.height) * scale;
+        const fx = (dispW - parseFloat(frame.style.width)) / 2 - offset.x;
+        const fy = (dispH - parseFloat(frame.style.height)) / 2 - offset.y;
+        const sx = Math.max(0, fx * scale);
+        const sy = Math.max(0, fy * scale);
+        const sw = Math.min(bitmap.width - sx, fw);
+        const sh = Math.min(bitmap.height - sy, fh);
+
+        const canvas = new OffscreenCanvas(p.w, p.h);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, p.w, p.h);
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, p.w, p.h);
+        const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.95 });
+
+        if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+        downloadUrl = URL.createObjectURL(blob);
+        const dl = tool.querySelector('#pp-download');
+        dl.href = downloadUrl;
+        dl.download = fileName + '-' + p.id + '-photo.jpg';
+        tool.querySelector('#pp-result-img').src = downloadUrl;
+        tool.querySelector('#pp-out-line').textContent = p.w + ' \u00d7 ' + p.h + ' px (300 DPI) \u00b7 ' + formatSize(blob.size);
+
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        editor.classList.remove('hidden');
+        showError('Could not process this photo. Please try another file.');
+      }
+    }
+
+    function resetTool() {
+      result.classList.add('hidden');
+      editor.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+    tool.querySelector('#pp-apply').addEventListener('click', apply);
+    tool.querySelector('#pp-change').addEventListener('click', resetTool);
+    tool.querySelector('#pp-reset').addEventListener('click', resetTool);
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); if (downloadUrl) URL.revokeObjectURL(downloadUrl); }, { once: true });
+  })();
+</script>

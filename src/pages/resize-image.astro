@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageResizer from '../components/ImageResizer.astro';
+import ToolLinks from '../components/ToolLinks.astro';
+
+const title = 'Resize Image Online Free - No Download Needed | ImgCompressor.tools';
+const description = 'Resize images online for free in your browser. Set exact pixel dimensions or scale by percent with aspect-ratio lock. JPG, PNG, and WebP supported, nothing uploaded.';
+const canonical = '/resize-image';
+
+const faqItems = [
+  { question: 'How do I resize an image to exact pixels?', answer: 'Drop your image in, type the width and height you need, and click Resize. With aspect-ratio lock enabled, changing one side automatically adjusts the other so the image never stretches. Turn the lock off to force exact dimensions.' },
+  { question: 'Can I resize by percentage instead of pixels?', answer: 'Yes. Switch to By percent and enter any scale from 1% to 500%, or use the 25/50/75% shortcuts. This is the quickest way to halve an image or scale it down for the web while keeping proportions.' },
+  { question: 'Does resizing reduce image quality?', answer: 'Downscaling (making an image smaller) keeps quality high because pixels are merged intelligently. Upscaling makes images larger, but detail cannot be invented, so very large upscales look soft. For sharp results, resize down or use dimensions close to the original.' },
+  { question: 'Are my images uploaded to a server?', answer: 'No. Resizing runs entirely in your browser with the Canvas API. Your image is read locally, processed on your device, and offered as a download. Nothing is transmitted anywhere.' }
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schemaType="WebApplication">
+  <section class="tool-hero">
+    <div class="tool-hero__intro">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Resize &amp; crop</p>
+      <h1>Resize Images Online - Free, Fast, Private</h1>
+      <p class="tool-hero__summary">Set exact pixel dimensions or scale by percent with an aspect-ratio lock. Built-in presets for Instagram, passport photos, and LinkedIn. Nothing is uploaded.</p>
+    </div>
+    <div class="tool-hero__panel" aria-label="Image resizing workspace">
+      <div class="tool-card">
+        <div class="tool-card__head">
+          <span>Resize bench</span>
+          <span class="tool-card__badge" aria-hidden="true">100% local</span>
+        </div>
+        <div class="tool-card__body">
+          <ImageResizer />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-how">
+    <div class="tool-how__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>How it works</p>
+      <h2>Exact dimensions, zero guesswork.</h2>
+    </div>
+    <ol class="tool-how__list">
+      <li><span>01</span><div><h3>Drop your image</h3><p>JPG, PNG, or WebP up to 20MB. The preview and original dimensions appear instantly.</p></div></li>
+      <li><span>02</span><div><h3>Set the target size</h3><p>Type pixels with aspect lock, scale by percent, or use a preset for social and ID formats.</p></div></li>
+      <li><span>03</span><div><h3>Download the resized file</h3><p>Output dimensions and file size are shown before you download, named with -resized.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="tool-faq" aria-labelledby="rsz-faq-title">
+    <div class="tool-faq__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="rsz-faq-title">Before you resize.</h2>
+    </div>
+    <div class="tool-faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+    </div>
+  </section>
+
+  <ToolLinks hrefs={['/crop-image', '/passport-photo-resizer', '/compress-image-to-100kb']} exclude="/resize-image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'CompressImg Image Resizer',
+        applicationCategory: 'UtilityApplication',
+        operatingSystem: 'Any (browser-based)',
+        url: 'https://imgcompressor.tools/resize-image',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Free browser-based image resizer with pixel and percent modes, aspect-ratio lock, and social media presets.'
+      },
+      { '@type': 'FAQPage', mainEntity: faqItems.map(({ question, answer }) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })) }
+    ]
+  })} />
+
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
+    .tool-hero { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .tool-hero__intro h1 { max-width: 14ch; margin-top: 20px; font-size: clamp(34px, 4.6vw, 54px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.05; }
+    .tool-hero__summary { max-width: 50ch; margin: 20px 0 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .tool-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 24px 56px -28px rgba(28,25,23,0.22); }
+    .tool-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+    .tool-card__body { padding: 18px 20px 20px; }
+    .tool-how { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tool-how h2 { max-width: 16ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .tool-how__list { display: grid; gap: 0 56px; padding: 0; margin: 40px 0 0; list-style: none; }
+    .tool-how__list li { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 24px 0; border-top: 1px solid var(--line); }
+    .tool-how__list li > span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; padding-top: 4px; }
+    .tool-how__list h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .tool-how__list p { max-width: 48ch; margin: 6px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+    .tool-faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tool-faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .tool-faq__list { border-top: 1px solid var(--line); }
+    .tool-faq__list details { border-bottom: 1px solid var(--line); }
+    .tool-faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .tool-faq__list summary:hover { color: var(--accent-strong); }
+    .tool-faq__list summary::-webkit-details-marker { display: none; }
+    .tool-faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .tool-faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .tool-faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+    @media (min-width: 56rem) {
+      .tool-hero { grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+      .tool-how__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .tool-how__list li:nth-child(2) { border-top: none; }
+    }
+  </style>
+</Layout>

@@ -1,0 +1,216 @@
+---
+export interface Props {
+  from: string;        // 'png' | 'jpg' | 'webp' | 'heic'
+  to: string;          // 'jpg' | 'png' | 'webp'
+  accepts: string;     // input accept attribute
+}
+
+const { from, to, accepts } = Astro.props;
+const lossyTarget = to === 'jpg' || to === 'webp';
+---
+
+<div class="cnv-tool" data-from={from} data-to={to}>
+  <input type="file" id="cnv-input" accept={accepts} style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="cnv-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label={`Upload a ${from.toUpperCase()} image to convert`}>
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your {from.toUpperCase()} image here</p>
+        <p class="tool-dropzone__sub">or click to browse files, format is detected automatically</p>
+      </div>
+      <p class="tool-dropzone__meta">{accepts.split(',').map((m) => m.replace('image/', '').replace('heic', 'heic/heif').toUpperCase()).join(' · ')} · up to 20MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your images never leave your device, everything happens right here in your browser.
+    </p>
+  </div>
+
+  <div id="cnv-editor" class="hidden">
+    <div class="cnv-preview-row">
+      <div class="cnv-preview"><p>Original</p><img id="cnv-preview-src" alt="Original image preview" /></div>
+      <div class="cnv-preview"><p>Converted</p><img id="cnv-preview-out" alt="Converted image preview" /></div>
+    </div>
+    {lossyTarget && (
+      <label class="cnv-quality tool-field">
+        <span>Quality: <b id="cnv-quality-value">90</b>%</span>
+        <input type="range" id="cnv-quality" min="10" max="100" value="90" />
+      </label>
+    )}
+    <div class="cnv-actions">
+      <button id="cnv-convert" class="tool-btn tool-btn--primary" type="button">
+        Convert to {to.toUpperCase()}
+        <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+      </button>
+      <button id="cnv-change" class="tool-btn tool-btn--ghost" type="button">Choose another image</button>
+    </div>
+    <p id="cnv-fileinfo" class="cnv-fileinfo"></p>
+  </div>
+
+  <div id="cnv-loading" class="hidden" aria-live="polite">
+    <div class="tool-progress">
+      <div class="tool-progress__bar"><div id="cnv-progress-fill"></div></div>
+      <p class="tool-progress__msg" id="cnv-progress-msg">Converting&hellip;</p>
+      <p class="tool-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <div id="cnv-result" class="hidden">
+    <div class="cnv-result-card">
+      <p id="cnv-out-line" class="cnv-out-line"></p>
+      <div class="cnv-actions">
+        <a id="cnv-download" class="tool-btn tool-btn--primary">
+          Download {to.toUpperCase()}
+          <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+        </a>
+        <button id="cnv-reset" class="tool-btn tool-btn--ghost" type="button">Convert another image</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cnv-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .cnv-preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .cnv-preview p { margin: 0 0 6px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .cnv-preview img { display: block; width: 100%; height: 160px; object-fit: contain; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .cnv-quality { margin-bottom: 14px; }
+  .cnv-quality b { color: var(--accent-strong); }
+  .cnv-quality input { width: 100%; accent-color: var(--accent); min-height: 44px; }
+  .cnv-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cnv-fileinfo { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+  .cnv-result-card { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-align: center; }
+  .cnv-out-line { margin: 0; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; }
+  .cnv-result-card .cnv-actions { justify-content: center; margin-top: 16px; }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.cnv-tool');
+    if (!tool) return;
+    const from = tool.dataset.from;
+    const to = tool.dataset.to;
+
+    const dropzone = tool.querySelector('#cnv-dropzone');
+    const fileInput = tool.querySelector('#cnv-input');
+    const editor = tool.querySelector('#cnv-editor');
+    const loading = tool.querySelector('#cnv-loading');
+    const result = tool.querySelector('#cnv-result');
+    const errorBox = tool.querySelector('#cnv-error');
+    const srcPreview = tool.querySelector('#cnv-preview-src');
+    const outPreview = tool.querySelector('#cnv-preview-out');
+    const qualityInput = tool.querySelector('#cnv-quality');
+    const qualityValue = tool.querySelector('#cnv-quality-value');
+    const fileInfo = tool.querySelector('#cnv-fileinfo');
+    const accepts = fileInput.getAttribute('accept');
+    const lossyTarget = to === 'jpg' || to === 'webp';
+
+    let current = null; // { file, url }
+    let objectUrl = null, downloadUrl = null;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+    const formatSize = (b) => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+    const extOf = (f) => f.type === 'image/png' ? 'png' : f.type === 'image/webp' ? 'webp' : f.type === 'image/jpeg' ? 'jpg' : 'heic';
+
+    async function loadFile(file) {
+      errorBox.classList.add('hidden');
+      result.classList.add('hidden');
+      const accepted = accepts.split(',').map((m) => m.trim());
+      if (!accepted.includes(file.type) && !file.name.toLowerCase().match(/\.(heic|heif)$/)) {
+        showError('This tool converts ' + from.toUpperCase() + ' images. Detected: ' + (file.type || 'unknown') + '.');
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) { showError('This image is ' + formatSize(file.size) + '. The limit is 20MB.'); return; }
+      current = { file, url: URL.createObjectURL(file) };
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = current.url;
+      srcPreview.src = objectUrl;
+      outPreview.removeAttribute('src');
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      editor.classList.remove('hidden');
+      fileInfo.textContent = file.name + ' \u00b7 ' + formatSize(file.size);
+    }
+
+    async function convert() {
+      if (!current) return;
+      editor.classList.add('hidden');
+      loading.classList.remove('hidden');
+      setProgress(10, from === 'heic' ? 'Decoding HEIC\u2026' : 'Reading image\u2026');
+      try {
+        let sourceBlob = current.file;
+        if (from === 'heic') {
+          const heic2any = (await import('heic2any')).default;
+          sourceBlob = await heic2any({ blob: current.file, toType: 'image/jpeg', quality: 0.95 });
+        }
+
+        setProgress(45, 'Converting\u2026');
+        setProgress(55, 'Preparing canvas…');
+        const bitmap = await createImageBitmap(sourceBlob);
+        const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+        const ctx = canvas.getContext('2d');
+        if (to === 'jpg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+        ctx.drawImage(bitmap, 0, 0);
+        bitmap.close();
+
+        const mime = 'image/' + (to === 'jpg' ? 'jpeg' : to);
+        const quality = lossyTarget ? (parseInt(qualityInput.value) || 90) / 100 : undefined;
+        setProgress(70, 'Encoding ' + to.toUpperCase() + '…');
+        let outBlob = await canvas.convertToBlob({ type: mime, quality });
+
+        // Safari may not encode WebP: fall back to PNG with a note.
+        let note = '';
+        if (to === 'webp' && outBlob.type !== 'image/webp') {
+          outBlob = await canvas.convertToBlob({ type: 'image/png' });
+          note = ' (WebP encoding is not supported in this browser, saved as PNG instead)';
+        }
+
+        setProgress(95, 'Done');
+        if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+        downloadUrl = URL.createObjectURL(outBlob);
+        outPreview.src = downloadUrl;
+        const dl = tool.querySelector('#cnv-download');
+        dl.href = downloadUrl;
+        const base = current.file.name.replace(/\.[^/.]+$/, '');
+        dl.download = base + '.' + (to === 'jpg' ? 'jpg' : to);
+        tool.querySelector('#cnv-out-line').textContent =
+          formatSize(current.file.size) + ' ' + from.toUpperCase() + ' \u2192 ' + formatSize(outBlob.size) + ' ' + to.toUpperCase() + note;
+
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        editor.classList.remove('hidden');
+        showError('Could not convert this image. Please try another file.');
+      }
+    }
+
+    function setProgress(pct, message) {
+      tool.querySelector('#cnv-progress-fill').style.width = Math.min(100, pct) + '%';
+      if (message) tool.querySelector('#cnv-progress-msg').textContent = message;
+    }
+
+    function resetTool() {
+      result.classList.add('hidden');
+      editor.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    }
+
+    if (qualityInput) qualityInput.addEventListener('input', () => { qualityValue.textContent = qualityInput.value; });
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+    tool.querySelector('#cnv-convert').addEventListener('click', convert);
+    tool.querySelector('#cnv-change').addEventListener('click', resetTool);
+    tool.querySelector('#cnv-reset').addEventListener('click', resetTool);
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); if (downloadUrl) URL.revokeObjectURL(downloadUrl); }, { once: true });
+  })();
+</script>

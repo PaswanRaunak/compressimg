@@ -125,6 +125,45 @@ export default {
       });
     }
 
+    if (request.method === 'POST' && url.pathname === '/remove-bg') {
+      // remove.bg proxy — forwards the image to the remove.bg API using a
+      // Worker secret (REMOVERBG_API_KEY). The image is never persisted.
+      const apiKey = env.REMOVERBG_API_KEY;
+      if (!apiKey) {
+        return jsonResponse({ error: 'Background removal is not configured yet.' }, 501);
+      }
+      try {
+        const inForm = await request.formData();
+        const outForm = new FormData();
+        const imageFile = inForm.get('image_file');
+        if (!imageFile) return jsonResponse({ error: 'Missing image_file.' }, 400);
+        outForm.append('image_file', imageFile, imageFile.name || 'image.jpg');
+        outForm.append('size', inForm.get('size') || 'auto');
+        const bgRes = await fetch('https://api.remove.bg/v1.0/removebg', {
+          method: 'POST',
+          headers: { 'X-Api-Key': apiKey },
+          body: outForm
+        });
+        if (!bgRes.ok) {
+          const errText = await bgRes.text();
+          console.error('remove.bg error:', bgRes.status, errText.slice(0, 300));
+          return jsonResponse({ error: 'remove.bg request failed' }, bgRes.status);
+        }
+        return new Response(await bgRes.arrayBuffer(), {
+          status: 200,
+          headers: {
+            'Content-Type': 'image/png',
+            'X-Preview-Result': bgRes.headers.get('X-Type') === 'preview' ? 'true' : 'false',
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
+          }
+        });
+      } catch (err) {
+        console.error('remove-bg proxy error:', err);
+        return jsonResponse({ error: 'Background removal failed.' }, 500);
+      }
+    }
+
     // Health check
     return jsonResponse({ status: 'ok', message: 'TinyPNG proxy ready. POST an image to /shrink' });
   }

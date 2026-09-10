@@ -1,0 +1,108 @@
+---
+import ToolPageLayout from  '../../layouts/ToolPageLayout.astro';
+import FormatConverter from  '../../components/FormatConverter.astro';
+
+export function getStaticPaths() {
+  const pairs = {
+    'png-to-jpg': {
+      from: 'png', to: 'jpg', accepts: 'image/png',
+      title: 'Convert PNG to JPG Online Free - Private | ImgCompressor.tools',
+      description: 'Convert PNG to JPG online for free, right in your browser. Smaller files for email and sharing, with adjustable quality. No upload, no signup.',
+      h1: 'Convert PNG to JPG Online - Free &amp; Instant',
+      summary: 'Turn PNG images into JPG with an adjustable quality slider. Transparency is flattened onto white, and everything runs locally in your browser.',
+      appName: 'CompressImg PNG to JPG Converter',
+      appDescription: 'Free browser-based PNG to JPG converter with adjustable quality. No uploads.',
+      faq: [
+        { q: 'What happens to transparency when converting PNG to JPG?', answer: 'JPG does not support transparency, so transparent areas are flattened onto a white background. If you need to keep transparency, convert PNG to WebP instead.' },
+        { q: 'Why is the JPG smaller than my PNG?', answer: 'JPG uses lossy compression tuned for photographs, while PNG uses lossless compression designed for sharp edges and flat colors. For photos, JPG files are typically several times smaller at a visually identical quality.' },
+        { q: 'Which quality setting should I pick?', answer: '90% is visually indistinguishable from the original for most photos and is the default. Drop to 75 to 85% for smaller files, and keep 95 to 100% only when the file will be edited again later.' },
+      ],
+    },
+    'jpg-to-png': {
+      from: 'jpg', to: 'png', accepts: 'image/jpeg',
+      title: 'Convert JPG to PNG Online Free - Private | ImgCompressor.tools',
+      description: 'Convert JPG to PNG online for free in your browser. Lossless PNG output with no quality loss, no upload, and no signup required.',
+      h1: 'Convert JPG to PNG Online - Free &amp; Lossless',
+      summary: 'Turn JPG images into lossless PNG files in your browser. Useful for screenshots, graphics, and images that will be edited further.',
+      appName: 'CompressImg JPG to PNG Converter',
+      appDescription: 'Free browser-based JPG to PNG converter. Lossless output, no uploads.',
+      faq: [
+        { q: 'Does converting JPG to PNG improve quality?', answer: 'No, it preserves the current quality. PNG is lossless, so the image will not degrade further, but detail already lost when the JPG was created cannot be restored. The PNG file will usually be larger than the JPG.' },
+        { q: 'When should I use PNG instead of JPG?', answer: 'PNG is the better choice for screenshots, logos, icons, text-heavy images, and anything that will be edited repeatedly, because every save is lossless. JPG remains better for photographs where file size matters.' },
+        { q: 'Will the PNG have a transparent background?', answer: 'No. A JPG has no transparency, so the converted PNG is fully opaque. To make a background transparent, use the Remove Signature Background tool for scans or a cut-out tool for photos.' },
+      ],
+    },
+    'png-to-webp': {
+      from: 'png', to: 'webp', accepts: 'image/png',
+      title: 'Convert PNG to WebP Online Free - Smaller Files | ImgCompressor.tools',
+      description: 'Convert PNG to WebP online for free in your browser. Keep transparency, cut file size dramatically, and speed up your website. No upload needed.',
+      h1: 'Convert PNG to WebP Online - Smaller, Transparent',
+      summary: 'WebP keeps PNG-style transparency while cutting file size dramatically. Convert locally with an adjustable quality slider, perfect for faster web pages.',
+      appName: 'CompressImg PNG to WebP Converter',
+      appDescription: 'Free browser-based PNG to WebP converter that preserves transparency with adjustable quality.',
+      faq: [
+        { q: 'Does WebP keep transparency from my PNG?', answer: 'Yes. Unlike JPG, WebP supports alpha transparency, so your PNG can be converted without flattening onto a background. Choose a higher quality setting if edges look soft.' },
+        { q: 'How much smaller is WebP than PNG?', answer: 'For most images, WebP is 25 to 35 percent smaller than an equivalent PNG. Screenshots and photos see the biggest gains; tiny graphics with few colors may see less.' },
+        { q: 'Do all browsers support WebP?', answer: 'Every modern browser supports WebP, including Chrome, Edge, Firefox, Safari 14+, and Opera. If your own browser cannot encode WebP, this tool falls back to PNG automatically.' },
+      ],
+    },
+    'webp-to-png': {
+      from: 'webp', to: 'png', accepts: 'image/webp',
+      title: 'Convert WebP to PNG Online Free - Lossless | ImgCompressor.tools',
+      description: 'Convert WebP images to PNG online for free, right in your browser. Lossless output keeps transparency, works offline, no upload or signup.',
+      h1: 'Convert WebP to PNG Online - Free &amp; Lossless',
+      summary: 'Turn WebP images into universally accepted lossless PNG files. Transparency is preserved, and everything happens locally in your browser.',
+      appName: 'CompressImg WebP to PNG Converter',
+      appDescription: 'Free browser-based WebP to PNG converter with transparency support. No uploads.',
+      faq: [
+        { q: 'Why convert WebP back to PNG?', answer: 'Some older apps, editors, and upload forms still refuse WebP files. PNG is accepted virtually everywhere, making it the safe choice for compatibility while keeping the image lossless.' },
+        { q: 'Will the PNG be larger than the WebP?', answer: 'Usually yes. WebP compresses more efficiently, so the lossless PNG version is typically 25 to 35 percent larger. The image data itself is identical in quality.' },
+        { q: 'Does transparency survive the conversion?', answer: 'Yes. If the WebP has an alpha channel, the PNG keeps it. Preview the result on the checkerboard pattern after converting to confirm.' },
+      ],
+    },
+    'heic-to-jpg': {
+      from: 'heic', to: 'jpg', accepts: 'image/heic,image/heif',
+      title: 'Convert HEIC to JPG Online Free - iPhone Photos | ImgCompressor.tools',
+      description: 'Convert HEIC to JPG online for free, right in your browser. Open iPhone photos anywhere, no app install, no upload, no signup.',
+      h1: 'Convert HEIC to JPG Online - iPhone Photos Made Simple',
+      summary: 'iPhone photos arrive as HEIC, which many websites and apps refuse. Convert them to universally accepted JPG locally in your browser, no app install needed.',
+      appName: 'CompressImg HEIC to JPG Converter',
+      appDescription: 'Free browser-based HEIC to JPG converter for iPhone photos. Local processing with the heic2any library.',
+      faq: [
+        { q: 'What is a HEIC file and why can I not open it?', answer: 'HEIC (High Efficiency Image Container) is Apple\u2019s modern photo format. It saves space, but most websites, Windows viewers, and online forms only accept JPG. Converting to JPG makes the photo universally usable.' },
+        { q: 'Does converting HEIC to JPG reduce quality?', answer: 'A small amount of lossy compression is involved, but at the default 95% quality it is visually indistinguishable. You can also use the quality slider to balance file size against fidelity.' },
+        { q: 'Does the conversion upload my photo anywhere?', answer: 'No. The HEIC decoding runs in your browser using the heic2any library. Your photo is processed on your own device and never transmitted. Note that HEIC decoding takes a few extra seconds because it happens entirely in JavaScript.' },
+      ],
+    },
+  };
+
+  const pairMap = { 'png-to-jpg': ['png','jpg'], 'jpg-to-png': ['jpg','png'], 'png-to-webp': ['png','webp'], 'webp-to-png': ['webp','png'], 'heic-to-jpg': ['heic','jpg'] };
+  return Object.entries(pairs).map(([slug, cfg]) => ({ params: { from: pairMap[slug][0], to: pairMap[slug][1] }, props: { ...cfg, slug } }));
+}
+
+const { from: pf, to: pt } = Astro.params;
+const pair = `-to-`;
+const { from, to, accepts, title, description, h1, summary, appName, appDescription, faq } = Astro.props;
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={`/convert/${pair}`}
+  h1={h1}
+  summary={summary}
+  kicker="Convert"
+  benchLabel={`${from.toUpperCase()} to ${to.toUpperCase()} bench`}
+  appName={appName}
+  appDescription={appDescription}
+  howHeadline={`From ${from.toUpperCase()} to ${to.toUpperCase()} in seconds.`}
+  howSteps={[
+    { h: 'Drop your image', p: 'The tool auto-detects the input format, so any matching file works immediately.' },
+    { h: 'Pick a quality level', p: 'For lossy formats a quality slider lets you balance file size against fidelity. Lossless targets convert at full fidelity.' },
+    { h: 'Download the converted file', p: 'The result is named after your original file with the new extension.' },
+  ]}
+  faqItems={faq.map(({ q, answer }) => ({ question: q, answer }))}
+  relatedHrefs={['/image-to-pdf', '/resize-image', '/image-to-base64']}
+>
+  <FormatConverter from={from} to={to} accepts={accepts} />
+</ToolPageLayout>

@@ -1,0 +1,175 @@
+---
+// Favicon generator: client-side Canvas resizes + JSZip packaging (lazy-loaded).
+
+const SIZES = [16, 32, 48, 180, 192, 512];
+---
+
+<div class="fav-tool" data-sizes={SIZES.join(',')}>
+  <input type="file" id="fav-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="fav-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label="Upload an image to generate favicons">
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-3a6 6 0 100-12 6 6 0 000 12zm0-4.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your image here</p>
+        <p class="tool-dropzone__sub">or click to browse files, square images work best</p>
+      </div>
+      <p class="tool-dropzone__meta">PNG &middot; JPG &middot; WebP &middot; SVG &middot; up to 20MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your images never leave your device, everything happens right here in your browser.
+    </p>
+  </div>
+
+  <div id="fav-loading" class="hidden" aria-live="polite">
+    <div class="tool-progress">
+      <div class="tool-progress__bar"><div id="fav-progress-fill"></div></div>
+      <p class="tool-progress__msg" id="fav-progress-msg">Generating sizes&hellip;</p>
+      <p class="tool-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <div id="fav-result" class="hidden">
+    <p class="fav-grid-label">Generated sizes</p>
+    <div id="fav-grid" class="fav-grid"></div>
+    <label class="tool-field" style="margin-top:16px"><span>HTML snippet (paste inside &lt;head&gt;)</span>
+      <textarea id="fav-snippet" class="fav-snippet" rows="6" readonly></textarea>
+    </label>
+    <div class="fav-actions">
+      <a id="fav-download" class="tool-btn tool-btn--primary">
+        Download ZIP
+        <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+      </a>
+      <button id="fav-copy" class="tool-btn tool-btn--ghost" type="button">Copy HTML snippet</button>
+      <button id="fav-reset" class="tool-btn tool-btn--ghost" type="button">Generate from another image</button>
+    </div>
+  </div>
+
+  <div id="fav-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .fav-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+  .fav-cell img { image-rendering: pixelated; }
+  .fav-cell span { color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .fav-grid-label { margin: 4px 0 10px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .fav-snippet { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: rgba(28,25,23,0.02); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; word-break: break-all; resize: vertical; }
+  .fav-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+</style>
+
+<script>
+  import JSZip from 'jszip';
+  (function () {
+    const tool = document.querySelector('.fav-tool');
+    if (!tool) return;
+    const sizes = tool.dataset.sizes.split(',').map(Number);
+
+    const dropzone = tool.querySelector('#fav-dropzone');
+    const fileInput = tool.querySelector('#fav-input');
+    const loading = tool.querySelector('#fav-loading');
+    const result = tool.querySelector('#fav-result');
+    const grid = tool.querySelector('#fav-grid');
+    const snippet = tool.querySelector('#fav-snippet');
+    const downloadBtn = tool.querySelector('#fav-download');
+    const errorBox = tool.querySelector('#fav-error');
+    const progressFill = tool.querySelector('#fav-progress-fill');
+    const progressMsg = tool.querySelector('#fav-progress-msg');
+
+    let zipBlob = null;
+    let zipUrl = null;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+
+    async function loadFile(file) {
+      errorBox.classList.add('hidden');
+      result.classList.add('hidden');
+      if (!file.type.startsWith('image/')) { showError('Please choose an image file.'); return; }
+      if (file.size > 20 * 1024 * 1024) { showError('This image is too large. The limit is 20MB.'); return; }
+
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      loading.classList.remove('hidden');
+      try {
+        const bitmap = await createImageBitmap(file);
+        grid.innerHTML = '';
+        const pngs = [];
+        for (let i = 0; i < sizes.length; i++) {
+          const size = sizes[i];
+          progressFill.style.width = Math.round((i / sizes.length) * 90) + '%';
+          progressMsg.textContent = 'Generating ' + size + '\u00d7' + size + '\u2026';
+          const canvas = new OffscreenCanvas(size, size);
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingQuality = 'high';
+          // contain within the square, letterbox transparent for non-square images
+          const scale = Math.min(size / bitmap.width, size / bitmap.height);
+          const w = bitmap.width * scale, h = bitmap.height * scale;
+          ctx.drawImage(bitmap, (size - w) / 2, (size - h) / 2, w, h);
+          const blob = await canvas.convertToBlob({ type: 'image/png' });
+          const url = URL.createObjectURL(blob);
+          pngs.push({ size, blob });
+          const cell = document.createElement('div');
+          cell.className = 'fav-cell';
+          const img = document.createElement('img');
+          img.src = url;
+          img.width = Math.max(24, Math.min(size, 64));
+          img.height = img.width;
+          img.alt = 'Favicon preview at ' + size + ' by ' + size + ' pixels';
+          const label = document.createElement('span');
+          label.textContent = size + '\u00d7' + size;
+          cell.append(img, label);
+          grid.appendChild(cell);
+        }
+        bitmap.close();
+
+        progressFill.style.width = '95%';
+        progressMsg.textContent = 'Packaging ZIP\u2026';
+        // JSZip is statically imported at the top of this module
+        const zip = new JSZip();
+        const folder = zip.folder('favicons');
+        pngs.forEach(({ size, blob }) => folder.file('favicon-' + size + 'x' + size + '.png', blob));
+        zipBlob = await zip.generateAsync({ type: 'blob' });
+        if (zipUrl) URL.revokeObjectURL(zipUrl);
+        zipUrl = URL.createObjectURL(zipBlob);
+        downloadBtn.href = zipUrl;
+        downloadBtn.download = 'favicons.zip';
+
+        snippet.value = pngs
+          .filter(({ size }) => [16, 32, 180].includes(size))
+          .map(({ size }) => {
+            if (size === 180) return '<link rel="apple-touch-icon" sizes="180x180" href="/favicons/favicon-180x180.png">';
+            return '<link rel="icon" type="image/png" sizes="' + size + 'x' + size + '" href="/favicons/favicon-' + size + 'x' + size + '.png">';
+          })
+          .join('\n');
+
+        progressFill.style.width = '100%';
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        tool.querySelector('.upload-shell').classList.remove('hidden');
+        showError('Could not process this image. Please try another file.');
+      }
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+    tool.querySelector('#fav-copy').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(snippet.value); } catch (_) { snippet.select(); document.execCommand('copy'); }
+    });
+    tool.querySelector('#fav-reset').addEventListener('click', () => {
+      result.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      errorBox.classList.add('hidden');
+      progressFill.style.width = '0%';
+    });
+    window.addEventListener('pagehide', () => { if (zipUrl) URL.revokeObjectURL(zipUrl); }, { once: true });
+  })();
+</script>

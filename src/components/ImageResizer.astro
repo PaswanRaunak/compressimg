@@ -1,0 +1,285 @@
+---
+// Client-side image resizer: pixel/percent targets, aspect lock, presets.
+---
+
+<div class="rsz-tool">
+  <input type="file" id="rsz-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="rsz-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label="Upload an image to resize">
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your image here</p>
+        <p class="tool-dropzone__sub">or click to browse files</p>
+      </div>
+      <p class="tool-dropzone__meta">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your images never leave your device, everything happens right here in your browser.
+    </p>
+  </div>
+
+  <div id="rsz-editor" class="hidden">
+    <div class="rsz-preview-box">
+      <img id="rsz-preview" alt="Preview of the image to resize" />
+    </div>
+
+    <div class="rsz-mode" role="radiogroup" aria-label="Resize mode">
+      <label><input type="radio" name="rsz-mode" value="pixels" checked /><span>By pixels</span></label>
+      <label><input type="radio" name="rsz-mode" value="percent" /><span>By percent</span></label>
+    </div>
+
+    <div id="rsz-pixels-panel" class="rsz-panel">
+      <div class="rsz-dims">
+        <label class="tool-field"><span>Width (px)</span><input type="number" id="rsz-w" min="1" max="20000" /></label>
+        <button id="rsz-lock" type="button" class="rsz-lock is-on" aria-pressed="true" aria-label="Lock aspect ratio" title="Lock aspect ratio">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+        </button>
+        <label class="tool-field"><span>Height (px)</span><input type="number" id="rsz-h" min="1" max="20000" /></label>
+      </div>
+      <div class="rsz-presets">
+        <button type="button" data-w="1080" data-h="1080">Instagram 1080&times;1080</button>
+        <button type="button" data-w="600" data-h="600">Passport 2&times;2in</button>
+        <button type="button" data-w="400" data-h="400">LinkedIn 400&times;400</button>
+      </div>
+    </div>
+
+    <div id="rsz-percent-panel" class="rsz-panel hidden">
+      <div class="rsz-dims">
+        <label class="tool-field"><span>Scale to</span>
+          <div class="rsz-percent">
+            <input type="number" id="rsz-pct" min="1" max="500" value="50" />
+            <span>%</span>
+          </div>
+        </label>
+        <div class="rsz-pct-presets">
+          <button type="button" data-pct="25">25%</button>
+          <button type="button" data-pct="50">50%</button>
+          <button type="button" data-pct="75">75%</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rsz-process">
+      <button id="rsz-process" class="tool-btn tool-btn--primary" type="button">
+        Resize image
+        <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+      </button>
+      <button id="rsz-change" class="tool-btn tool-btn--ghost" type="button">Choose another image</button>
+    </div>
+  </div>
+
+  <div id="rsz-loading" class="hidden" aria-live="polite">
+    <div class="tool-progress">
+      <div class="tool-progress__bar"><div id="rsz-progress-fill"></div></div>
+      <p class="tool-progress__msg" id="rsz-progress-msg">Resizing&hellip;</p>
+      <p class="tool-progress__sub">Everything happens locally on your device</p>
+    </div>
+  </div>
+
+  <div id="rsz-result" class="hidden">
+    <div class="rsz-result-card">
+      <p id="rsz-out-dims" class="rsz-out-line"></p>
+      <p id="rsz-out-size" class="rsz-out-line rsz-out-line--accent"></p>
+      <div class="rsz-actions">
+        <a id="rsz-download" class="tool-btn tool-btn--primary">
+          Download resized image
+          <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+        </a>
+        <button id="rsz-reset" class="tool-btn tool-btn--ghost" type="button">Resize another image</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rsz-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .rsz-preview-box { display: flex; justify-content: center; margin-bottom: 16px; }
+  .rsz-preview-box img { max-width: 100%; max-height: 300px; border-radius: 10px; border: 1px solid var(--line); }
+  .rsz-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .rsz-mode label { position: relative; }
+  .rsz-mode input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .rsz-mode span { display: flex; align-items: center; justify-content: center; min-height: 42px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--card); color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease; }
+  .rsz-mode input:checked + span { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+  .rsz-mode input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rsz-panel { margin-bottom: 14px; }
+  .rsz-dims { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+  .rsz-lock { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--card); color: var(--faint); cursor: pointer; transition: border-color 160ms ease, color 160ms ease; }
+  .rsz-lock.is-on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+  .rsz-presets, .rsz-pct-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .rsz-presets button, .rsz-pct-presets button { min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--muted); font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color 160ms ease, color 160ms ease; }
+  .rsz-presets button:hover, .rsz-pct-presets button:hover { border-color: var(--accent); color: var(--accent-strong); }
+  .rsz-percent { display: flex; align-items: center; gap: 6px; }
+  .rsz-percent input { min-height: 44px; width: 90px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; }
+  .rsz-percent > span { color: var(--muted); font-weight: 600; }
+  .rsz-process { display: flex; flex-wrap: wrap; gap: 10px; }
+  .rsz-result-card { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-align: center; }
+  .rsz-out-line { margin: 0; color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; }
+  .rsz-out-line--accent { margin-top: 4px; color: var(--accent-strong); }
+  .rsz-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.rsz-tool');
+    if (!tool) return;
+
+    const dropzone = tool.querySelector('#rsz-dropzone');
+    const fileInput = tool.querySelector('#rsz-input');
+    const editor = tool.querySelector('#rsz-editor');
+    const preview = tool.querySelector('#rsz-preview');
+    const wInput = tool.querySelector('#rsz-w');
+    const hInput = tool.querySelector('#rsz-h');
+    const lockBtn = tool.querySelector('#rsz-lock');
+    const pctInput = tool.querySelector('#rsz-pct');
+    const loading = tool.querySelector('#rsz-loading');
+    const result = tool.querySelector('#rsz-result');
+    const errorBox = tool.querySelector('#rsz-error');
+    const downloadBtn = tool.querySelector('#rsz-download');
+
+    let bitmap = null;
+    let fileName = 'image';
+    let fileType = 'image/png';
+    let objectUrl = null;
+    let locked = true;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+    const hideError = () => errorBox.classList.add('hidden');
+    const formatSize = (b) => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+
+    function currentMode() {
+      return tool.querySelector('input[name="rsz-mode"]:checked').value;
+    }
+
+    function syncFromWidth() {
+      if (!bitmap) return;
+      const w = Math.max(1, Math.round(parseInt(wInput.value) || 1));
+      wInput.value = String(w);
+      if (locked) hInput.value = String(Math.max(1, Math.round(w * bitmap.height / bitmap.width)));
+    }
+    function syncFromHeight() {
+      if (!bitmap) return;
+      const h = Math.max(1, Math.round(parseInt(hInput.value) || 1));
+      hInput.value = String(h);
+      if (locked) wInput.value = String(Math.max(1, Math.round(h * bitmap.width / bitmap.height)));
+    }
+
+    async function loadFile(file) {
+      hideError();
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) { showError('Please choose a JPG, PNG, or WebP image.'); return; }
+      if (file.size > 20 * 1024 * 1024) { showError('This image is ' + formatSize(file.size) + '. The limit is 20MB.'); return; }
+      try {
+        bitmap = await createImageBitmap(file);
+      } catch (_) { showError('This image could not be read in this browser.'); return; }
+      fileName = file.name.replace(/\.[^/.]+$/, '');
+      fileType = file.type;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(file);
+      preview.src = objectUrl;
+      wInput.value = String(bitmap.width);
+      hInput.value = String(bitmap.height);
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      result.classList.add('hidden');
+      editor.classList.remove('hidden');
+    }
+
+    async function process() {
+      hideError();
+      const mode = currentMode();
+      let w, h;
+      if (mode === 'percent') {
+        const pct = Math.min(500, Math.max(1, parseInt(pctInput.value) || 100));
+        w = Math.max(1, Math.round(bitmap.width * pct / 100));
+        h = Math.max(1, Math.round(bitmap.height * pct / 100));
+      } else {
+        w = Math.max(1, Math.round(parseInt(wInput.value) || 1));
+        h = Math.max(1, Math.round(parseInt(hInput.value) || 1));
+      }
+
+      editor.classList.add('hidden');
+      loading.classList.remove('hidden');
+      tool.querySelector('#rsz-progress-fill').style.width = '60%';
+      tool.querySelector('#rsz-progress-msg').textContent = 'Resizing to ' + w + '\u00d7' + h + '\u2026';
+      await new Promise((r) => setTimeout(r, 60)); // let the UI paint
+
+      try {
+        const canvas = new OffscreenCanvas(w, h);
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, 0, 0, w, h);
+        const type = fileType === 'image/jpeg' ? 'image/jpeg' : fileType === 'image/webp' && supportsWebp() ? 'image/webp' : 'image/png';
+        const blob = await canvas.convertToBlob({ type, quality: 0.92 });
+        tool.querySelector('#rsz-progress-fill').style.width = '100%';
+
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(blob);
+        downloadBtn.href = objectUrl;
+        const ext = type.split('/')[1].replace('jpeg', 'jpg');
+        downloadBtn.download = fileName + '-resized.' + ext;
+        tool.querySelector('#rsz-out-dims').textContent = w + ' \u00d7 ' + h + ' px';
+        tool.querySelector('#rsz-out-size').textContent = formatSize(blob.size);
+
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        editor.classList.remove('hidden');
+        showError('Could not resize this image. Please try another file.');
+      }
+    }
+
+    function supportsWebp() {
+      try { return document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp'); }
+      catch (_) { return false; }
+    }
+
+    function resetTool() {
+      result.classList.add('hidden');
+      editor.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      hideError();
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+
+    wInput.addEventListener('input', syncFromWidth);
+    hInput.addEventListener('input', syncFromHeight);
+    lockBtn.addEventListener('click', () => {
+      locked = !locked;
+      lockBtn.classList.toggle('is-on', locked);
+      lockBtn.setAttribute('aria-pressed', String(locked));
+      if (locked) syncFromWidth();
+    });
+    tool.querySelectorAll('input[name="rsz-mode"]').forEach((r) => r.addEventListener('change', () => {
+      const mode = currentMode();
+      tool.querySelector('#rsz-pixels-panel').classList.toggle('hidden', mode !== 'pixels');
+      tool.querySelector('#rsz-percent-panel').classList.toggle('hidden', mode !== 'percent');
+    }));
+    tool.querySelectorAll('.rsz-presets button').forEach((b) => b.addEventListener('click', () => {
+      tool.querySelector('input[value="pixels"]').checked = true;
+      tool.querySelector('#rsz-pixels-panel').classList.remove('hidden');
+      tool.querySelector('#rsz-percent-panel').classList.add('hidden');
+      locked = false;
+      lockBtn.classList.remove('is-on');
+      lockBtn.setAttribute('aria-pressed', 'false');
+      wInput.value = b.dataset.w;
+      hInput.value = b.dataset.h;
+    }));
+    tool.querySelectorAll('.rsz-pct-presets button').forEach((b) => b.addEventListener('click', () => { pctInput.value = b.dataset.pct; }));
+
+    tool.querySelector('#rsz-process').addEventListener('click', process);
+    tool.querySelector('#rsz-change').addEventListener('click', resetTool);
+    tool.querySelector('#rsz-reset').addEventListener('click', resetTool);
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); }, { once: true });
+  })();
+</script>

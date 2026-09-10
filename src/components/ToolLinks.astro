@@ -1,0 +1,47 @@
+---
+// Renders a "Related tools" section from the registry. Pass explicit hrefs
+// (they must exist in src/lib/tools.ts) or omit for auto-picks.
+import { tools, toolByHref, toolIconPaths } from '../lib/tools';
+
+export interface Props {
+  hrefs?: string[];
+  exclude?: string;
+}
+
+const { hrefs, exclude } = Astro.props;
+const picked = (hrefs ?? [])
+  .map((h) => toolByHref(h))
+  .filter((t): t is NonNullable<typeof t> => !!t && t.href !== exclude);
+const fallback = tools.filter((t) => t.href !== exclude && !picked.includes(t)).slice(0, 3);
+const finalTools = picked.length > 0 ? picked.slice(0, 3) : fallback;
+---
+
+<section class="related-tools" aria-label="Related tools">
+  <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Related tools</p>
+  <div class="related-tools__links">
+    {finalTools.map((t) => (
+      <a href={t.href}>
+        <span class="related-tools__icon" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d={toolIconPaths[t.icon]}></path>
+          </svg>
+        </span>
+        <strong>{t.name}</strong>
+        <span class="related-tools__desc">{t.description}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .related-tools { max-width: 1180px; margin: 0 auto; padding: 72px 24px 96px; border-top: 1px solid var(--line); }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .kicker__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .related-tools__links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+  .related-tools__links a { display: flex; flex-direction: column; gap: 7px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+  .related-tools__links a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+  .related-tools__icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 9px; background: var(--accent-soft); color: var(--accent-strong); }
+  .related-tools__links strong { color: var(--ink); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .related-tools__desc { color: var(--muted); font-size: 13px; line-height: 1.5; }
+  @media (max-width: 40rem) { .related-tools__links { grid-template-columns: 1fr; } }
+</style>

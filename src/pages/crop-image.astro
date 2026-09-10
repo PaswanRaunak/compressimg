@@ -1,0 +1,37 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import ImageCropper from '../components/ImageCropper.astro';
+
+const title = 'Crop Image Online Free - Aspect Ratio Presets | ImgCompressor.tools';
+const description = 'Crop images online for free with an interactive crop box. Aspect presets for square, 4:3, 16:9, and passport photos, plus 90-degree rotation. Fully client-side.';
+const canonical = '/crop-image';
+
+const faqItems = [
+  { question: 'How do I crop an image to a specific aspect ratio?', answer: 'Pick an aspect preset (1:1 square, 4:3, 16:9, or passport) and the crop box snaps to that ratio. Drag the corners to resize it and drag inside to reposition, then click Crop image. The output is cut from the full-resolution original, so quality is preserved.' },
+  { question: 'Can I rotate the image before cropping?', answer: 'Yes. The Rotate 90 button turns the image a quarter turn before you crop, which is handy for horizontal photos that need to be vertical or vice versa. Rotate as many times as you need.' },
+  { question: 'Does cropping reduce image quality?', answer: 'No. Cropping removes pixels outside the box but never resamples the ones inside it, so the kept region is pixel-identical to the original. The output dimensions are simply the size of your crop selection.' },
+  { question: 'Is my image uploaded anywhere?', answer: 'No. Cropping runs entirely in your browser. The image is read locally, displayed on your device, and processed with the Canvas API. Nothing ever leaves your computer.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Crop Images Online - Free, Precise, Private"
+  summary="An interactive crop box with aspect presets for square posts, widescreen banners, and passport photos. Rotate in 90-degree steps and crop at full resolution, all in your browser."
+  kicker="Resize & crop"
+  benchLabel="Crop bench"
+  appName="CompressImg Image Cropper"
+  appDescription="Free browser-based image cropping tool with aspect-ratio presets, rotation, and full-resolution output."
+  howHeadline="Frame it exactly right."
+  howSteps={[
+    { h: 'Drop your image', p: 'JPG, PNG, or WebP up to 20MB. The crop box appears over a scaled preview immediately.' },
+    { h: 'Shape your selection', p: 'Drag the corners or edges, move the box, pick an aspect preset, or rotate in 90-degree steps.' },
+    { h: 'Crop and download', p: 'The output is cut from the full-resolution original and named with -cropped.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/resize-image', '/passport-photo-resizer', '/compress-image-to-100kb']}
+>
+  <ImageCropper />
+</ToolPageLayout>

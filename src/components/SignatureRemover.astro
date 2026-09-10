@@ -1,0 +1,157 @@
+---
+// Signature background remover: threshold-based near-white removal, client-side.
+---
+
+<div class="sig-tool">
+  <input type="file" id="sig-input" accept="image/png,image/jpeg,image/webp" style="display:none !important;" aria-hidden="true" tabindex="-1" />
+
+  <div class="upload-shell">
+    <div id="sig-dropzone" class="tool-dropzone" role="button" tabindex="0" aria-label="Upload a signature photo or scan">
+      <span class="tool-dropzone__icon" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
+      </span>
+      <div>
+        <p class="tool-dropzone__title">Drop your signature here</p>
+        <p class="tool-dropzone__sub">a photo or scan of your signature on paper</p>
+      </div>
+      <p class="tool-dropzone__meta">JPG &middot; PNG &middot; WebP &middot; up to 20MB</p>
+    </div>
+    <p class="tool-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path></svg>
+      Your images never leave your device, everything happens right here in your browser.
+    </p>
+  </div>
+
+  <div id="sig-editor" class="hidden">
+    <label class="sig-slider tool-field">
+      <span>Removal threshold: <b id="sig-threshold-value">75</b>%</span>
+      <input type="range" id="sig-threshold" min="40" max="98" value="75" aria-label="Background removal threshold" />
+    </label>
+    <div class="sig-previews">
+      <div><p class="sig-label">Original</p><img id="sig-before" alt="Original signature" /></div>
+      <div><p class="sig-label">Result</p><div class="tool-checker sig-checker"><img id="sig-after" alt="Signature with transparent background" /></div></div>
+    </div>
+    <p class="sig-hint">Raise the threshold if background remains; lower it if the signature itself looks faint.</p>
+    <div class="sig-actions">
+      <a id="sig-download" class="tool-btn tool-btn--primary">
+        Download transparent PNG
+        <span class="tool-btn__chip" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12L12 16.5m0 0l4.5-4.5m-4.5 4.5V3"></path></svg></span>
+      </a>
+      <button id="sig-change" class="tool-btn tool-btn--ghost" type="button">Choose another image</button>
+    </div>
+  </div>
+
+  <div id="sig-error" class="tool-error hidden" role="alert"></div>
+</div>
+
+<style>
+  .sig-slider { margin-bottom: 14px; }
+  .sig-slider b { color: var(--accent-strong); }
+  .sig-slider input { width: 100%; accent-color: var(--accent); min-height: 44px; }
+  .sig-previews { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sig-label { margin: 0 0 6px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .sig-previews img { display: block; width: 100%; height: 200px; object-fit: contain; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .sig-checker { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .sig-checker img { border: 0; border-radius: 0; background: transparent; }
+  .sig-hint { margin: 10px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+  .sig-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+</style>
+
+<script>
+  (function () {
+    const tool = document.querySelector('.sig-tool');
+    if (!tool) return;
+
+    const dropzone = tool.querySelector('#sig-dropzone');
+    const fileInput = tool.querySelector('#sig-input');
+    const editor = tool.querySelector('#sig-editor');
+    const threshold = tool.querySelector('#sig-threshold');
+    const thresholdValue = tool.querySelector('#sig-threshold-value');
+    const before = tool.querySelector('#sig-before');
+    const after = tool.querySelector('#sig-after');
+    const downloadBtn = tool.querySelector('#sig-download');
+    const errorBox = tool.querySelector('#sig-error');
+
+    let bitmap = null;
+    let fileName = 'signature';
+    let sourceCanvas = null;
+    let objectUrl = null, downloadUrl = null;
+
+    const showError = (m) => { errorBox.textContent = m; errorBox.classList.remove('hidden'); };
+    const formatSize = (b) => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+
+    async function loadFile(file) {
+      errorBox.classList.add('hidden');
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) { showError('Please choose a JPG, PNG, or WebP image.'); return; }
+      if (file.size > 20 * 1024 * 1024) { showError('This image is ' + formatSize(file.size) + '. The limit is 20MB.'); return; }
+      try { bitmap = await createImageBitmap(file); }
+      catch (_) { showError('This image could not be read in this browser.'); return; }
+      fileName = file.name.replace(/\.[^/.]+$/, '');
+
+      // cap very large images to keep pixel processing snappy
+      const maxDim = 3000;
+      const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+      sourceCanvas = new OffscreenCanvas(
+        Math.max(1, Math.round(bitmap.width * scale)),
+        Math.max(1, Math.round(bitmap.height * scale))
+      );
+      sourceCanvas.getContext('2d').drawImage(bitmap, 0, 0, sourceCanvas.width, sourceCanvas.height);
+      bitmap.close();
+
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      sourceCanvas.convertToBlob({ type: 'image/png' }).then((b) => {
+        objectUrl = URL.createObjectURL(b);
+        before.src = objectUrl;
+      });
+
+      tool.querySelector('.upload-shell').classList.add('hidden');
+      editor.classList.remove('hidden');
+      process();
+    }
+
+    // Downscale-only luminance threshold: pixels brighter than the cutoff become
+    // transparent, with a soft ramp so the ink does not get jagged edges.
+    async function process() {
+      const cutoffStart = (parseInt(threshold.value) / 100) * 255 - 20;
+      const cutoffEnd = (parseInt(threshold.value) / 100) * 255 + 20;
+      const ctx = sourceCanvas.getContext('2d');
+      const imageData = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const lum = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+        let alpha = 255;
+        if (lum >= cutoffEnd) alpha = 0;
+        else if (lum > cutoffStart) alpha = Math.round(255 * (cutoffEnd - lum) / (cutoffEnd - cutoffStart));
+        if (alpha < 255) {
+          d[i + 3] = Math.min(d[i + 3], alpha);
+          // darken kept ink slightly so it reads well on white documents
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+      const blob = await sourceCanvas.convertToBlob({ type: 'image/png' });
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+      downloadUrl = URL.createObjectURL(blob);
+      after.src = downloadUrl;
+      downloadBtn.href = downloadUrl;
+      downloadBtn.download = fileName + '-transparent.png';
+    }
+
+    threshold.addEventListener('input', () => {
+      thresholdValue.textContent = threshold.value;
+      process();
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadFile(e.target.files[0]); fileInput.value = ''; });
+    tool.querySelector('#sig-change').addEventListener('click', () => {
+      editor.classList.add('hidden');
+      tool.querySelector('.upload-shell').classList.remove('hidden');
+      errorBox.classList.add('hidden');
+    });
+    window.addEventListener('pagehide', () => { if (objectUrl) URL.revokeObjectURL(objectUrl); if (downloadUrl) URL.revokeObjectURL(downloadUrl); }, { once: true });
+  })();
+</script>

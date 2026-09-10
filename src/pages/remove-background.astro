@@ -1,0 +1,38 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import BackgroundRemover from '../components/BackgroundRemover.astro';
+
+const title = 'Remove Background from Image Online Free | ImgCompressor.tools';
+const description = 'Remove image backgrounds online for free and download a transparent PNG. AI-powered cut-outs for people, products, and objects. Secure processing, nothing stored.';
+const canonical = '/remove-background';
+
+const faqItems = [
+  { question: 'How does background removal work here?', answer: 'Unlike the other tools on this site, high-quality AI background removal needs a dedicated model, so your image is sent over HTTPS to the remove.bg processing service through our proxy. The service processes the image and is not stored by us. Everything else on this site runs fully in your browser.' },
+  { question: 'What does the free tier include?', answer: 'The remove.bg free tier includes 50 previews per month. Previews are lower resolution and may carry a watermark. Full-resolution transparent PNG downloads require additional credits on the processing service.' },
+  { question: 'Which images work best?', answer: 'Clear subjects give the cleanest cut-outs: people, products, animals, and objects on a reasonably distinct background. Busy scenes where the subject blends into the background may need manual touch-up.' },
+  { question: 'Is my image stored?', answer: 'Our proxy keeps no copy of your image. The processing service handles it according to its own privacy terms. For a strictly on-device alternative, try the Signature Background Remover, which works fully offline for ink-on-paper scans.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Remove Image Backgrounds Online - One Click, Transparent PNG"
+  summary="Get clean transparent cut-outs of people, products, and objects. Powered by AI processing with an honest privacy note: this one tool sends your image securely to the processing service."
+  kicker="Remove background"
+  benchLabel="Cut-out bench"
+  benchBadge="AI service"
+  appName="CompressImg Background Remover"
+  appDescription="AI-powered background removal producing transparent PNGs, proxied securely through Cloudflare Workers."
+  howHeadline="From photo to transparent PNG."
+  howSteps={[
+    { h: 'Drop your image', p: 'JPG, PNG, or WebP up to 10MB. Clear subjects work best.' },
+    { h: 'AI processing runs', p: 'Your image is sent securely to the remove.bg service, usually returning within 2 to 5 seconds.' },
+    { h: 'Download the cut-out', p: 'Preview the result on a transparency checkerboard and download the PNG.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/remove-signature-background', '/crop-image', '/favicon-generator']}
+>
+  <BackgroundRemover />
+</ToolPageLayout>

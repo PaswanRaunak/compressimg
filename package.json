@@ -11,6 +11,8 @@
     "@astrojs/sitemap": "^3.0.0",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.7.10",
+    "heic2any": "^0.0.4",
+    "jszip": "^3.10.2",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289",
     "tailwindcss": "^3.4.17"

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CompressTool from '../components/CompressTool.astro';
+import { tools, toolIconPaths } from '../lib/tools';
 
 const title = 'Compress Images to Exact Sizes Online | CompressImg';
 const description = 'Compress JPG, PNG, and WebP images to an exact target size. Create free, optimized files for forms, email, and web uploads, no signup required.';
@@ -19,7 +20,7 @@ const faqItems = [
       <h1>Compress any image to an <em>exact size</em>.</h1>
       <p class="hero__summary">Set the limit, drop in an image, and download a file that stays under it. Built for form uploads, email attachments, product listings, and fast pages.</p>
       <div class="hero__actions">
-        <span class="hero__hint">Pick a target size in the panel to start , no account needed.</span>
+        <span class="hero__hint">Pick a target size in the panel to start, no account needed.</span>
       </div>
       <dl class="hero__facts" aria-label="Compressor capabilities">
         <div><dt>Formats</dt><dd>JPG, PNG, WebP</dd></div>
@@ -35,6 +36,27 @@ const faqItems = [
         </div>
         <CompressTool defaultTarget={100} showCustomTarget={true} />
       </div>
+    </div>
+  </section>
+
+  <section class="tools-grid" aria-labelledby="tools-grid-title">
+    <div class="tools-grid__head">
+      <p class="kicker"><span class="kicker__dot" aria-hidden="true"></span>All tools</p>
+      <h2 id="tools-grid-title">Everything runs in your browser.</h2>
+    </div>
+    <div class="tools-grid__grid">
+      {tools.map((t) => (
+        <a href={t.href}>
+          <span class="tools-grid__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path stroke-linecap="round" stroke-linejoin="round" d={toolIconPaths[t.icon]}></path>
+            </svg>
+          </span>
+          <strong>{t.name}</strong>
+          <span class="tools-grid__desc">{t.description}</span>
+          <span class="tools-grid__group">{t.group}</span>
+        </a>
+      ))}
     </div>
   </section>
 
@@ -103,6 +125,17 @@ const faqItems = [
     .tool-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
 
     .process { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tools-grid { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tools-grid h2 { max-width: 16ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .tools-grid__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 40px; }
+    .tools-grid__grid a { position: relative; display: flex; flex-direction: column; gap: 7px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); text-decoration: none; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+    .tools-grid__grid a:hover { border-color: var(--accent); box-shadow: 0 12px 28px -18px rgba(46,84,67,0.45); transform: translateY(-2px); }
+    .tools-grid__icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-strong); }
+    .tools-grid__grid strong { color: var(--ink); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .tools-grid__desc { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .tools-grid__group { color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+    @media (max-width: 56rem) { .tools-grid__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 34rem) { .tools-grid__grid { grid-template-columns: 1fr; } }
     .process h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
     .process__list { display: grid; gap: 0 56px; padding: 0; margin: 44px 0 0; list-style: none; }
     .process__list li { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 26px 0; border-top: 1px solid var(--line); }

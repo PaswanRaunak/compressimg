@@ -1,0 +1,37 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SignatureRemover from '../components/SignatureRemover.astro';
+
+const title = 'Remove Signature Background Online Free - Transparent PNG | ImgCompressor.tools';
+const description = 'Remove the background from a signature photo or scan online for free. Get a clean transparent PNG to insert into documents. Threshold slider, fully in your browser.';
+const canonical = '/remove-signature-background';
+
+const faqItems = [
+  { question: 'How does the signature background removal work?', answer: 'The tool analyzes the brightness of every pixel and makes near-white or light areas transparent, keeping the darker ink. A soft ramp at the threshold edge keeps the strokes smooth instead of jagged. It is tuned for ink on white paper, which covers almost all signature scans.' },
+  { question: 'What should I do if parts of my signature disappear?', answer: 'Lower the threshold slider. A high threshold removes aggressively and can eat thin strokes; a low one keeps more of the paper texture. Around 70 to 80 percent works for most scans, adjust while watching the live preview.' },
+  { question: 'How do I use the transparent PNG afterwards?', answer: 'Insert it into Word, Google Docs, PDF editors, or HTML exactly like a normal image. Because the background is transparent, only the ink shows, so it overlays cleanly on contracts, forms, and letterheads.' },
+  { question: 'Is my signature uploaded anywhere?', answer: 'No. The threshold processing happens entirely in your browser with the Canvas API. Your signature is sensitive, so this tool was built to work 100% offline. You can even disconnect from the internet after the page loads.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Remove Signature Background - Clean Transparent PNG"
+  summary="Turn a photo or scan of your signature into a clean transparent PNG with a live threshold slider. Processes entirely on your device, built for sensitive documents."
+  kicker="Remove background"
+  benchLabel="Signature bench"
+  appName="CompressImg Signature Background Remover"
+  appDescription="Free browser-based tool that removes white backgrounds from signature scans with an adjustable threshold, outputting transparent PNGs."
+  howHeadline="From paper to reusable PNG."
+  howSteps={[
+    { h: 'Drop your signature', p: 'A photo or scan of ink on white paper works best. Good, even lighting gives the cleanest result.' },
+    { h: 'Tune the threshold', p: 'Watch the live preview on a checkerboard and adjust until the background is gone but the ink is solid.' },
+    { h: 'Download and insert', p: 'The transparent PNG drops cleanly into documents, PDFs, and web pages.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/remove-background', '/passport-photo-resizer', '/image-to-base64']}
+>
+  <SignatureRemover />
+</ToolPageLayout>

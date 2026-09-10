@@ -1,0 +1,37 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import FaviconGenerator from '../components/FaviconGenerator.astro';
+
+const title = 'Favicon Generator Online Free - All Sizes in One ZIP | ImgCompressor.tools';
+const description = 'Generate favicons online for free. One image becomes 16, 32, 48, 180, 192, and 512 pixel PNGs in a downloadable ZIP, with a ready-to-paste HTML snippet.';
+const canonical = '/favicon-generator';
+
+const faqItems = [
+  { question: 'Which favicon sizes do I actually need?', answer: 'This tool generates the practical set: 16 and 32 pixel for browser tabs, 180 pixel for Apple touch icons on iOS, and 192 plus 512 pixel for Android home screens and PWAs. Together they cover virtually every real-world use without the legacy .ico format.' },
+  { question: 'What image should I upload?', answer: 'A square image works best because favicons are square. If your image is not square, it is centered and letterboxed with transparency. Use a simple, high-contrast design: favicons are tiny, so fine details disappear.' },
+  { question: 'How do I install the generated favicons?', answer: 'Download the ZIP, upload the PNG files to your site root (or a /favicons folder), and paste the provided HTML snippet inside your head tag. The snippet references the 16, 32, and 180 pixel icons, which is all most sites need.' },
+  { question: 'Is my image uploaded to a server?', answer: 'No. All resizing happens in your browser with the Canvas API, and the ZIP is built locally with JavaScript. Your image never leaves your device.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Generate Favicons Online - Every Size, One ZIP"
+  summary="Upload one image and get every favicon your site needs: 16 through 512 pixel PNGs packaged in a ZIP, plus a copy-paste HTML snippet for your head tag."
+  kicker="Generate"
+  benchLabel="Favicon bench"
+  appName="CompressImg Favicon Generator"
+  appDescription="Free browser-based favicon generator producing all standard PNG sizes in one ZIP with an HTML snippet."
+  howHeadline="One image in, every favicon out."
+  howSteps={[
+    { h: 'Upload one image', p: 'Square PNG works best. Non-square images are centered with transparent letterboxing.' },
+    { h: 'Preview every size', p: 'Six standard sizes are rendered side by side so you can check legibility at 16 pixels.' },
+    { h: 'Download the ZIP', p: 'All sizes plus the HTML snippet, ready to upload to your site root.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/resize-image', '/convert/png-to-jpg', '/image-to-base64']}
+>
+  <FaviconGenerator />
+</ToolPageLayout>

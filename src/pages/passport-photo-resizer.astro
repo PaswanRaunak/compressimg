@@ -1,0 +1,37 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PassportPhotoResizer from '../components/PassportPhotoResizer.astro';
+
+const title = 'Passport Photo Resizer Online Free - All Sizes | ImgCompressor.tools';
+const description = 'Resize photos to passport and ID requirements online for free. US, UK, Indian, Schengen, PAN, and Aadhaar presets at 300 DPI. Fully in your browser, nothing uploaded.';
+const canonical = '/passport-photo-resizer';
+
+const faqItems = [
+  { question: 'Which ID photo sizes are supported?', answer: 'US Passport (2 x 2 inches), UK Passport and Schengen Visa (35 x 45 mm), Indian Passport (51 x 51 mm), PAN Card (3.5 x 2.5 cm), and Aadhaar (2.5 x 3.125 cm). Each preset outputs the exact pixel dimensions at 300 DPI that most online portals request.' },
+  { question: 'How do I position my face correctly?', answer: 'Drag the photo so your face sits inside the frame, and use the zoom slider to enlarge or shrink it. Keep the head between roughly 50 and 70 percent of the frame height, which is what most official guidelines require.' },
+  { question: 'What resolution is the output?', answer: 'Every preset outputs at 300 DPI, the standard for printing ID photos: 600 x 600 pixels for 2 x 2 inch US photos, 413 x 531 pixels for 35 x 45 mm photos, and so on. This meets the requirements of virtually all online application portals.' },
+  { question: 'Is my photo uploaded?', answer: 'No. Cropping and resizing happen entirely in your browser with the Canvas API. Your photo is processed on your own device and never leaves it.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Passport Photo Resizer - Every ID Size, One Tool"
+  summary="Crop your photo to the exact dimensions required by US, UK, Indian, Schengen, PAN, and Aadhaar applications. Output at 300 DPI, processed entirely in your browser."
+  kicker="Resize & crop"
+  benchLabel="ID photo bench"
+  appName="CompressImg Passport Photo Resizer"
+  appDescription="Free browser-based ID photo resizer with presets for US, UK, Indian, Schengen, PAN, and Aadhaar documents at 300 DPI."
+  howHeadline="Portal-ready photos in a minute."
+  howSteps={[
+    { h: 'Pick your document', p: 'Six presets cover the most common passport, visa, and ID requirements worldwide.' },
+    { h: 'Position your face', p: 'Drag the photo and zoom until your head sits correctly inside the highlighted frame.' },
+    { h: 'Download at 300 DPI', p: 'The output matches the exact pixel dimensions at 300 DPI that online portals ask for.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/crop-image', '/resize-image', '/remove-signature-background']}
+>
+  <PassportPhotoResizer />
+</ToolPageLayout>

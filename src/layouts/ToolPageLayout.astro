@@ -1,0 +1,140 @@
+---
+// Standard tool page shell: hero with bench card, how-it-works, FAQ, related
+// links, and SoftwareApplication + FAQPage JSON-LD. Tools slot into the card.
+import Layout from './Layout.astro';
+import ToolLinks from '../components/ToolLinks.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  h1: string;
+  summary: string;
+  kicker?: string;
+  benchLabel?: string;
+  benchBadge?: string;
+  appName: string;
+  appDescription: string;
+  howSteps?: { h: string; p: string }[];
+  howHeadline?: string;
+  faqItems: { question: string; answer: string }[];
+  relatedHrefs?: string[];
+  toolSlotWidth?: 'wide' | 'narrow';
+}
+
+const {
+  title,
+  description,
+  canonical,
+  h1,
+  summary,
+  kicker = 'New tool',
+  benchLabel = 'Tool bench',
+  benchBadge = '100% local',
+  appName,
+  appDescription,
+  howSteps = [],
+  howHeadline = 'How it works.',
+  faqItems,
+  relatedHrefs,
+} = Astro.props;
+---
+
+<Layout title={title} description={description} canonical={canonical} schemaType="WebApplication">
+  <section class="tph">
+    <div class="tph__intro">
+      <p class="tph__kicker"><span class="tph__dot" aria-hidden="true"></span>{kicker}</p>
+      <h1 set:html={h1} />
+      <p class="tph__summary">{summary}</p>
+    </div>
+    <div class="tph__panel" aria-label="Tool workspace">
+      <div class="tph-card">
+        <div class="tph-card__head">
+          <span>{benchLabel}</span>
+          <span class="tph-card__badge" aria-hidden="true">{benchBadge}</span>
+        </div>
+        <div class="tph-card__body">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {howSteps.length > 0 && (
+    <section class="tph-how">
+      <div class="tph-how__head">
+        <p class="tph__kicker"><span class="tph__dot" aria-hidden="true"></span>How it works</p>
+        <h2 set:html={howHeadline} />
+      </div>
+      <ol class="tph-how__list">
+        {howSteps.map((s, i) => (
+          <li><span>{String(i + 1).padStart(2, '0')}</span><div><h3>{s.h}</h3><p>{s.p}</p></div></li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  <section class="tph-faq" aria-labelledby="tph-faq-title">
+    <div class="tph-faq__head">
+      <p class="tph__kicker"><span class="tph__dot" aria-hidden="true"></span>Questions</p>
+      <h2 id="tph-faq-title">Before you start.</h2>
+    </div>
+    <div class="tph-faq__list">
+      {faqItems.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+    </div>
+  </section>
+
+  <ToolLinks hrefs={relatedHrefs} exclude={canonical} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: appName,
+        applicationCategory: 'UtilityApplication',
+        operatingSystem: 'Any (browser-based)',
+        url: `https://imgcompressor.tools${canonical}`,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: appDescription
+      },
+      { '@type': 'FAQPage', mainEntity: faqItems.map(({ question, answer }) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } })) }
+    ]
+  })} />
+
+  <style>
+    section { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .tph__kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--accent-strong); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tph__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; }
+    .tph { display: grid; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 88px; }
+    .tph__intro h1 { max-width: 15ch; margin-top: 20px; font-size: clamp(34px, 4.6vw, 54px); font-weight: 700; letter-spacing: -0.032em; line-height: 1.05; }
+    .tph__summary { max-width: 50ch; margin: 20px 0 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .tph-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 24px 56px -28px rgba(28,25,23,0.22); }
+    .tph-card__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tph-card__badge { padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+    .tph-card__body { padding: 18px 20px 20px; }
+    .tph-how { padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tph-how h2 { max-width: 18ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .tph-how__list { display: grid; gap: 0 56px; padding: 0; margin: 40px 0 0; list-style: none; }
+    .tph-how__list li { display: grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 24px 0; border-top: 1px solid var(--line); }
+    .tph-how__list li > span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; padding-top: 4px; }
+    .tph-how__list h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .tph-how__list p { max-width: 48ch; margin: 6px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+    .tph-faq { display: grid; gap: 32px; padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line); }
+    .tph-faq h2 { max-width: 14ch; margin-top: 14px; font-size: clamp(28px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+    .tph-faq__list { border-top: 1px solid var(--line); }
+    .tph-faq__list details { border-bottom: 1px solid var(--line); }
+    .tph-faq__list summary { position: relative; display: flex; align-items: center; min-height: 60px; padding: 14px 40px 14px 0; color: var(--ink); font-weight: 600; font-size: 16px; cursor: pointer; list-style: none; transition: color 160ms ease; }
+    .tph-faq__list summary:hover { color: var(--accent-strong); }
+    .tph-faq__list summary::-webkit-details-marker { display: none; }
+    .tph-faq__list summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 9px; height: 9px; border-right: 1.8px solid var(--accent); border-bottom: 1.8px solid var(--accent); transform: translateY(-70%) rotate(45deg); transition: transform 200ms ease; }
+    .tph-faq__list details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
+    .tph-faq__list p { max-width: 62ch; margin: 0; padding: 0 40px 20px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+    @media (min-width: 56rem) {
+      .tph { grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr); gap: 64px; padding-top: 84px; padding-bottom: 104px; }
+      .tph-how__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .tph-how__list li:nth-child(2) { border-top: none; }
+    }
+  </style>
+</Layout>

@@ -1,0 +1,37 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import ImageToBase64 from '../components/ImageToBase64.astro';
+
+const title = 'Image to Base64 Converter Online - Data URI | ImgCompressor.tools';
+const description = 'Convert images to Base64 data URIs online for free. Instant encoding with a one-click copy button. JPG, PNG, WebP, GIF, and SVG supported, fully private.';
+const canonical = '/image-to-base64';
+
+const faqItems = [
+  { question: 'What is a Base64 data URI?', answer: 'A data URI embeds an image directly as text inside HTML, CSS, or JavaScript. Instead of a separate image file, the browser decodes the Base64 string on the fly. It is commonly used for small icons, logos, and inline background images.' },
+  { question: 'When should I embed images as Base64?', answer: 'Use it for small images under a few kilobytes, where saving an HTTP request matters more than cacheability. For larger images, a normal file is better: Base64 makes files about 33% larger and cannot be cached separately by the browser.' },
+  { question: 'How do I use the generated string?', answer: 'Paste it wherever a URL would go: as an img src, inside CSS as url(...), or in JSON payloads that require inline images. Use the Copy to clipboard button to grab the whole string.' },
+  { question: 'Is my image uploaded?', answer: 'No. The encoding uses the FileReader API entirely in your browser. Your image never leaves your device.' }
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  h1="Convert Images to Base64 Online - Instant &amp; Private"
+  summary="Encode any image into a Base64 data URI with one click. Perfect for inline icons, CSS backgrounds, and single-file HTML. Nothing is uploaded."
+  kicker="Generate"
+  benchLabel="Base64 bench"
+  appName="CompressImg Image to Base64 Converter"
+  appDescription="Free browser-based image to Base64 encoder with instant preview and one-click copy."
+  howHeadline="Three seconds, one string."
+  howSteps={[
+    { h: 'Drop your image', p: 'JPG, PNG, WebP, GIF, or SVG up to 5MB. The data URI appears instantly.' },
+    { h: 'Check the size', p: 'The tool shows the original size next to the encoded size, since Base64 grows about 33% larger.' },
+    { h: 'Copy and use', p: 'One click copies the full data URI, ready to paste into HTML, CSS, or JSON.' },
+  ]}
+  faqItems={faqItems}
+  relatedHrefs={['/favicon-generator', '/convert/png-to-jpg', '/compress-image-to-100kb']}
+>
+  <ImageToBase64 />
+</ToolPageLayout>

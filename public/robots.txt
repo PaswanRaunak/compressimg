@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# AI answer/training crawlers — explicitly allowed for AI search visibility.
+# AI answer/training crawlers, explicitly allowed for AI search visibility.
 # Flip any block below to `Disallow: /` to opt out of that crawler.
 User-agent: GPTBot
 Allow: /

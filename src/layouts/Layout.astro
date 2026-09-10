@@ -109,25 +109,25 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
         </a>
         <nav class="site-nav" aria-label="Primary navigation">
           {navLinks.map((link) => <a href={link.href} aria-current={currentPath === link.href ? 'page' : undefined}>{link.label}</a>)}
-          <details class="nav-dd">
-            <summary aria-haspopup="menu">Tools</summary>
-            <div class="nav-dd__menu" role="menu">
-              {navGroups.map((group) => (
-                <div class="nav-dd__group">
-                  <p class="nav-dd__grouplabel" aria-hidden="true">{group}</p>
-                  {tools.filter((t) => t.group === group).map((t) => (
-                    <a href={t.href} role="menuitem">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d={toolIconPaths[t.icon]}></path>
-                      </svg>
-                      <span>{t.name}</span>
-                    </a>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </details>
         </nav>
+        <details class="nav-dd">
+          <summary aria-haspopup="menu">Tools</summary>
+          <div class="nav-dd__menu" role="menu">
+            {navGroups.map((group) => (
+              <div class="nav-dd__group">
+                <p class="nav-dd__grouplabel" aria-hidden="true">{group}</p>
+                {tools.filter((t) => t.group === group).map((t) => (
+                  <a href={t.href} role="menuitem">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d={toolIconPaths[t.icon]}></path>
+                    </svg>
+                    <span>{t.name}</span>
+                  </a>
+                ))}
+              </div>
+            ))}
+          </div>
+        </details>
         <a href="/#compress" class="header-cta">Compress now</a>
       </div>
     </header>

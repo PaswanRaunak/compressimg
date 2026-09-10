@@ -59,14 +59,14 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#faf9f6" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={fullCanonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="CompressImg" />
     <meta property="og:locale" content="en_US" />
@@ -152,13 +152,13 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
     </footer>
     <style is:global>
       :root {
-        --paper: #faf9f6;
+        --paper: #ffffff;
         --card: #ffffff;
-        --ink: #1c1917;
-        --muted: #57534e;
-        --faint: #a8a29e;
-        --line: #e7e5e4;
-        --line-strong: #d6d3d1;
+        --ink: #0b0b0c;
+        --muted: #52525b;
+        --faint: #a1a1aa;
+        --line: #ebebef;
+        --line-strong: #dcdce1;
         --accent: #386853;
         --accent-strong: #2e5443;
         --accent-soft: #f0f6f2;
@@ -166,23 +166,23 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
       }
       * { box-sizing: border-box; }
       html { background: var(--paper); scroll-behavior: smooth; }
-      body.site-shell { min-width: 320px; margin: 0; background: var(--paper); color: var(--ink); font-family: 'Outfit', 'Segoe UI', Arial, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+      body.site-shell { min-width: 320px; margin: 0; background: var(--paper); color: var(--ink); font-family: 'Geist', 'Segoe UI', Arial, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
       ::selection { background: #dcebe2; }
       .site-shell :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
       .skip-link { position: fixed; z-index: 80; top: 12px; left: 12px; padding: 12px 16px; border-radius: 10px; background: var(--ink); color: #fff; font-weight: 600; text-decoration: none; transform: translateY(-180%); transition: transform 180ms cubic-bezier(0.32,0.72,0,1); }
       .skip-link:focus { transform: translateY(0); }
 
-      .site-header { position: sticky; z-index: 40; top: 0; border-bottom: 1px solid var(--line); background: rgba(250, 249, 246, 0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+      .site-header { position: sticky; z-index: 40; top: 0; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
       .site-header__inner { display: flex; align-items: center; gap: 20px; max-width: 1180px; min-height: 64px; margin: 0 auto; padding: 10px 24px; }
       .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
       .brand__mark { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: #fff; }
       .site-nav { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
       .site-nav::-webkit-scrollbar { display: none; }
       .site-nav a { display: inline-flex; align-items: center; padding: 8px 13px; border-radius: 999px; color: var(--muted); font-size: 14.5px; font-weight: 500; text-decoration: none; white-space: nowrap; transition: color 160ms ease, background-color 160ms ease; }
-      .site-nav a:hover { color: var(--ink); background: rgba(28, 25, 23, 0.05); }
-      .site-nav a[aria-current='page'] { color: var(--ink); background: rgba(28, 25, 23, 0.07); font-weight: 600; }
+      .site-nav a:hover { color: var(--ink); background: rgba(0, 0, 0, 0.05); }
+      .site-nav a[aria-current='page'] { color: var(--ink); background: rgba(0, 0, 0, 0.07); font-weight: 600; }
       .header-cta { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; transition: background-color 160ms ease, transform 160ms ease; }
-      .header-cta:hover { background: #33302c; }
+      .header-cta:hover { background: #26262b; }
       .header-cta:active { transform: scale(0.98); }
 
       .site-footer { border-top: 1px solid var(--line); background: var(--paper); }
@@ -204,10 +204,10 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
       .nav-dd summary { display: inline-flex; align-items: center; min-height: 44px; padding: 0 13px; border-radius: 999px; color: var(--muted); font-size: 14.5px; font-weight: 500; cursor: pointer; list-style: none; white-space: nowrap; transition: color 160ms ease, background-color 160ms ease; }
       .nav-dd summary::-webkit-details-marker { display: none; }
       .nav-dd summary::after { content: ''; margin-left: 6px; width: 6px; height: 6px; border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 160ms ease; }
-      .nav-dd[open] summary { color: var(--ink); background: rgba(28, 25, 23, 0.05); }
+      .nav-dd[open] summary { color: var(--ink); background: rgba(0, 0, 0, 0.05); }
       .nav-dd[open] summary::after { transform: translateY(0) rotate(225deg); }
-      .nav-dd__menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; display: grid; grid-template-columns: repeat(2, minmax(210px, 1fr)); gap: 4px 18px; width: max-content; max-width: min(92vw, 520px); padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 2px 4px rgba(28,25,23,0.05), 0 24px 48px -20px rgba(28,25,23,0.25); }
-      .nav-dd__grouplabel { margin: 6px 0 4px; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+      .nav-dd__menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; display: grid; grid-template-columns: repeat(2, minmax(210px, 1fr)); gap: 4px 18px; width: max-content; max-width: min(92vw, 520px); padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 24px 48px -20px rgba(0,0,0,0.25); }
+      .nav-dd__grouplabel { margin: 6px 0 4px; color: var(--faint); font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
       .nav-dd__menu a { display: flex; align-items: center; gap: 9px; min-height: 38px; padding: 6px 10px; border-radius: 10px; color: var(--ink); font-size: 14px; font-weight: 500; text-decoration: none; }
       .nav-dd__menu a:hover { background: var(--accent-soft); color: var(--accent-strong); }
       .nav-dd__menu a svg { flex-shrink: 0; color: var(--accent); }
@@ -218,13 +218,13 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
       }
 
       /* ---- Shared tool component classes ---- */
-      .tool-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 190px; justify-content: center; padding: 28px 24px; border: 2px dashed var(--line-strong); border-radius: 14px; background: rgba(28, 25, 23, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
+      .tool-dropzone { display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 190px; justify-content: center; padding: 28px 24px; border: 2px dashed var(--line-strong); border-radius: 14px; background: rgba(0, 0, 0, 0.015); text-align: center; cursor: pointer; transition: border-color 200ms ease, background-color 200ms ease; }
       .tool-dropzone:hover, .tool-dropzone:focus-visible, .tool-dropzone.is-dragover { border-color: var(--accent); background: var(--accent-soft); outline: none; }
       .tool-dropzone__icon { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 14px; background: var(--accent-soft); color: var(--accent-strong); transition: transform 200ms ease; }
       .tool-dropzone:hover .tool-dropzone__icon, .tool-dropzone.is-dragover .tool-dropzone__icon { transform: translateY(-2px); }
       .tool-dropzone__title { margin: 0; color: var(--ink); font-size: 15.5px; font-weight: 600; }
       .tool-dropzone__sub { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
-      .tool-dropzone__meta { margin: 8px 0 0; color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+      .tool-dropzone__meta { margin: 8px 0 0; color: var(--faint); font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
       .tool-privacy { display: flex; align-items: flex-start; justify-content: center; gap: 7px; margin: 12px 0 0; color: var(--accent-strong); font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; }
       .tool-privacy svg { flex-shrink: 0; margin-top: 2px; }
       .tool-progress { max-width: 380px; margin: 0 auto; padding: 36px 0; text-align: center; }
@@ -236,13 +236,13 @@ const schemaMarkup = JSON.stringify({ '@context': 'https://schema.org', '@graph'
       .tool-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
       .tool-btn:active { transform: scale(0.98); }
       .tool-btn--primary { background: var(--ink); color: #fff; border: 0; }
-      .tool-btn--primary:hover { background: #33302c; }
+      .tool-btn--primary:hover { background: #26262b; }
       .tool-btn--primary:disabled { opacity: 0.45; cursor: not-allowed; }
       .tool-btn__chip { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
       .tool-btn--ghost { border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); }
       .tool-btn--ghost:hover { border-color: var(--faint); color: var(--ink); }
       .tool-field { display: flex; flex-direction: column; gap: 4px; }
-      .tool-field > span { color: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+      .tool-field > span { color: var(--faint); font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
       .tool-field input[type="number"], .tool-field select, .tool-field input[type="text"] { min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font-size: 14px; }
       .tool-checker { background-image: conic-gradient(#e5e3df 0 25%, #ffffff 0 50%, #e5e3df 0 75%, #ffffff 0); background-size: 16px 16px; }
       .hidden { display: none !important; }
